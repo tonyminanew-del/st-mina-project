@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب مشرف جديد - الآدمن</title>
+    
+    <!-- خط عربي فخم قريب للرقعة الواضحة -->
+    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #111111 0%, #000000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Reem Kufi', 'Cairo', sans-serif;
+            color: #f3e5ab;
+            position: relative;
+        }
+
+        /* زر الرجوع للخلف */
+        .back-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+            padding: 8px 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: #d4af37;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 
+                0 0 35px rgba(212, 175, 55, 0.15),
+                0 20px 40px rgba(0, 0, 0, 0.9);
+            border: 2px solid #d4af37;
+            position: relative;
+        }
+
+        h2 {
+            color: #d4af37;
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #e5d394;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0a0a0a;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            color: #f3e5ab;
+            font-size: 16px;
+            font-family: 'Reem Kufi', 'Cairo', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+        }
+
+        select option {
+            background: #111;
+            color: #d4af37;
+        }
+
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-family: 'Reem Kufi', 'Cairo', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            text-align: center;
+        }
+
+        .loading-text {
+            text-align: center;
+            color: #f3e5ab;
+            font-size: 18px;
+            display: none;
+            margin-top: 15px;
+        }
+    </style>
+
+    <!-- سكربت Firebase Firestore وحفظ الـ LocalStorage -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+            projectId: "st-mina-c01ec",
+            storageBucket: "st-mina-c01ec.firebasestorage.app",
+            messagingSenderId: "792349150559",
+            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const step1Btn = document.getElementById('step1-btn');
+            const step2Btn = document.getElementById('step2-btn');
+            const errorMsg = document.getElementById('error-msg');
+            const loadingText = document.getElementById('loading-text');
+
+            // الخطوة الأولى: التحقق من اسم المستخدم والباسورد
+            step1Btn.addEventListener('click', async () => {
+                const username = document.getElementById('admin-username').value.trim();
+                const password = document.getElementById('admin-password').value.trim();
+
+                if (!username || !password) {
+                    errorMsg.innerText = "يرجى إدخال اسم المستخدم وكلمة المرور!";
+                    errorMsg.style.display = "block";
+                    return;
+                }
+
+                errorMsg.style.display = "none";
+                loadingText.innerText = "جاري التحقق من التوفر... ⏳";
+                loadingText.style.display = "block";
+                step1Btn.disabled = true;
+
+                try {
+                    const adminRef = collection(db, "admin");
+                    const q = query(adminRef, where("username", "==", username));
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        errorMsg.innerText = "اسم المستخدم هذا موجود مسبقاً، يرجى اختيار اسم آخر!";
+                        errorMsg.style.display = "block";
+                        loadingText.style.display = "none";
+                        step1Btn.disabled = false;
+                        return;
+                    }
+
+                    loadingText.style.display = "none";
+                    step1Btn.disabled = false;
+
+                    document.getElementById('section-1').classList.remove('active');
+                    document.getElementById('section-2').classList.add('active');
+
+                } catch (error) {
+                    console.error("خطأ في التحقق:", error);
+                    errorMsg.innerText = "حدث خطأ في الاتصال بقاعدة البيانات!";
+                    errorMsg.style.display = "block";
+                    loadingText.style.display = "none";
+                    step1Btn.disabled = false;
+                }
+            });
+
+            // الخطوة الثانية: حفظ البيانات في فيربيز + تخزينها محلياً في localStorage والانتقال للـ home
+            step2Btn.addEventListener('click', async () => {
+                const username = document.getElementById('admin-username').value.trim();
+                const password = document.getElementById('admin-password').value.trim();
+                const fullName = document.getElementById('servant-name').value.trim();
+                const servantNum = document.getElementById('servant-number').value.trim();
+                const servantTitle = document.getElementById('servant-title').value; 
+                const servantStage = document.getElementById('servant-stage').value; 
+
+                if (!fullName || !servantNum) {
+                    alert("يرجى ملء جميع الحقول المطلوبة!");
+                    return;
+                }
+
+                loadingText.innerText = "جاري حفظ حساب الآدمن الفخم... ⚜️";
+                loadingText.style.display = "block";
+                step2Btn.disabled = true;
+
+                try {
+                    await setDoc(doc(db, "admin", username), {
+                        username: username,
+                        password: password,
+                        fullName: fullName,
+                        servantNumber: servantNum,
+                        servantTitle: servantTitle,
+                        servantStage: servantStage,
+                        createdAt: new Date().toISOString()
+                    });
+
+                    // 💡 تخزين البيانات في الـ LocalStorage ليتم جلبها في الصفحة الرئيسية (home.html)
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('fullName', fullName);
+                    localStorage.setItem('servantTitle', servantTitle);
+                    localStorage.setItem('servantStage', servantStage);
+                    localStorage.setItem('servantNumber', servantNum);
+
+                    alert("تم إنشاء حساب الآدمن بنجاح يا فندم! 👑");
+                    window.location.href = 'home.html';
+
+                } catch (error) {
+                    console.error("خطأ أثناء الحفظ:", error);
+                    alert("حدث خطأ أثناء حفظ البيانات!");
+                    loadingText.style.display = "none";
+                    step2Btn.disabled = false;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <a href="admin_dashboard.html" class="back-btn">
+        <i class="fas fa-arrow-right"></i>
+        <span>الرئيسية</span>
+    </a>
+
+    <div class="card">
+        <h2>تسجيل مشرف جديد</h2>
+
+        <div id="section-1" class="form-section active">
+            <div class="input-group">
+                <label for="admin-username">(Username):</label>
+                <input type="text" id="admin-username" placeholder="اكتب اسم المستخدم بالإنجليزية" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="admin-password">كلمة المرور (Password):</label>
+                <input type="password" id="admin-password" placeholder="اكتب كلمة المرور">
+            </div>
+
+            <div id="error-msg" class="error-msg"></div>
+            
+            <button type="button" id="step1-btn" class="btn">التالي</button>
+        </div>
+
+        <div id="section-2" class="form-section">
+            <div class="input-group">
+                <label for="servant-name">اسم الخادم:</label>
+                <input type="text" id="servant-name" placeholder="أدخل اسمك الكامل">
+            </div>
+
+            <div class="input-group">
+                <label for="servant-number">رقم الخادم:</label>
+                <input type="text" id="servant-number" placeholder="أدخل رقمك التعريفي">
+            </div>
+
+            <div class="input-group">
+                <label for="servant-title">لقب الخادم:</label>
+                <select id="servant-title">
+                    <option value="أبونا">أبونا</option>
+                    <option value="تاسوني">تاسوني</option>
+                    <option value="أخ">أخ</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="servant-stage">المرحلة:</label>
+                <select id="servant-stage">
+                    <option value="ابتدائي">ابتدائي</option>
+                    <option value="إعدادي">إعدادي</option>
+                    <option value="ثانوي">ثانوي</option>
+                </select>
+            </div>
+
+            <button type="button" id="step2-btn" class="btn">حفظ وإنشاء الحساب</button>
+        </div>
+
+        <div id="loading-text" class="loading-text"></div>
+    </div>
+
+</body>
+</html>

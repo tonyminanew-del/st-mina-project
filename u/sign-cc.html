@@ -52,7 +52,6 @@
             letter-spacing: 1.5px;
         }
 
-        /* ستايل الكراسة / التنبيه (Note) */
         .notebook-note {
             background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
             color: #1e293b;
@@ -89,7 +88,7 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 12px 15px;
             background: #020617;
@@ -102,14 +101,18 @@
             transition: all 0.3s ease;
         }
 
-        input:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: #38bdf8;
             background: #030712;
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.4), inset 0 2px 4px rgba(0,0,0,0.9);
         }
 
-        /* أزرار 3D تفاعلية */
+        select option {
+            background: #020617;
+            color: #38bdf8;
+        }
+
         .btn-action {
             width: 100%;
             padding: 15px;
@@ -185,7 +188,48 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // الانتقال للخطوة الثانية بعد التحقق من اسم المستخدم وكلمة المرور
+        // تحديث خيارات الصفوف بناءً على المرحلة المختارة
+        window.updateGrades = function() {
+            const stageSelect = document.getElementById('stage');
+            const gradeSelect = document.getElementById('grade');
+            const selectedStage = stageSelect.value;
+
+            gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف الدراسي...</option>';
+
+            let gradesOptions = [];
+
+            if (selectedStage === "ابتدائي") {
+                gradesOptions = [
+                    "الأول الابتدائي", 
+                    "الثاني الابتدائي", 
+                    "الثالث الابتدائي", 
+                    "الرابع الابتدائي", 
+                    "الخامس الابتدائي", 
+                    "السادس الابتدائي"
+                ];
+            } else if (selectedStage === "إعدادي") {
+                gradesOptions = [
+                    "الصف الأول الإعدادي", 
+                    "الصف الثاني الإعدادي", 
+                    "الصف الثالث الإعدادي"
+                ];
+            } else if (selectedStage === "ثانوي") {
+                gradesOptions = [
+                    "الصف الأول الثانوي", 
+                    "الصف الثاني الثانوي", 
+                    "الصف الثالث الثانوي"
+                ];
+            }
+
+            gradesOptions.forEach(grade => {
+                const opt = document.createElement('option');
+                opt.value = grade;
+                opt.textContent = grade;
+                gradeSelect.appendChild(opt);
+            });
+        }
+
+        // الانتقال للخطوة الثانية بعد التحقق من اسم المستخدم
         window.nextStep = async function() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
@@ -204,37 +248,25 @@
 
             try {
                 const usersRef = collection(db, "users");
-                
-                // 1. فحص اسم المستخدم
                 const qUsername = query(usersRef, where("username", "==", username));
                 const usernameSnapshot = await getDocs(qUsername);
 
                 if (!usernameSnapshot.empty) {
                     errorMsg.innerText = "اسم المستخدم هذا مستخدم من قبل، اختر اسماً آخر.";
-                    btn1.innerText = "التالي";
+                    btn1.innerText = "التالي ➔";
                     btn1.disabled = false;
                     return;
                 }
 
-                // 2. فحص كلمة المرور
-                const qPassword = query(usersRef, where("password", "==", password));
-                const passwordSnapshot = await getDocs(qPassword);
-
-                if (!passwordSnapshot.empty) {
-                    errorMsg.innerText = "كلمة المرور هذه مستخدمة من قبل، اختر كلمة مرور أخرى.";
-                    btn1.innerText = "التالي";
-                    btn1.disabled = false;
-                    return;
-                }
-
-                // إذا كل شيء تمام، انتقل للخطوة الثانية
                 document.getElementById('step-1').classList.remove('active');
                 document.getElementById('step-2').classList.add('active');
+                btn1.innerText = "التالي ➔";
+                btn1.disabled = false;
 
             } catch (error) {
                 console.error(error);
                 errorMsg.innerText = "حدث خطأ في الاتصال بقاعدة البيانات.";
-                btn1.innerText = "التالي";
+                btn1.innerText = "التالي ➔";
                 btn1.disabled = false;
             }
         }
@@ -256,18 +288,25 @@
             const fatherPhone = document.getElementById('fatherPhone').value.trim();
             const motherPhone = document.getElementById('motherPhone').value.trim();
             const address = document.getElementById('address').value.trim();
-            const stage = document.getElementById('stage').value.trim();
-            const grade = document.getElementById('grade').value.trim();
+            const stage = document.getElementById('stage').value;
+            const grade = document.getElementById('grade').value;
             
             const errorMsg = document.getElementById('error-msg-2');
             const submitBtn = document.getElementById('submitBtn');
 
             errorMsg.innerText = "";
+
+            if (!stage || !grade) {
+                errorMsg.innerText = "يرجى اختيار المرحلة والصف الدراسي!";
+                return;
+            }
+
             submitBtn.innerText = "جاري حفظ المغامرة...";
             submitBtn.disabled = true;
 
             try {
-                await setDoc(doc(db, "users", username), {
+                const userDocRef = doc(db, "users", username);
+                await setDoc(userDocRef, {
                     username: username,
                     password: password,
                     userId: userId,
@@ -277,15 +316,19 @@
                     address: address,
                     stage: stage,
                     grade: grade,
+                    points: 0, // يبدأ بـ 0 نقاط تلقائياً لتجنب أخطاء المعرض
                     createdAt: new Date().toISOString()
                 });
+
+                localStorage.setItem('userDocId', username);
+                localStorage.setItem('currentUser', username);
 
                 window.location.href = "home.html";
 
             } catch (error) {
                 console.error(error);
                 errorMsg.innerText = "حدث خطأ أثناء الحفظ.";
-                submitBtn.innerText = "بدء المغامرة (تسجيل)";
+                submitBtn.innerText = "حفظ البيانات";
                 submitBtn.disabled = false;
             }
         }
@@ -297,13 +340,11 @@
         <h2>إنشاء حساب اللاعب</h2>
         <div id="error-msg"></div>
 
-        <!-- الخطوة الأولى: Username & Password + كراسة التنبيه -->
+        <!-- الخطوة الأولى -->
         <div id="step-1" class="step-section active">
-            
-            <!-- كراسة التنبيه -->
             <div class="notebook-note">
                 <h4>note</h4>
-                <p>يرجى كتابه اسم المستخدم و كلمه المرور لتسجيل الدخول بالبرنامج لاحقاً</p>
+                <p>يرجى كتابة اسم المستخدم وكلمة المرور لتسجيل الدخول بالبرنامج لاحقاً</p>
             </div>
 
             <div class="input-group">
@@ -319,14 +360,14 @@
             <button type="button" class="btn-action" id="btnNext" onclick="nextStep()">التالي ➔</button>
         </div>
 
-        <!-- الخطوة الثانية: باقي الأسئلة والبيانات -->
+        <!-- الخطوة الثانية -->
         <div id="step-2" class="step-section">
             <div id="error-msg-2" style="color: #f43f5e; text-align: center; margin-bottom: 10px; font-weight: bold;"></div>
 
             <form onsubmit="handleRegister(event)">
                 <div class="input-group">
                     <label>رقم المستخدم</label>
-                    <input type="text" id="userId" required>
+                    <input type="text" id="userId" required placeholder="مثال: 01203821961">
                 </div>
 
                 <div class="input-group">
@@ -336,30 +377,39 @@
 
                 <div class="input-group">
                     <label>رقم الأب</label>
-                    <input type="tel" id="fatherPhone" required>
+                    <input type="tel" id="fatherPhone" required placeholder="مثال: 01002777653">
                 </div>
 
                 <div class="input-group">
                     <label>رقم الأم</label>
-                    <input type="tel" id="motherPhone" required>
+                    <input type="tel" id="motherPhone" required placeholder="مثال: 01227307329">
                 </div>
 
                 <div class="input-group">
                     <label>العنوان</label>
-                    <input type="text" id="address" required>
+                    <input type="text" id="address" required placeholder="مثال: مشتل">
                 </div>
 
+                <!-- قائمة اختيار المرحلة الدراسية -->
                 <div class="input-group">
                     <label>المرحلة الدراسية</label>
-                    <input type="text" id="stage" required>
+                    <select id="stage" required onchange="updateGrades()">
+                        <option value="" disabled selected>اختر المرحلة الدراسية...</option>
+                        <option value="ابتدائي">ابتدائي</option>
+                        <option value="إعدادي">إعدادي</option>
+                        <option value="ثانوي">ثانوي</option>
+                    </select>
                 </div>
 
+                <!-- قائمة اختيار الصف الدراسي (تتحدث ديناميكياً) -->
                 <div class="input-group">
                     <label>الصف الدراسي</label>
-                    <input type="text" id="grade" required>
+                    <select id="grade" required>
+                        <option value="" disabled selected>اختر المرحلة أولاً...</option>
+                    </select>
                 </div>
 
-                <button type="submit" class="btn-action" id="submitBtn">حفظ البينات</button>
+                <button type="submit" class="btn-action" id="submitBtn">حفظ البيانات</button>
                 <button type="button" class="btn-action btn-secondary" onclick="prevStep()">⬅ رجوع للخلف</button>
             </form>
         </div>

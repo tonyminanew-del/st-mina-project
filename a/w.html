@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل بالواتساب</title>
+    <!-- استيراد أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url(../image.png.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            perspective: 1000px;
+        }
+
+        .login-card {
+            background: #1e293b;
+            padding: 45px 35px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 
+                        0 10px 20px rgba(0, 0, 0, 0.2),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-10px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6), 
+                        0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-card h2 {
+            margin-bottom: 10px;
+            color: #f8fafc;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .login-card p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .input-group label {
+            display: block;
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .phone-wrapper {
+            display: flex;
+            align-items: center;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .phone-wrapper:focus-within {
+            border-color: #34d399;
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+        }
+
+        .prefix {
+            background: #1e293b;
+            color: #34d399;
+            padding: 14px 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-left: 1px solid #475569;
+            user-select: none;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 15px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 12px;
+            color: #f8fafc;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #34d399;
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+            color: #a7f3d0;
+            border: 1px solid #065f46;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.25s ease;
+            position: relative;
+            top: 0;
+        }
+
+        .btn:active {
+            top: 2px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #065f46 0%, #064e3b 100%);
+            box-shadow: 0 8px 20px rgba(52, 211, 153, 0.2);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+
+    <!-- استيراد مكتبات Firebase عبر CDN -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+            projectId: "st-mina-c01ec",
+            storageBucket: "st-mina-c01ec.firebasestorage.app",
+            messagingSenderId: "792349150559",
+            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+            measurementId: "G-XZGSBG05KR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // حفظ البيانات تحت كولكشن / فرع users
+        window.saveUserToFirebase = async function(phoneNumber) {
+            try {
+                const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+                await set(ref(db, 'users/' + cleanPhone), {
+                    phone: phoneNumber,
+                    loginTime: new Date().toISOString(),
+                    status: 'verified'
+                });
+                console.log('User saved under users collection successfully');
+            } catch (error) {
+                console.error('Error saving to Firebase:', error);
+            }
+        };
+    </script>
+</head>
+<body>
+
+    <div class="login-card">
+        <!-- الخطوة الأولى: إدخال رقم الهاتف -->
+        <div id="step-phone">
+            <h2>تسجيل بالواتساب</h2>
+            <p>أدخل رقم هاتفك بدون الصفر الأول</p>
+            
+            <div class="input-group">
+                <label for="phone">رقم الهاتف</label>
+                <div class="phone-wrapper">
+                    <span class="prefix">+20</span>
+                    <input type="tel" id="phone" class="input-field" placeholder="1012345678" maxlength="11" dir="ltr" style="border:none;">
+                </div>
+            </div>
+
+            <button type="button" class="btn" id="send-btn" onclick="sendWhatsAppCode()">إرسال الكود</button>
+        </div>
+
+        <!-- الخطوة الثانية: إدخال كود التحقق -->
+        <div id="step-code" class="hidden">
+            <h2>التحقق من الكود</h2>
+            <p>تم إرسال كود التحقق إلى واتساب رقمك</p>
+            
+            <div class="input-group">
+                <label for="code">كود التحقق المرسل</label>
+                <input type="text" id="code" class="input-field" placeholder="أدخل الـ 6 أرقام" maxlength="6" style="text-align: center; letter-spacing: 5px; font-size: 20px;" oninput="checkAutoVerify(this)">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let generatedCode = '';
+        let currentPhone = '';
+
+        async function sendWhatsAppCode() {
+            let rawPhone = document.getElementById('phone').value.trim();
+            const sendBtn = document.getElementById('send-btn');
+
+            if (!rawPhone) {
+                alert('الرجاء إدخال رقم الهاتف أولاً');
+                return;
+            }
+
+            if (rawPhone.startsWith('0')) {
+                rawPhone = rawPhone.substring(1);
+            }
+
+            currentPhone = '20' + rawPhone;
+            generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const message = `كود التحقق الخاص بك هو: ${generatedCode}`;
+
+            const instanceId = 'instance190621';
+            const token = '06jynt6c94zsaoxn';
+            const url = `https://api.ultramsg.com/${instanceId}/messages/chat`;
+
+            const data = new URLSearchParams();
+            data.append('token', token);
+            data.append('to', currentPhone);
+            data.append('body', message);
+
+            sendBtn.innerText = 'جاري الإرسال...';
+            sendBtn.disabled = true;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: data
+                });
+
+                const result = await response.json();
+
+                if (response.ok && (result.sent === "true" || result.sent === true || result.status === "success" || result.id)) {
+                    document.getElementById('step-phone').classList.add('hidden');
+                    document.getElementById('step-code').classList.remove('hidden');
+                    document.getElementById('code').focus();
+                } else {
+                    alert('خطأ من الخدمة: ' + (result.message || JSON.stringify(result)));
+                    sendBtn.innerText = 'إرسال الكود';
+                    sendBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                alert('فشل الاتصال بخدمة الواتساب.');
+                sendBtn.innerText = 'إرسال الكود';
+                sendBtn.disabled = false;
+            }
+        }
+
+        async function checkAutoVerify(inputElement) {
+            const userCode = inputElement.value.trim();
+            
+            if (userCode.length === 6) {
+                if (userCode === generatedCode) {
+                    inputElement.disabled = true;
+                    
+                    if (window.saveUserToFirebase) {
+                        await window.saveUserToFirebase(currentPhone);
+                    }
+
+                    window.location.href = 'sign-cc.html';
+                } else {
+                    alert('الكود غير صحيح، حاول مرة أخرى.');
+                    inputElement.value = '';
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

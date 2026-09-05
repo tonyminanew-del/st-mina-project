@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول / إنشاء حساب</title>
+    <!-- استيراد أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+              background-image: url(../image.png.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            perspective: 1000px;
+        }
+
+        .login-card {
+            background: #1e293b;
+            padding: 45px 35px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 
+                        0 10px 20px rgba(0, 0, 0, 0.2),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-10px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6), 
+                        0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-card h2 {
+            margin-bottom: 35px;
+            color: #f8fafc;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.25s ease;
+            position: relative;
+            top: 0;
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+        }
+
+        .btn-icon:active {
+            top: 2px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-icon img, .btn-icon i {
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+            border-color: #065f46;
+        }
+        .btn-whatsapp i {
+            color: #34d399;
+        }
+        .btn-whatsapp:hover {
+            background: linear-gradient(135deg, #065f46 0%, #064e3b 100%);
+            box-shadow: 0 8px 20px rgba(52, 211, 153, 0.2);
+        }
+
+        .btn-google {
+            border-color: #475569;
+        }
+        .btn-google:hover {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            color: #e2e8f0;
+            border: 1px solid #475569;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.25s ease;
+            position: relative;
+            top: 0;
+        }
+
+        .btn-login:active {
+            top: 2px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>تسجيل الدخول / إنشاء حساب</h2>
+
+        <!-- الأزرار الأفقية -->
+        <div class="social-buttons">
+            <a href="w.html" class="btn-icon btn-whatsapp" title="تسجيل بالواتساب">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+
+            <!-- زر جوجل لتشغيل نافذة اختيار الحسابات الرسمية -->
+            <button type="button" class="btn-icon btn-google" id="googleLoginBtn" title="تسجيل بجوجل">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
+            </button>
+        </div>
+
+        <!-- زر لدي حساب في الأسفل -->
+        <a href="sign_c.html" class="btn-login">
+            <span>لدي حساب بالفعل</span>
+        </a>
+    </div>
+
+    <!-- سكربت Firebase وتسجيل الدخول بجوجل -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+            projectId: "st-mina-c01ec",
+            storageBucket: "st-mina-c01ec.firebasestorage.app",
+            messagingSenderId: "792349150559",
+            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+            measurementId: "G-XZGSBG05KR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const provider = new GoogleAuthProvider();
+
+        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+            try {
+                // فتح نافذة اختيار الحسابات من جوجل
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                // حفظ الحساب المختار في Realtime Database تحت كولكشن google_accounts
+                await push(ref(db, 'google_accounts'), {
+                    uid: user.uid,
+                    email: user.email,
+                    name: user.displayName,
+                    loginTime: new Date().toISOString()
+                });
+
+                console.log('Google account saved successfully:', user.email);
+
+                // الانتقال الفوري لصفحة sign-cc.html
+                window.location.href = 'sign-cc.html';
+
+            } catch (error) {
+                console.error('Login Error:', error.message);
+                alert('حدث خطأ أثناء تسجيل الدخول: ' + error.message);
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -26,6 +26,36 @@
             padding: 20px;
             font-family: 'Amiri', serif;
             color: #f8fafc;
+            position: relative;
+        }
+
+        /* زر الرجوع للخلف */
+        .back-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(56, 189, 248, 0.35);
+            color: #38bdf8;
+            padding: 8px 18px;
+            border-radius: 12px;
+            font-family: 'Amiri', serif;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
         }
 
         .profile-container {
@@ -39,6 +69,7 @@
                 0 0 30px rgba(56, 189, 248, 0.2),
                 0 20px 40px rgba(0, 0, 0, 0.7);
             border: 2px solid rgba(56, 189, 248, 0.35);
+            margin-top: 30px; /* لترك مساحة لزر الرجوع في الشاشات الصغيرة */
         }
 
         .profile-header {
@@ -49,7 +80,6 @@
             position: relative;
         }
 
-        /* حاوية الصورة الشخصية */
         .avatar-container {
             position: relative;
             width: 110px;
@@ -110,7 +140,6 @@
             margin-top: 8px;
         }
 
-        /* صندوق تفاصيل البيانات */
         .info-section {
             background: #020617;
             border: 1px solid #1e293b;
@@ -165,7 +194,6 @@
             text-align: center;
         }
 
-        /* أزرار التحكم */
         .btn {
             background: linear-gradient(135deg, #0284c7, #0369a1);
             color: white;
@@ -191,32 +219,6 @@
 
         .btn-save:hover {
             background: linear-gradient(135deg, #15803d, #166534);
-        }
-
-        /* قسم الـ QR Code */
-        .qr-section {
-            margin-top: 25px;
-            text-align: center;
-            background: #020617;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid #1e293b;
-        }
-
-        .qr-section h3 {
-            color: #94a3b8;
-            font-size: 16px;
-            margin-bottom: 12px;
-        }
-
-        #qrcode img {
-            display: inline-block;
-            background: #fff;
-            padding: 8px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
-            width: 130px;
-            height: 130px;
         }
 
         .loading {
@@ -250,17 +252,21 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            // يمكنك تغيير القيمة الافتراضية هنا لو لم تكتب ?user في الرابط
-            currentUsernameUrl = urlParams.get('user');
+            
+            // محاولة جلب المعرف من الرابط أولاً، وإذا لم يوجد، يتم جلبه من الـ LocalStorage
+            currentUsernameUrl = urlParams.get('user') || localStorage.getItem('userDocId');
 
             const loadingText = document.getElementById('loading-text');
             const profileContent = document.getElementById('profile-content');
 
             if (!currentUsernameUrl) {
-                loadingText.innerText = "يرجى تحديد اسم المستخدم في الرابط (مثال: ?user=tony)";
+                loadingText.innerText = "يرجى تسجيل الدخول أولاً أو تحديد المستخدم!";
                 loadingText.style.color = "#f87171";
                 return;
             }
+
+            // تخزين المعرف احتياطياً في الـ LocalStorage
+            localStorage.setItem('userDocId', currentUsernameUrl);
 
             try {
                 const docRef = doc(db, "users", currentUsernameUrl);
@@ -280,7 +286,7 @@
                     document.getElementById('val-father').innerText = userData.fatherPhone || "-";
                     document.getElementById('val-mother').innerText = userData.motherPhone || "-";
 
-                    // عرض الصورة إن وجدت أو الحرف الأول
+                    // عرض الصورة إن وجدت أو توليدها افتراضياً
                     if (userData.avatarUrl) {
                         document.getElementById('profile-avatar').src = userData.avatarUrl;
                     } else {
@@ -289,9 +295,6 @@
 
                     loadingText.style.display = 'none';
                     profileContent.style.display = 'block';
-
-                    // توليد الـ QR Code
-                    generateQRCode();
 
                 } else {
                     loadingText.innerText = "عذراً، لم يتم العثور على بيانات هذا المستخدم!";
@@ -304,20 +307,6 @@
                 loadingText.style.color = "#f87171";
             }
         });
-
-        // دالة توليد الـ QR المحدثة لضمان عمل الـ Scan بنجاح تام
-        function generateQRCode() {
-            const qrContainer = document.getElementById("qrcode");
-            qrContainer.innerHTML = ""; 
-            
-            const currentUrl = window.location.href;
-            
-            const qrImage = document.createElement('img');
-            qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentUrl)}`;
-            qrImage.alt = "QR Code";
-            
-            qrContainer.appendChild(qrImage);
-        }
 
         // دالة تبديل وضع التعديل
         window.toggleEditMode = async function() {
@@ -395,17 +384,22 @@
 </head>
 <body>
 
+    <!-- زر الرجوع للرئيسية -->
+    <a href="home.html" class="back-btn">
+        <i class="fas fa-arrow-right"></i>
+        <span>الرئيسية</span>
+    </a>
+
     <div class="profile-container">
         <!-- رسالة التحميل -->
         <div id="loading-text" class="loading">جاري تحميل الملف الشخصي... ⏳</div>
 
-        <!-- محتوى البروفايل (مخفي لحين تحميل البيانات) -->
+        <!-- محتوى البروفايل -->
         <div id="profile-content" style="display: none;">
             
-            <!-- رأس البروفايل (الصورة والترحيب) -->
             <div class="profile-header">
                 <div class="avatar-container">
-                    <img id="profile-avatar" class="avatar-img" src="" alt="صورة البروفايل">
+                    <img id="profile-avatar" class="avatar-img" alt="صورة البروفايل">
                     <label for="avatar-input" class="upload-btn-label" title="تغيير الصورة">
                         <i class="fas fa-camera"></i>
                     </label>
@@ -416,7 +410,6 @@
                 <div class="badge">ملف اللاعب / المستخدم</div>
             </div>
 
-            <!-- صندوق البيانات المفصلة -->
             <div class="info-section">
                 <div class="section-title">
                     <span>المعلومات الشخصية والدراسية</span>
@@ -458,12 +451,6 @@
                     <span class="info-label">رقم الأم:</span>
                     <span class="info-value" id="val-mother">--</span>
                 </div>
-            </div>
-
-            <!-- قسم الـ QR Code -->
-            <div class="qr-section">
-                <h3>QR Code الخاص بملفك الشخصي (امسحه لعرض البيانات)</h3>
-                <div id="qrcode"></div>
             </div>
 
         </div>

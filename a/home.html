@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرئيسية - لوحة الخادم</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #111111 0%, #000000 100%);
+            min-height: 100vh;
+            font-family: 'Reem Kufi', 'Cairo', sans-serif;
+            color: #f3e5ab;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .menu-btn {
+            background: rgba(18, 18, 18, 0.9);
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            font-size: 24px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+            transition: 0.3s;
+        }
+
+        .menu-btn:hover {
+            background: #d4af37;
+            color: #000;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* القائمة الجانبية الثابتة والقوية في كل الصفحات */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100%;
+            background: rgba(12, 12, 12, 0.99);
+            backdrop-filter: blur(20px);
+            border-left: 2px solid #d4af37;
+            box-shadow: -15px 0 40px rgba(0, 0, 0, 0.95);
+            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .sidebar-header h3 {
+            color: #d4af37;
+            font-size: 22px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ff4545;
+            transform: scale(1.1);
+        }
+
+        .sidebar-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .sidebar-links::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar-links::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+        }
+
+        .sidebar-links a, .logout-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            background: rgba(22, 22, 22, 0.85);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 14px;
+            color: #f3e5ab;
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.3s;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Reem Kufi', 'Cairo', sans-serif;
+            text-align: right;
+        }
+
+        .sidebar-links a:hover {
+            background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
+            color: #000;
+            border-color: #d4af37;
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .logout-link {
+            border-color: rgba(255, 107, 107, 0.4);
+            color: #ff8b8b;
+            margin-top: auto;
+        }
+
+        .logout-link:hover {
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+            color: #fff;
+            border-color: #ff6b6b;
+            transform: translateX(-5px);
+        }
+
+        .main-content {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            max-width: 750px;
+            width: 100%;
+        }
+
+        .welcome-card {
+            background: rgba(18, 18, 18, 0.95);
+            border: 2px solid #d4af37;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.2), 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        h1 {
+            color: #d4af37;
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* تنسيق الآية المقدسة الواضحة والمعبرة */
+        .bible-verse {
+            background: rgba(24, 24, 24, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-right: 5px solid #d4af37;
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 16px;
+            text-align: right;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .bible-verse p {
+            color: #fceea7;
+            font-size: 20px;
+            line-height: 1.7;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .bible-verse span {
+            display: block;
+            color: #d4af37;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box {
+            background: #0a0a0a;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 21px;
+            color: #f3e5ab;
+            font-weight: bold;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            margin-top: 20px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            display: none;
+            z-index: 998;
+            transition: 0.3s;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('menuBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            function openSidebar() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+
+            if (menuBtn) menuBtn.addEventListener('click', openSidebar);
+            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+
+            // جلب البيانات من الـ LocalStorage وعرضها فوراً
+            const servantTitle = localStorage.getItem('servantTitle') || '';
+            const fullName = localStorage.getItem('fullName') || 'خادم الرب';
+            const servantStage = localStorage.getItem('servantStage') || 'عامة';
+
+            const welcomeMsg = document.getElementById('welcome-msg');
+            if (welcomeMsg) {
+                welcomeMsg.innerText = `أهلاً يا ${servantTitle} ${fullName}`;
+            }
+
+            const stageInfo = document.getElementById('stage-info');
+            if (stageInfo) {
+                stageInfo.innerText = `خادم في خدمة مرحلة ${servantStage}`;
+            }
+
+            // زر تسجيل الخروج
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
+                        localStorage.clear();
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <div class="navbar">
+        <button id="menuBtn" class="menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- القائمة الجانبية الثابتة (ماسكة نفسها في كل الصفحات لو نسختها بنفسك) -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>قائمة الخادم</h3>
+            <button id="closeBtn" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html"><i class="fas fa-home"></i>الرئيسية</a></li>
+            <li><a href="profile.html"><i class="fas fa-user-circle"></i>البروفايل</a></li>
+            <li><a href="gifts.html"><i class="fas fa-gift"></i>معرض الهدايا</a></li>
+            <li><a href="control.html"><i class="fas fa-cogs"></i>الإدارة</a></li>
+            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>السلة</a></li>
+            <li><a href="notifications.html"><i class="fas fa-bell"></i>الإشعارات</a></li>
+            <li><button id="logoutBtn" class="logout-link"><i class="fas fa-sign-out-alt"></i>تسجيل خروج</button></li>
+        </ul>
+    </div>
+
+    <div id="overlay" class="overlay"></div>
+
+    <div class="main-content">
+        <div class="welcome-card">
+            <h1 id="welcome-msg">أهلاً بك يا خادم الرب</h1>
+            
+            <!-- آية مقدسة واضحة وقوية -->
+            <div class="bible-verse">
+                <p>"لِذَلِكَ كُونُوا رَاسِخِينَ، غَيْرَ مُتَزَحْزِحِينَ، مُكْثِرِينَ فِي عَمَلِ الرَّبِّ كُلَّ حِينٍ، عَالِمِينَ أَنَّ تَعَبَكُمْ لَيْسَ بَاطِلاً فِي الرَّبِّ."</p>
+                <span>(1 كورنثوس 15: 58)</span>
+            </div>
+
+            <div id="stage-info" class="info-box">خادم في خدمة مرحلة جاري التحميل...</div>
+        </div>
+    </div>
+
+</body>
+</html>

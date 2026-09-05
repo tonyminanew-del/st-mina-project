@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول الآدمن</title>
+    <!-- استيراد أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url(../image.png.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            perspective: 1000px;
+        }
+
+        .login-card {
+            background: #1e293b;
+            padding: 45px 35px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 
+                        0 10px 20px rgba(0, 0, 0, 0.2),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-10px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6), 
+                        0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-card h2 {
+            margin-bottom: 25px;
+            color: #f8fafc;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .input-group label {
+            display: block;
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            text-align: left; /* لكتابة الباسورد بالإنجليزية براحة */
+            direction: ltr;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        .btn-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            border: 1px solid #38bdf8;
+            box-shadow: 0 6px 15px rgba(3, 105, 161, 0.3), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.25s ease;
+            margin-top: 10px;
+        }
+
+        .btn-login:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .error-msg {
+            color: #f87171;
+            font-size: 14px;
+            margin-top: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>تسجيل دخول الآدمن</h2>
+        
+        <div class="input-group">
+            <label for="adminPassword">أدخل كلمة مرور الآدمن (بالإنجليزية):</label>
+            <input type="password" id="adminPassword" class="input-field" placeholder="Enter Password" autocomplete="off">
+        </div>
+
+        <button type="button" class="btn-login" id="adminLoginBtn">
+            <span>دخول لوحة التحكم</span>
+        </button>
+
+        <p id="errorText" class="error-msg">كلمة المرور غير صحيحة، حاول مرة أخرى!</p>
+    </div>
+
+    <script>
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const errorText = document.getElementById('errorText');
+
+        adminLoginBtn.addEventListener('click', () => {
+            const enteredPassword = adminPasswordInput.value.trim();
+
+            if (enteredPassword === "stmina") {
+                errorText.style.display = "none";
+                alert("تم تسجيل الدخول بنجاح يا آدمن! 🔓");
+                // الانتقال لصفحة الآدمن الخاصة بك (يمكنك تغيير اسم الصفحة حسب رغبتك)
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                errorText.style.display = "block";
+                adminPasswordInput.style.borderColor = "#f87171";
+            }
+        });
+
+        // السماح بالدخول عبر الضغط على زر Enter من لوحة المفاتيح
+        adminPasswordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                adminLoginBtn.click();
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معرض الهدايا - متجر الكنيسة</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ربط مكتبات فايربيس -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+            projectId: "st-mina-c01ec",
+            storageBucket: "st-mina-c01ec.firebasestorage.app",
+            messagingSenderId: "792349150559",
+            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+            measurementId: "G-XZGSBG05KR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.openModal = function(imgSrc, imgTitle) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            const modalTitle = document.getElementById('modalTitle');
+            if (modal && modalImg) {
+                modalImg.src = imgSrc;
+                modalTitle.innerText = imgTitle;
+                modal.style.display = 'flex';
+            }
+        };
+
+        window.closeModal = function() {
+            const modal = document.getElementById('imageModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // طلب إذن الإشعارات من المتصفح عند فتح الصفحة إذا لم يتم منحه مسبقاً
+            if ("Notification" in window) {
+                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                    Notification.requestPermission();
+                }
+            }
+
+            const menuBtn = document.getElementById('menuBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            function openSidebar() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+            }
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+
+            if (menuBtn) menuBtn.addEventListener('click', openSidebar);
+            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
+                        localStorage.clear();
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
+
+            const userPointsBadge = document.getElementById('userPointsBadge');
+            const userStageBadge = document.getElementById('userStageBadge');
+            const giftsContainer = document.getElementById('giftsContainer');
+
+            const loggedInUsername = localStorage.getItem('currentUser') || localStorage.getItem('username') || "tony1";
+
+            let userDocId = null;
+            let currentUserPoints = 0;
+            let currentUserStage = "غير محدد";
+            let currentUserGrade = "غير محدد";
+            let isUserBanned = false;
+
+            async function fetchUserData() {
+                try {
+                    const querySnapshot = await getDocs(collection(db, "users"));
+                    let found = false;
+
+                    querySnapshot.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        if (docSnap.id === loggedInUsername || data.username === loggedInUsername) {
+                            userDocId = docSnap.id;
+                            currentUserPoints = Number(data.points || 0);
+                            currentUserStage = data.stage || "غير محدد";
+                            currentUserGrade = data.grade || "غير محدد";
+                            isUserBanned = Boolean(data.isBanned || data.banned || false);
+                            found = true;
+                        }
+                    });
+
+                    if (!found) {
+                        const directRef = doc(db, "users", loggedInUsername);
+                        const directSnap = await getDoc(directRef);
+                        if (directSnap.exists()) {
+                            userDocId = directSnap.id;
+                            const data = directSnap.data();
+                            currentUserPoints = Number(data.points || 0);
+                            currentUserStage = data.stage || "غير محدد";
+                            currentUserGrade = data.grade || "غير محدد";
+                            isUserBanned = Boolean(data.isBanned || data.banned || false);
+                            found = true;
+                        }
+                    }
+
+                    userPointsBadge.innerText = currentUserPoints;
+                    userStageBadge.innerText = `${currentUserStage} (${currentUserGrade})`;
+
+                    if (isUserBanned) {
+                        const warningDiv = document.createElement('div');
+                        warningDiv.style.cssText = "background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center;";
+                        warningDiv.innerHTML = "⚠️ تنبيه: حسابك موقوف/محظور حالياً، لا يمكنك استبدال أو شراء الهدايا.";
+                        document.querySelector('.main-content').prepend(warningDiv);
+                    }
+
+                } catch (error) {
+                    console.error("خطأ في جلب بيانات المستخدم:", error);
+                }
+            }
+
+            await fetchUserData();
+
+            async function renderGifts() {
+                giftsContainer.innerHTML = `<div class="no-gifts">جاري تحميل الهدايا...</div>`;
+                try {
+                    const querySnapshot = await getDocs(collection(db, "gifts"));
+                    giftsContainer.innerHTML = '';
+                    let itemsCount = 0;
+
+                    querySnapshot.forEach((docSnap) => {
+                        const gift = docSnap.data();
+                        const giftId = docSnap.id;
+                        const giftQuantity = Number(gift.quantity || 0);
+
+                        if (giftQuantity <= 0) {
+                            return; 
+                        }
+
+                        const giftGrade = gift.grade || "";
+
+                        itemsCount++;
+                        const card = document.createElement('div');
+                        card.className = 'amazon-card';
+                        
+                        const imgSrc = gift.image || 'https://via.placeholder.com/500x400/222/ffa41c?text=Gift';
+
+                        let buttonDisabledClass = isUserBanned ? 'disabled' : '';
+                        let buttonText = isUserBanned ? '🚫 الحساب محظور' : 'استبدال الآن';
+
+                        card.innerHTML = `
+                            <div class="amz-img-col" onclick="openModal('${imgSrc}', '${gift.name}')">
+                                <img src="${imgSrc}" alt="${gift.name}">
+                                <span class="zoom-badge"><i class="fas fa-search-plus"></i> انقر للتكبير</span>
+                            </div>
+
+                            <div class="amz-info-col">
+                                <h2 class="amz-title">${gift.name}</h2>
+                                
+                                <div class="amz-price-section">
+                                    <span class="amz-price-symbol">نقطة</span>
+                                    <span class="amz-price-value">${gift.points}</span>
+                                </div>
+
+                                <div class="amz-stock-status in">
+                                    ✔ متوفر في مخزن الكنيسة
+                                </div>
+
+                                <div class="amz-details-list">
+                                    <div><i class="fas fa-graduation-cap"></i> المرحلة المخصصة: <strong>${giftGrade}</strong></div>
+                                    <div><i class="fas fa-boxes"></i> الكمية المتاحة: <strong id="qty-${giftId}">${giftQuantity}</strong> قطعة</div>
+                                </div>
+
+                                <div class="amz-actions">
+                                    <button class="amz-btn-cart ${buttonDisabledClass}" data-id="${giftId}" data-name="${gift.name}" data-points="${gift.points}" data-qty="${giftQuantity}">
+                                        <i class="fas fa-shopping-cart"></i> ${buttonText}
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        giftsContainer.appendChild(card);
+                    });
+
+                    if (itemsCount === 0) {
+                        giftsContainer.innerHTML = `<div class="no-gifts">لا توجد هدايا متاحة حالياً أو نفدت الكميات.</div>`;
+                    } else {
+                        document.querySelectorAll('.amz-btn-cart').forEach(btn => {
+                            if (!btn.classList.contains('disabled')) {
+                                btn.addEventListener('click', async (e) => {
+                                    const buttonElement = e.currentTarget;
+                                    const giftId = buttonElement.getAttribute('data-id');
+                                    const giftName = buttonElement.getAttribute('data-name');
+                                    const giftPoints = Number(buttonElement.getAttribute('data-points'));
+                                    const currentQty = Number(buttonElement.getAttribute('data-qty'));
+
+                                    await buyGift(giftId, giftName, giftPoints, currentQty);
+                                });
+                            } else {
+                                btn.addEventListener('click', () => {
+                                    if (isUserBanned) {
+                                        alert("❌ عذراً، حسابك موقوف من قبل أمين الخدمة ولا يمكنك إتمام عمليات الشراء.");
+                                    }
+                                });
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("خطأ في جلب الهدايا:", error);
+                    giftsContainer.innerHTML = `<div class="no-gifts">حدث خطأ أثناء تحميل الهدايا.</div>`;
+                }
+            }
+
+            async function buyGift(giftId, giftName, giftPoints, currentQty) {
+                if (!userDocId) {
+                    alert("خطأ: لم يتم التعرف على مستند المستخدم.");
+                    return;
+                }
+
+                if (isUserBanned) {
+                    alert("❌ عذراً، حسابك محظور ولا يمكنك الشراء.");
+                    return;
+                }
+
+                if (currentUserPoints < giftPoints) {
+                    alert(`❌ رصيد نقاطك الحالي (${currentUserPoints}) غير كافٍ. تحتاج إلى ${giftPoints} نقطة لاقتناء هذه الهدية.`);
+                    return;
+                }
+
+                if (!confirm(`هل أنت متأكد من رغبتك في استبدال هذه الهدية مقابل خصم ${giftPoints} نقطة؟`)) {
+                    return;
+                }
+
+                try {
+                    const userRef = doc(db, "users", userDocId);
+                    const freshSnap = await getDoc(userRef);
+                    if (freshSnap.exists()) {
+                        const freshData = freshSnap.data();
+                        if (freshData.isBanned || freshData.banned) {
+                            alert("❌ تم حظرك مؤخراً، لا يمكن إتمام العملية.");
+                            location.reload();
+                            return;
+                        }
+                    }
+
+                    // 1. خصم النقاط من المستخدم
+                    await updateDoc(userRef, {
+                        points: currentUserPoints - giftPoints
+                    });
+
+                    // 2. تقليل كمية الهدية في المخزن
+                    const giftRef = doc(db, "gifts", giftId);
+                    await updateDoc(giftRef, {
+                        quantity: currentQty - 1
+                    });
+
+                    // 3. إضافة إشعار الطلب في قاعدة البيانات للأدمين/الخادم
+                    await addDoc(collection(db, "notifications"), {
+                        title: "طلب هدية جديد",
+                        message: `قام المخدوم (${loggedInUsername}) من مرحلة (${currentUserStage} - ${currentUserGrade}) بشراء واستبدال هدية: "${giftName}" مقابل ${giftPoints} نقطة.`,
+                        username: loggedInUsername,
+                        stage: currentUserStage,
+                        grade: currentUserGrade,
+                        giftName: giftName,
+                        pointsSpent: giftPoints,
+                        timestamp: serverTimestamp(),
+                        isRead: false
+                    });
+
+                    currentUserPoints -= giftPoints;
+                    userPointsBadge.innerText = currentUserPoints;
+
+                    // 4. إظهار إشعار حقيقي على شاشة المتصفح للمخدوم نفسه
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("تم الشراء بنجاح! 🎉", {
+                            body: `لقد قمت بشراء هدية "${giftName}" بنجاح. توجه لأمين الخدمة لاستلامها.`,
+                        });
+                    }
+
+                    alert("🎉 تم الاستبدال بنجاح! وتم تسجيل الطلب وإرسال التنبيه. توجه لأمين الخدمة لاستلام هديتك.");
+                    renderGifts();
+
+                } catch (error) {
+                    console.error("خطأ أثناء الشراء:", error);
+                    alert("حدث خطأ أثناء تنفيذ الطلب.");
+                }
+            }
+
+            renderGifts();
+        });
+    </script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #eaeded;
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            color: #0f1111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar { width: 100%; background-color: #131921; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .menu-btn { background: none; border: 1px solid #febd69; color: #febd69; font-size: 20px; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .menu-btn:hover { background: rgba(254, 189, 105, 0.1); }
+        
+        .user-info-badges { display: flex; gap: 12px; }
+        .badge-box { background: #232f3e; border: 1px solid #3a4553; padding: 6px 14px; border-radius: 4px; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 6px; }
+        .badge-box span { color: #febd69; font-weight: bold; }
+
+        .sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background: #232f3e; border-left: 1px solid #3a4553; transition: right 0.3s ease; z-index: 9999; padding: 20px; display: flex; flex-direction: column; }
+        .sidebar.active { right: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4553; padding-bottom: 12px; margin-bottom: 20px; }
+        .sidebar-header h3 { color: #fff; font-size: 18px; }
+        .close-btn { background: none; border: none; color: #ff6b6b; font-size: 22px; cursor: pointer; }
+        .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
+        .sidebar-links a, .logout-link { display: flex; align-items: center; gap: 12px; padding: 12px 15px; background: #131921; border-radius: 4px; color: #fff; text-decoration: none; font-size: 16px; transition: 0.2s; cursor: pointer; }
+        .sidebar-links a:hover { background: #febd69; color: #0f1111; }
+        .logout-link { color: #ff8b8b; margin-top: auto; border: 1px solid rgba(255,107,107,0.3); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 998; }
+        .overlay.active { display: block; }
+
+        .main-content { max-width: 1200px; width: 100%; padding: 25px 15px; }
+        h1 { color: #0f1111; font-size: 26px; margin-bottom: 20px; font-weight: 700; text-align: right; }
+
+        .gifts-grid { display: flex; flex-direction: column; gap: 20px; }
+        .amazon-card {
+            background: #fff;
+            border: 1px solid #d5d9d9;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            align-items: flex-start;
+            text-align: right;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+
+        .amz-img-col {
+            flex: 1;
+            min-width: 240px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 15px;
+        }
+        .amz-img-col img {
+            max-width: 100%;
+            height: 220px;
+            object-fit: contain;
+            transition: transform 0.2s;
+        }
+        .amz-img-col:hover img {
+            transform: scale(1.05);
+        }
+        .zoom-badge {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #007185;
+            font-weight: 600;
+        }
+
+        .amz-info-col {
+            flex: 2;
+            min-width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .amz-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f1111;
+            line-height: 1.4;
+        }
+        .amz-price-section {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+        .amz-price-symbol {
+            font-size: 13px;
+            color: #0f1111;
+            vertical-align: super;
+        }
+        .amz-price-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #B12704;
+        }
+        .amz-stock-status {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .amz-stock-status.in { color: #007600; }
+
+        .amz-details-list {
+            font-size: 14px;
+            color: #565959;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-top: 1px solid #e7e7e7;
+            border-bottom: 1px solid #e7e7e7;
+            padding: 10px 0;
+        }
+        .amz-details-list strong { color: #0f1111; }
+
+        .amz-btn-cart {
+            background: #ffd814;
+            border: 1px solid #fcd200;
+            color: #0f1111;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            box-shadow: 0 2px 5px rgba(213,217,217,.5);
+            width: 100%;
+            max-width: 220px;
+        }
+        .amz-btn-cart:hover { background: #f7ca00; }
+        .amz-btn-cart.disabled {
+            background: #e3e6e6;
+            border-color: #d5d9d9;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .no-gifts {
+            padding: 40px;
+            background: #fff;
+            border: 1px solid #d5d9d9;
+            border-radius: 8px;
+            color: #565959;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            font-size: 26px;
+            color: #0f1111;
+            cursor: pointer;
+            background: #f0f2f2;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <button id="menuBtn" class="menu-btn"><i class="fas fa-bars"></i> القائمة</button>
+        <div class="user-info-badges">
+            <div class="badge-box"><i class="fas fa-coins" style="color: #febd69;"></i> رصيدك: <span id="userPointsBadge">0</span></div>
+            <div class="badge-box"><i class="fas fa-user"></i> <span id="userStageBadge">جاري...</span></div>
+        </div>
+    </div>
+
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>خيارات الحساب</h3>
+            <button id="closeBtn" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html"><i class="fas fa-home"></i>الرئيسية</a></li>
+            <li><a href="profile.html"><i class="fas fa-user-circle"></i>البروفايل</a></li>
+            <li><a href="gallery.html"><i class="fas fa-gift"></i>معرض الهدايا</a></li>
+            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>السلة</a></li>
+            <li><a href="notifications.html"><text><i class="fas fa-bell"></i>الإشعارات</text></a></li>
+            <li><button id="logoutBtn" class="logout-link"><i class="fas fa-sign-out-alt"></i>تسجيل خروج</button></li>
+        </ul>
+    </div>
+
+    <div id="overlay" class="overlay"></div>
+
+    <div class="main-content">
+        <h1>متجر هدايا الكنيسة</h1>
+
+        <div id="giftsContainer" class="gifts-grid"></div>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle" style="color: #0f1111; margin-bottom: 15px; font-size: 18px;">معاينة الهدية</h3>
+            <img id="modalImg" src="" alt="صورة مكبرة">
+            <p style="color: #565959; font-size: 13px;">صورة تفصيلية للهدية المقدمة من خدمة الكنيسة.</p>
+        </div>
+    </div>
+
+</body>
+</html>
