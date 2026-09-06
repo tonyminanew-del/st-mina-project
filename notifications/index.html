@@ -7,13 +7,16 @@
 
     <title>St. Mina - إشعارات المشتريات</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet"
+    <link
+        rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -23,237 +26,60 @@
             font-family: 'Cairo', sans-serif;
             margin: 0;
             padding: 20px;
+
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
+
+        /* =========================
+           Header
+        ========================= */
 
         .header {
             background: #232f3e;
             color: #febd69;
+
             width: 100%;
             max-width: 600px;
+
             padding: 15px;
+
             text-align: center;
+
             border-radius: 8px;
+
             font-weight: bold;
             font-size: 18px;
+
             margin-bottom: 15px;
-        }
-
-        .control-panel {
-            width: 100%;
-            max-width: 600px;
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .control-panel input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
-        }
-
-        .control-panel button {
-            background: #232f3e;
-            color: #febd69;
-            border: none;
-            padding: 10px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
-        }
-
-        .control-panel button:hover {
-            background: #131a22;
-        }
-
-        .list {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .card {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .card.unread {
-            border-right: 5px solid #febd69;
-            background: #fffdf5;
-        }
-
-        .icon {
-            background: #e6f4ea;
-            color: #137333;
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .details {
-            flex: 1;
-        }
-
-        .details h3 {
-            font-size: 15px;
-            margin: 0 0 5px 0;
-            color: #111;
-        }
-
-        .details p {
-            font-size: 13px;
-            margin: 0;
-            color: #555;
-        }
-
-        .no-data {
-            background: #fff;
-            padding: 30px;
-            text-align: center;
-            border-radius: 8px;
-            color: #777;
-            width: 100%;
-            max-width: 600px;
         }
 
 
         /* =========================
-           نافذة تفعيل الإشعارات
-        ========================= */
-
-        .notification-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.65);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            padding: 20px;
-        }
-
-        .notification-box {
-            width: 100%;
-            max-width: 420px;
-            background: white;
-            border-radius: 20px;
-            padding: 30px 25px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: popup 0.3s ease;
-        }
-
-        @keyframes popup {
-            from {
-                opacity: 0;
-                transform: scale(0.85);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .notification-icon {
-            width: 80px;
-            height: 80px;
-            background: #fff4d8;
-            color: #f59e0b;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 35px;
-        }
-
-        .notification-box h2 {
-            margin: 0 0 10px;
-            color: #232f3e;
-            font-size: 22px;
-        }
-
-        .notification-box p {
-            margin: 0 0 25px;
-            color: #666;
-            font-size: 14px;
-            line-height: 1.8;
-        }
-
-        .notification-buttons {
-            display: flex;
-            gap: 10px;
-            flex-direction: column;
-        }
-
-        .allow-btn,
-        .later-btn {
-            border: none;
-            padding: 13px;
-            border-radius: 10px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .allow-btn {
-            background: #232f3e;
-            color: #febd69;
-        }
-
-        .allow-btn:hover {
-            background: #131a22;
-        }
-
-        .later-btn {
-            background: #eeeeee;
-            color: #555;
-        }
-
-        .later-btn:hover {
-            background: #dddddd;
-        }
-
-
-        /* =========================
-           حالة الإشعارات
+           Notification Status
         ========================= */
 
         .notification-status {
+
             width: 100%;
             max-width: 600px;
+
             background: white;
+
             padding: 12px 15px;
+
             border-radius: 8px;
+
             margin-bottom: 15px;
+
             font-size: 13px;
+
             display: flex;
+
             align-items: center;
+
             gap: 10px;
         }
 
@@ -264,49 +90,476 @@
         .status-disabled {
             color: #b3261e;
         }
+
+
+        /* =========================
+           Control Panel
+        ========================= */
+
+        .control-panel {
+
+            width: 100%;
+            max-width: 600px;
+
+            background: #fff;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 2px 4px rgba(0,0,0,0.05);
+
+            margin-bottom: 15px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+        .control-panel input {
+
+            padding: 10px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 6px;
+
+            font-family: 'Cairo', sans-serif;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+
+        .control-panel input:focus {
+
+            border-color: #febd69;
+        }
+
+
+        .control-panel button {
+
+            background: #232f3e;
+
+            color: #febd69;
+
+            border: none;
+
+            padding: 10px;
+
+            border-radius: 6px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            font-family: 'Cairo', sans-serif;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .control-panel button:hover {
+
+            background: #131a22;
+        }
+
+
+        /* =========================
+           Notifications List
+        ========================= */
+
+        .list {
+
+            width: 100%;
+            max-width: 600px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+
+        .card {
+
+            background: #fff;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            box-shadow:
+                0 2px 4px rgba(0,0,0,0.05);
+        }
+
+
+        .card.unread {
+
+            border-right:
+                5px solid #febd69;
+
+            background: #fffdf5;
+        }
+
+
+        .icon {
+
+            background: #e6f4ea;
+
+            color: #137333;
+
+            width: 40px;
+            height: 40px;
+
+            min-width: 40px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .details {
+
+            flex: 1;
+        }
+
+
+        .details h3 {
+
+            font-size: 15px;
+
+            margin:
+                0 0 5px 0;
+
+            color: #111;
+        }
+
+
+        .details p {
+
+            font-size: 13px;
+
+            margin: 0;
+
+            color: #555;
+
+            line-height: 1.7;
+        }
+
+
+        .no-data {
+
+            background: #fff;
+
+            padding: 30px;
+
+            text-align: center;
+
+            border-radius: 8px;
+
+            color: #777;
+
+            width: 100%;
+
+            max-width: 600px;
+        }
+
+
+        /* =========================
+           Notification Permission Popup
+        ========================= */
+
+        .notification-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,0.65);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 99999;
+
+            padding: 20px;
+        }
+
+
+        .notification-box {
+
+            width: 100%;
+
+            max-width: 420px;
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 30px 25px;
+
+            text-align: center;
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.3);
+
+            animation:
+                popupAnimation 0.3s ease;
+        }
+
+
+        @keyframes popupAnimation {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    scale(0.85)
+                    translateY(20px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    scale(1)
+                    translateY(0);
+            }
+        }
+
+
+        .notification-icon {
+
+            width: 80px;
+            height: 80px;
+
+            background: #fff4d8;
+
+            color: #f59e0b;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin:
+                0 auto 20px;
+
+            font-size: 35px;
+        }
+
+
+        .notification-box h2 {
+
+            margin:
+                0 0 10px;
+
+            color: #232f3e;
+
+            font-size: 22px;
+        }
+
+
+        .notification-box p {
+
+            margin:
+                0 0 25px;
+
+            color: #666;
+
+            font-size: 14px;
+
+            line-height: 1.9;
+        }
+
+
+        .notification-buttons {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+        .allow-btn,
+        .later-btn {
+
+            border: none;
+
+            padding: 13px;
+
+            border-radius: 10px;
+
+            font-family: 'Cairo', sans-serif;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .allow-btn {
+
+            background: #232f3e;
+
+            color: #febd69;
+        }
+
+
+        .allow-btn:hover {
+
+            background: #131a22;
+        }
+
+
+        .later-btn {
+
+            background: #eeeeee;
+
+            color: #555;
+        }
+
+
+        .later-btn:hover {
+
+            background: #dddddd;
+        }
+
+
+        /* =========================
+           Small Screen
+        ========================= */
+
+        @media (max-width: 480px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                font-size: 16px;
+            }
+
+            .notification-box {
+                padding: 25px 20px;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
 
-    <!-- صوت الإشعار -->
-    <audio id="notifSound"
+    <!-- =========================
+         Notification Sound
+    ========================= -->
+
+    <audio
+        id="notifSound"
         src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
         preload="auto">
     </audio>
 
 
     <!-- =========================
-         نافذة طلب الإذن
+         Notification Permission Popup
     ========================= -->
 
-    <div id="notificationOverlay" class="notification-overlay">
+    <div
+        id="notificationOverlay"
+        class="notification-overlay">
 
         <div class="notification-box">
 
+
             <div class="notification-icon">
-                <i class="fas fa-bell"></i>
+
+                <i
+                    id="notificationIcon"
+                    class="fas fa-bell">
+                </i>
+
             </div>
 
-            <h2>تفعيل الإشعارات 🔔</h2>
 
-            <p>
+            <h2 id="notificationTitle">
+
+                تفعيل الإشعارات 🔔
+
+            </h2>
+
+
+            <p id="notificationText">
+
                 هل تريد السماح لموقع
                 <strong>St. Mina</strong>
-                بإرسال إشعارات إليك عند وصول طلبات شراء جديدة؟
+                بإرسال إشعارات إليك عند وصول
+                طلبات شراء جديدة؟
+
             </p>
+
 
             <div class="notification-buttons">
 
-                <button id="allowNotificationsBtn" class="allow-btn">
+
+                <button
+                    id="allowNotificationsBtn"
+                    class="allow-btn">
+
                     <i class="fas fa-bell"></i>
-                    تفعيل الإشعارات
+
+                    Allow - السماح
+
                 </button>
 
-                <button id="laterNotificationsBtn" class="later-btn">
-                    لاحقًا
+
+                <button
+                    id="laterNotificationsBtn"
+                    class="later-btn">
+
+                    Deny - رفض
+
                 </button>
+
 
             </div>
 
@@ -315,27 +568,43 @@
     </div>
 
 
+
     <!-- =========================
-         الصفحة
+         Header
     ========================= -->
 
     <div class="header">
+
         <i class="fas fa-church"></i>
+
         متابعة طلبات St. Mina
+
     </div>
 
 
-    <!-- حالة الإشعارات -->
 
-    <div id="notificationStatus" class="notification-status">
+    <!-- =========================
+         Notification Status
+    ========================= -->
+
+    <div
+        id="notificationStatus"
+        class="notification-status">
+
         <i class="fas fa-spinner fa-spin"></i>
+
         جاري فحص حالة الإشعارات...
+
     </div>
 
 
-    <!-- لوحة إرسال إشعار -->
+
+    <!-- =========================
+         Send Notification Panel
+    ========================= -->
 
     <div class="control-panel">
+
 
         <input
             type="text"
@@ -343,37 +612,61 @@
             placeholder="عنوان الإشعار"
             value="طلب جديد من St. Mina">
 
+
         <input
             type="text"
             id="notifMessage"
             placeholder="محتوى الرسالة"
             value="يوجد طلب شراء جديد بانتظار المراجعة.">
 
+
         <button id="sendTestBtn">
+
             <i class="fas fa-paper-plane"></i>
+
             إرسال إشعار فوري وتنبيه
+
         </button>
+
 
     </div>
 
 
-    <!-- الإشعارات -->
 
-    <div id="notificationsContainer" class="list">
+    <!-- =========================
+         Notifications
+    ========================= -->
+
+    <div
+        id="notificationsContainer"
+        class="list">
 
         <div class="no-data">
+
             جاري التحميل...
+
         </div>
 
     </div>
 
 
 
+    <!-- =========================
+         JavaScript
+    ========================= -->
+
     <script type="module">
+
+
+        /* ==========================================
+           Firebase
+        ========================================== */
 
         import {
             initializeApp
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        }
+        from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
 
         import {
@@ -383,18 +676,18 @@
             orderBy,
             onSnapshot,
             addDoc
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        }
+        from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-
-        /* =========================
-           Firebase
-        ========================= */
 
         const firebaseConfig = {
 
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            apiKey:
+                "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
 
-            authDomain: "st-mina-c01ec.firebaseapp.com",
+            authDomain:
+                "st-mina-c01ec.firebaseapp.com",
 
             databaseURL:
                 "https://st-mina-c01ec-default-rtdb.firebaseio.com",
@@ -416,88 +709,162 @@
         };
 
 
-        const app = initializeApp(firebaseConfig);
-
-        const db = getFirestore(app);
-
+        const app =
+            initializeApp(firebaseConfig);
 
 
-        /* =========================
-           عناصر الصفحة
-        ========================= */
+        const db =
+            getFirestore(app);
+
+
+
+        /* ==========================================
+           Elements
+        ========================================== */
 
         const overlay =
-            document.getElementById("notificationOverlay");
+            document.getElementById(
+                "notificationOverlay"
+            );
+
 
         const allowBtn =
-            document.getElementById("allowNotificationsBtn");
+            document.getElementById(
+                "allowNotificationsBtn"
+            );
+
 
         const laterBtn =
-            document.getElementById("laterNotificationsBtn");
+            document.getElementById(
+                "laterNotificationsBtn"
+            );
+
+
+        const notificationTitle =
+            document.getElementById(
+                "notificationTitle"
+            );
+
+
+        const notificationText =
+            document.getElementById(
+                "notificationText"
+            );
+
+
+        const notificationIcon =
+            document.getElementById(
+                "notificationIcon"
+            );
+
 
         const status =
-            document.getElementById("notificationStatus");
+            document.getElementById(
+                "notificationStatus"
+            );
+
 
         const container =
-            document.getElementById("notificationsContainer");
+            document.getElementById(
+                "notificationsContainer"
+            );
+
 
         const sound =
-            document.getElementById("notifSound");
+            document.getElementById(
+                "notifSound"
+            );
+
 
         const sendBtn =
-            document.getElementById("sendTestBtn");
+            document.getElementById(
+                "sendTestBtn"
+            );
 
 
 
-        /* =========================
-           تحديث حالة الإشعارات
-        ========================= */
+        /* ==========================================
+           Update Notification Status
+        ========================================== */
 
         function updateNotificationStatus() {
+
 
             if (!("Notification" in window)) {
 
                 status.className =
                     "notification-status status-disabled";
 
-                status.innerHTML =
-                    `<i class="fas fa-ban"></i>
-                     المتصفح لا يدعم الإشعارات`;
+
+                status.innerHTML = `
+
+                    <i class="fas fa-ban"></i>
+
+                    هذا المتصفح لا يدعم الإشعارات
+
+                `;
 
                 return;
             }
 
 
-            if (Notification.permission === "granted") {
+
+            if (
+                Notification.permission ===
+                "granted"
+            ) {
+
 
                 status.className =
                     "notification-status status-enabled";
 
-                status.innerHTML =
-                    `<i class="fas fa-bell"></i>
-                     الإشعارات مفعلة`;
+
+                status.innerHTML = `
+
+                    <i class="fas fa-bell"></i>
+
+                    الإشعارات مفعلة
+
+                `;
 
             }
 
-            else if (Notification.permission === "denied") {
+
+            else if (
+                Notification.permission ===
+                "denied"
+            ) {
+
 
                 status.className =
                     "notification-status status-disabled";
 
-                status.innerHTML =
-                    `<i class="fas fa-bell-slash"></i>
-                     الإشعارات محظورة من المتصفح`;
+
+                status.innerHTML = `
+
+                    <i class="fas fa-bell-slash"></i>
+
+                    الإشعارات محظورة
+
+                `;
 
             }
 
+
             else {
+
 
                 status.className =
                     "notification-status";
 
-                status.innerHTML =
-                    `<i class="fas fa-bell"></i>
-                     الإشعارات غير مفعلة`;
+
+                status.innerHTML = `
+
+                    <i class="fas fa-bell"></i>
+
+                    الإشعارات غير مفعلة
+
+                `;
 
             }
 
@@ -505,24 +872,188 @@
 
 
 
-        /* =========================
-           طلب إذن الإشعارات
-        ========================= */
+        /* ==========================================
+           Show Notification Popup
+        ========================================== */
 
-        async function requestNotifications() {
+        function showNotificationPopup() {
+
 
             if (!("Notification" in window)) {
-
-                alert(
-                    "المتصفح الذي تستخدمه لا يدعم إشعارات المتصفح."
-                );
 
                 return;
 
             }
 
 
+
+            /* =========================
+               Permission = DENIED
+            ========================= */
+
+            if (
+                Notification.permission ===
+                "denied"
+            ) {
+
+
+                notificationIcon.className =
+                    "fas fa-bell-slash";
+
+
+                notificationTitle.textContent =
+                    "الإشعارات محظورة 🚫";
+
+
+                notificationText.innerHTML = `
+
+                    الإشعارات محظورة حاليًا
+                    من إعدادات المتصفح.
+
+                    <br><br>
+
+                    اضغط على
+                    <strong>Allow - السماح</strong>
+                    لمعرفة طريقة السماح بالإشعارات.
+
+                `;
+
+
+                allowBtn.innerHTML = `
+
+                    <i class="fas fa-check"></i>
+
+                    Allow - السماح
+
+                `;
+
+
+                laterBtn.innerHTML = `
+
+                    Deny - رفض
+
+                `;
+
+
+                overlay.style.display =
+                    "flex";
+
+
+                return;
+
+            }
+
+
+
+            /* =========================
+               Permission = DEFAULT
+            ========================= */
+
+            if (
+                Notification.permission ===
+                "default"
+            ) {
+
+
+                notificationIcon.className =
+                    "fas fa-bell";
+
+
+                notificationTitle.textContent =
+                    "تفعيل الإشعارات 🔔";
+
+
+                notificationText.innerHTML = `
+
+                    هل تريد السماح لموقع
+                    <strong>St. Mina</strong>
+                    بإرسال إشعارات إليك عند وصول
+                    طلبات شراء جديدة؟
+
+                `;
+
+
+                allowBtn.innerHTML = `
+
+                    <i class="fas fa-bell"></i>
+
+                    Allow - السماح
+
+                `;
+
+
+                laterBtn.innerHTML = `
+
+                    Deny - رفض
+
+                `;
+
+
+                overlay.style.display =
+                    "flex";
+
+            }
+
+        }
+
+
+
+        /* ==========================================
+           Request Notification Permission
+        ========================================== */
+
+        async function requestNotifications() {
+
+
+            if (!("Notification" in window)) {
+
+
+                alert(
+                    "المتصفح لا يدعم إشعارات المواقع."
+                );
+
+
+                return;
+
+            }
+
+
+
+            /* =====================================
+               إذا كانت محظورة بالفعل
+            ===================================== */
+
+            if (
+                Notification.permission ===
+                "denied"
+            ) {
+
+
+                alert(
+
+                    "الإشعارات محظورة حاليًا.\n\n" +
+
+                    "افتح إعدادات الموقع في Chrome " +
+
+                    "ثم ادخل إلى Notifications " +
+
+                    "واجعلها Allow."
+
+                );
+
+
+                return;
+
+            }
+
+
+
+            /* =====================================
+               طلب الإذن الحقيقي من المتصفح
+            ===================================== */
+
             try {
+
 
                 const permission =
                     await Notification.requestPermission();
@@ -531,37 +1062,97 @@
                 updateNotificationStatus();
 
 
-                if (permission === "granted") {
 
-                    /*
-                     * إشعار تجريبي بعد السماح
-                     */
+                /* =================================
+                   المستخدم اختار Allow
+                ================================= */
+
+                if (
+                    permission ===
+                    "granted"
+                ) {
+
+
+                    overlay.style.display =
+                        "none";
+
 
                     new Notification(
+
                         "تم تفعيل الإشعارات 🔔",
+
                         {
+
                             body:
-                                "سيتم تنبيهك عند وصول طلب شراء جديد من St. Mina."
+                                "سيتم تنبيهك عند وصول طلب شراء جديد.",
+
+                            icon:
+                                "https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
+
                         }
+
                     );
 
-                    overlay.style.display = "none";
+
+                    console.log(
+                        "Notifications enabled"
+                    );
 
                 }
 
-                else if (permission === "denied") {
 
-                    alert(
-                        "تم رفض الإشعارات. يمكنك السماح بها لاحقًا من إعدادات المتصفح."
-                    );
 
-                    overlay.style.display = "none";
+                /* =================================
+                   المستخدم اختار Deny
+                ================================= */
+
+                else if (
+                    permission ===
+                    "denied"
+                ) {
+
+
+                    notificationIcon.className =
+                        "fas fa-bell-slash";
+
+
+                    notificationTitle.textContent =
+                        "تم رفض الإشعارات 🚫";
+
+
+                    notificationText.innerHTML = `
+
+                        تم رفض السماح بالإشعارات.
+
+                        <br><br>
+
+                        يمكنك السماح بها لاحقًا
+                        من إعدادات الموقع في المتصفح.
+
+                    `;
+
+
+                    allowBtn.innerHTML = `
+
+                        <i class="fas fa-cog"></i>
+
+                        Allow من الإعدادات
+
+                    `;
 
                 }
+
+
+
+                /* =================================
+                   المستخدم لم يحدد
+                ================================= */
 
                 else {
 
-                    overlay.style.display = "none";
+
+                    overlay.style.display =
+                        "none";
 
                 }
 
@@ -569,8 +1160,9 @@
 
             catch (error) {
 
+
                 console.error(
-                    "خطأ أثناء طلب الإذن:",
+                    "Notification permission error:",
                     error
                 );
 
@@ -580,9 +1172,9 @@
 
 
 
-        /* =========================
-           زر تفعيل الإشعارات
-        ========================= */
+        /* ==========================================
+           Allow Button
+        ========================================== */
 
         allowBtn.addEventListener(
             "click",
@@ -591,80 +1183,113 @@
 
 
 
-        /* =========================
-           زر لاحقًا
-        ========================= */
+        /* ==========================================
+           Deny / Later Button
+        ========================================== */
 
         laterBtn.addEventListener(
             "click",
             () => {
 
-                overlay.style.display = "none";
+                overlay.style.display =
+                    "none";
 
             }
         );
 
 
 
-        /* =========================
-           عند فتح الصفحة
-        ========================= */
+        /* ==========================================
+           Page Load
+        ========================================== */
 
         document.addEventListener(
             "DOMContentLoaded",
             () => {
 
+
                 updateNotificationStatus();
 
 
-                /*
-                 * لو لم يتم تحديد القرار من قبل
-                 * نظهر النافذة الخاصة بنا.
-                 */
 
-                if (
-                    "Notification" in window &&
-                    Notification.permission === "default"
-                ) {
+                setTimeout(
+                    () => {
 
-                    setTimeout(
-                        () => {
 
-                            overlay.style.display =
-                                "flex";
+                        if (
+                            !("Notification" in window)
+                        ) {
 
-                        },
-                        800
-                    );
+                            return;
 
-                }
+                        }
+
+
+
+                        /*
+                         * لو Default أو Denied
+                         * نظهر النافذة
+                         */
+
+                        if (
+
+                            Notification.permission ===
+                            "default"
+
+                            ||
+
+                            Notification.permission ===
+                            "denied"
+
+                        ) {
+
+
+                            showNotificationPopup();
+
+                        }
+
+
+                    },
+                    800
+                );
 
             }
         );
 
 
 
-        /* =========================
-           Firestore
-        ========================= */
+        /* ==========================================
+           Firestore Query
+        ========================================== */
 
-        const q = query(
-            collection(db, "notifications"),
-            orderBy("timestamp", "desc")
-        );
+        const q =
+            query(
+
+                collection(
+                    db,
+                    "notifications"
+                ),
+
+                orderBy(
+                    "timestamp",
+                    "desc"
+                )
+
+            );
 
 
         let firstLoad = true;
 
 
 
-        /* =========================
-           إرسال إشعار جديد
-        ========================= */
+        /* ==========================================
+           Send Notification / Add Firestore Document
+        ========================================== */
 
         sendBtn.addEventListener(
             "click",
             async () => {
+
 
                 const titleInput =
                     document.getElementById(
@@ -678,24 +1303,31 @@
                     ).value.trim();
 
 
+
                 if (!messageInput) {
+
 
                     alert(
                         "يرجى كتابة نص الرسالة أولاً!"
                     );
+
 
                     return;
 
                 }
 
 
+
                 try {
 
+
                     await addDoc(
+
                         collection(
                             db,
                             "notifications"
                         ),
+
                         {
 
                             title:
@@ -712,6 +1344,7 @@
                                 false
 
                         }
+
                     );
 
 
@@ -719,14 +1352,17 @@
                         "تم إرسال الطلب بنجاح"
                     );
 
+
                 }
 
                 catch (error) {
+
 
                     console.error(
                         "خطأ في الإرسال:",
                         error
                     );
+
 
                     alert(
                         "حدث خطأ أثناء إرسال الإشعار."
@@ -739,89 +1375,138 @@
 
 
 
-        /* =========================
-           الاستماع للتغييرات
-        ========================= */
+        /* ==========================================
+           Firestore Real-Time Listener
+        ========================================== */
 
         onSnapshot(
+
             q,
+
             (snapshot) => {
+
 
                 container.innerHTML = "";
 
 
+
+                /* =========================
+                   No Notifications
+                ========================= */
+
                 if (snapshot.empty) {
 
-                    container.innerHTML =
-                        `<div class="no-data">
+
+                    container.innerHTML = `
+
+                        <div class="no-data">
+
                             لا توجد طلبات جديدة حالياً
-                         </div>`;
+
+                        </div>
+
+                    `;
+
 
                     firstLoad = false;
+
 
                     return;
 
                 }
 
 
-                snapshot.docChanges().forEach(
-                    (change) => {
 
-                        if (
-                            change.type === "added" &&
-                            !firstLoad
-                        ) {
+                /* =========================
+                   Detect New Notifications
+                ========================= */
 
-                            const data =
-                                change.doc.data();
+                snapshot.docChanges()
+                    .forEach(
+                        (change) => {
 
-
-                            /*
-                             * إشعار المتصفح
-                             */
 
                             if (
-                                "Notification" in window &&
-                                Notification.permission ===
-                                "granted"
+
+                                change.type ===
+                                "added"
+
+                                &&
+
+                                !firstLoad
+
                             ) {
 
-                                new Notification(
-                                    data.title ||
-                                    "طلب جديد",
-                                    {
-                                        body:
-                                            data.message ||
-                                            "يوجد طلب جديد.",
-                                        icon:
-                                            "https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
-                                    }
-                                );
 
-                            }
+                                const data =
+                                    change.doc.data();
 
 
-                            /*
-                             * تشغيل الصوت
-                             */
 
-                            sound.currentTime = 0;
+                                /* =====================
+                                   Browser Notification
+                                ===================== */
 
-                            sound.play().catch(
-                                (error) => {
+                                if (
 
-                                    console.log(
-                                        "تشغيل الصوت يحتاج إلى تفاعل من المستخدم.",
-                                        error
+                                    "Notification"
+                                    in window
+
+                                    &&
+
+                                    Notification.permission ===
+                                    "granted"
+
+                                ) {
+
+
+                                    new Notification(
+
+                                        data.title ||
+                                        "طلب جديد",
+
+                                        {
+
+                                            body:
+                                                data.message ||
+                                                "يوجد طلب جديد.",
+
+                                            icon:
+                                                "https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
+
+                                        }
+
                                     );
 
                                 }
-                            );
+
+
+
+                                /* =====================
+                                   Sound
+                                ===================== */
+
+                                sound.currentTime =
+                                    0;
+
+
+                                sound.play()
+                                    .catch(
+                                        (error) => {
+
+                                            console.log(
+                                                "تشغيل الصوت يحتاج إلى تفاعل من المستخدم.",
+                                                error
+                                            );
+
+                                        }
+                                    );
+
+                            }
 
                         }
+                    );
 
-                    }
-                );
 
 
                 firstLoad = false;
@@ -829,11 +1514,12 @@
 
 
                 /* =========================
-                   عرض الطلبات
+                   Display Notifications
                 ========================= */
 
                 snapshot.forEach(
                     (doc) => {
+
 
                         const item =
                             doc.data();
@@ -861,20 +1547,26 @@
 
                             </div>
 
+
                             <div class="details">
 
                                 <h3>
+
                                     ${
                                         item.title ||
                                         "طلب جديد"
                                     }
+
                                 </h3>
 
+
                                 <p>
+
                                     ${
                                         item.message ||
                                         ""
                                     }
+
                                 </p>
 
                             </div>
@@ -891,22 +1583,32 @@
 
             },
 
+
             (error) => {
 
+
                 console.error(
-                    "خطأ Firestore:",
+                    "Firestore Error:",
                     error
                 );
 
-                container.innerHTML =
-                    `<div class="no-data">
+
+                container.innerHTML = `
+
+                    <div class="no-data">
+
                         حدث خطأ أثناء تحميل الإشعارات
-                     </div>`;
+
+                    </div>
+
+                `;
 
             }
+
         );
 
     </script>
 
 </body>
+
 </html>
