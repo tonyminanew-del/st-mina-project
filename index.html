@@ -1,52 +1,134 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>برنامج كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</title>
-    <link rel="stylesheet" href="style.css">
+    <title>St. Mina - إشعارات المشتريات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap');
-        
-        /* جعل كلمة استيفانوس قابلة للنقر ويبدو عليها مؤشر الماوس */
-        #secret-click {
-            cursor: pointer;
-            user-select: none;
-        }
+        body { background: #f4f6f8; font-family: 'Cairo', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .header { background: #232f3e; color: #febd69; width: 100%; max-width: 600px; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 18px; margin-bottom: 15px; }
+        .control-panel { width: 100%; max-width: 600px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .control-panel input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Cairo', sans-serif; font-size: 14px; }
+        .control-panel button { background: #232f3e; color: #febd69; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 14px; }
+        .control-panel button:hover { background: #131a22; }
+        .list { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
+        .card { background: #fff; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card.unread { border-right: 5px solid #febd69; background: #fffdf5; }
+        .icon { background: #e6f4ea; color: #137333; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .details h3 { font-size: 15px; margin: 0 0 5px 0; color: #111; }
+        .details p { font-size: 13px; margin: 0; color: #555; }
+        .no-data { background: #fff; padding: 30px; text-align: center; border-radius: 8px; color: #777; width: 100%; max-width: 600px; }
     </style>
 </head>
 <body>
 
-    <!-- صندوق الترحيب بالنص الذهبي الرسمي -->
-    <div class="welcome-box">
-        <div class="formal-gold">
-            أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click">استيفانوس</span> ومارمينا العجايبي
-        </div>
-        
-        <!-- زر دخول مستخدم -->
-        <div>
-            <button type="button" id="login-btn" class="formal-button">دخول مستخدم</button>
-        </div>
+    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <div class="header"><i class="fas fa-church"></i> متابعة طلبات St. Mina</div>
+
+    <!-- لوحة التحكم لإرسال إشعار فوري -->
+    <div class="control-panel">
+        <input type="text" id="notifTitle" placeholder="عنوان الإشعار (مثال: طلب جديد)" value="طلب جديد من St. Mina">
+        <input type="text" id="notifMessage" placeholder="محتوى الرسالة (مثال: يوجد طلب شراء جديد)" value="يوجد طلب شراء جديد بانتظار المراجعة.">
+        <button id="sendTestBtn"><i class="fas fa-paper-plane"></i> إرسال إشعار فوري وتنبيه</button>
     </div>
 
-    <!-- كود الـ JavaScript للتحكم بالنظرات ووظائف الأزرار -->
-    <script>
-        // عداد النقرات على كلمة استيفانوس (5 مرات)
-        let clickCount = 0;
-        const targetWord = document.getElementById('secret-click');
+    <div id="notificationsContainer" class="list">
+        <div class="no-data">جاري التحميل...</div>
+    </div>
 
-        targetWord.addEventListener('click', function() {
-            clickCount++;
-            if (clickCount === 5) {
-                window.location.href = 'a/sign.html';
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+            projectId: "st-mina-c01ec",
+            storageBucket: "st-mina-c01ec.firebasestorage.app",
+            messagingSenderId: "792349150559",
+            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+            measurementId: "G-XZGSBG05KR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
             }
-        });
 
-        // زر دخول مستخدم للانتقال إلى u/sign.html
-        document.getElementById('login-btn').addEventListener('click', function() {
-            window.location.href = 'u/sign.html';
+            const container = document.getElementById('notificationsContainer');
+            const sound = document.getElementById('notifSound');
+            const sendBtn = document.getElementById('sendTestBtn');
+            const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
+
+            let firstLoad = true;
+
+            // زر إرسال إشعار جديد إلى القاعدة
+            sendBtn.addEventListener('click', async () => {
+                const titleInput = document.getElementById('notifTitle').value;
+                const messageInput = document.getElementById('notifMessage').value;
+
+                if (!messageInput) {
+                    alert('يرجى كتابة نص الرسالة أولاً!');
+                    return;
+                }
+
+                try {
+                    await addDoc(collection(db, "notifications"), {
+                        title: titleInput || "طلب جديد",
+                        message: messageInput,
+                        timestamp: new Date(),
+                        isRead: false
+                    });
+                    console.log("تم إرسال الطلب بنجاح");
+                } catch (e) {
+                    console.error("خطأ في الإرسال: ", e);
+                }
+            });
+
+            // الاستماع الفوري للتغييرات في قاعدة البيانات
+            onSnapshot(q, (snapshot) => {
+                container.innerHTML = '';
+                if (snapshot.empty) {
+                    container.innerHTML = `<div class="no-data">لا توجد طلبات جديدة حالياً</div>`;
+                    firstLoad = false;
+                    return;
+                }
+
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added" && !firstLoad) {
+                        const data = change.doc.data();
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification(data.title || "طلب جديد", { body: data.message });
+                        }
+                        sound.play().catch(e => console.log("التفاعل الصوتي يتطلب تفاعل المستخدم"));
+                    }
+                });
+
+                firstLoad = false;
+
+                snapshot.forEach((doc) => {
+                    const item = doc.data();
+                    const card = document.createElement('div');
+                    card.className = `card ${item.isRead ? '' : 'unread'}`;
+                    card.innerHTML = `
+                        <div class="icon"><i class="fas fa-gift"></i></div>
+                        <div class="details">
+                            <h3>${item.title || "طلب جديد"}</h3>
+                            <p>${item.message}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
         });
     </script>
-
 </body>
 </html>
