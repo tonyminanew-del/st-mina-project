@@ -1,51 +1,30 @@
-import os
-import time
-from firebase_admin import credentials, firestore, initialize_app
-from plyer import notification
+import firebase_admin
+from firebase_admin import credentials, messaging
 
-# تحديد المسار المطلق لملف الـ JSON تلقائياً وبدقة
-current_dir = os.path.dirname(os.path.abspath(__file__))
-key_path = os.path.join(current_dir, "serviceAccountKey.json")
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
 
-# تهيئة الاتصال بفايربيس باستخدام الملف مباشرة
-cred = credentials.Certificate(key_path)
-initialize_app(cred)
-db = firestore.client()
-
-print("جاري الاستماع لطلبات المشتريات الجديدة عبر St. Mina...")
-
-seen_notifications = set()
-
-
-def check_new_notifications():
-  try:
-    notifications_ref = db.collection("notifications")
-    docs = notifications_ref.stream()
-
-    for doc in docs:
-      data = doc.to_dict()
-      doc_id = doc.id
-
-      if doc_id not in seen_notifications:
-        seen_notifications.add(doc_id)
-
-        title = data.get("title", "طلب هدية جديد")
-        message = data.get("message", "هناك عملية شراء جديدة تمت في المتجر.")
-
-        notification.notify(
+def send_push_notification(device_token, title, body):
+    message = messaging.Message(
+        notification=messaging.Notification(
             title=title,
-            message=message,
-            app_name="St. Mina",
-            app_icon=None,
-            timeout=10,
-        )
-        print(f"تم رصد وإرسال إشعار: {message}")
+            body=body,
+        ),
+        token=device_token,
+    )
 
-  except Exception as e:
-    print(f"حدث خطأ: {e}")
-
+    try:
+        response = messaging.send(message)
+        print('تم إرسال الإشعار بنجاح:', response)
+    except Exception as e:
+        print('فشل إرسال الإشعار:', e)
 
 if __name__ == "__main__":
-  while True:
-    check_new_notifications()
-    time.sleep(5)
+    # حط الـ Token الحقيقي هنا بين العلامتين
+    sample_token = "انسخ_التوكن_الطويل_من_الكونسول_هنا"
+    
+    send_push_notification(
+        device_token=sample_token, 
+        title="طلب جديد من St. Mina", 
+        body="يوجد طلب شراء جديد بانتظار المراجعة."
+    )
