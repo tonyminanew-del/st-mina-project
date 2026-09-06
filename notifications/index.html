@@ -1,134 +1,912 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>St. Mina - إشعارات المشتريات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body { background: #f4f6f8; font-family: 'Cairo', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .header { background: #232f3e; color: #febd69; width: 100%; max-width: 600px; padding: 15px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 18px; margin-bottom: 15px; }
-        .control-panel { width: 100%; max-width: 600px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .control-panel input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Cairo', sans-serif; font-size: 14px; }
-        .control-panel button { background: #232f3e; color: #febd69; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 14px; }
-        .control-panel button:hover { background: #131a22; }
-        .list { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
-        .card { background: #fff; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card.unread { border-right: 5px solid #febd69; background: #fffdf5; }
-        .icon { background: #e6f4ea; color: #137333; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .details h3 { font-size: 15px; margin: 0 0 5px 0; color: #111; }
-        .details p { font-size: 13px; margin: 0; color: #555; }
-        .no-data { background: #fff; padding: 30px; text-align: center; border-radius: 8px; color: #777; width: 100%; max-width: 600px; }
-    </style>
-</head>
-<body>
+        * {
+            box-sizing: border-box;
+        }
 
-    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+        body {
+            background: #f4f6f8;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    <div class="header"><i class="fas fa-church"></i> متابعة طلبات St. Mina</div>
+        .header {
+            background: #232f3e;
+            color: #febd69;
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
 
-    <!-- لوحة التحكم لإرسال إشعار فوري -->
-    <div class="control-panel">
-        <input type="text" id="notifTitle" placeholder="عنوان الإشعار (مثال: طلب جديد)" value="طلب جديد من St. Mina">
-        <input type="text" id="notifMessage" placeholder="محتوى الرسالة (مثال: يوجد طلب شراء جديد)" value="يوجد طلب شراء جديد بانتظار المراجعة.">
-        <button id="sendTestBtn"><i class="fas fa-paper-plane"></i> إرسال إشعار فوري وتنبيه</button>
-    </div>
+        .control-panel {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    <div id="notificationsContainer" class="list">
-        <div class="no-data">جاري التحميل...</div>
-    </div>
+        .control-panel input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+        }
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        .control-panel button {
+            background: #232f3e;
+            color: #febd69;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+        }
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-            authDomain: "st-mina-c01ec.firebaseapp.com",
-            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
-            projectId: "st-mina-c01ec",
-            storageBucket: "st-mina-c01ec.firebasestorage.app",
-            messagingSenderId: "792349150559",
-            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
-            measurementId: "G-XZGSBG05KR"
-        };
+        .control-panel button:hover {
+            background: #131a22;
+        }
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        .list {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if ("Notification" in window && Notification.permission !== "granted") {
-                Notification.requestPermission();
+        .card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .card.unread {
+            border-right: 5px solid #febd69;
+            background: #fffdf5;
+        }
+
+        .icon {
+            background: #e6f4ea;
+            color: #137333;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .details {
+            flex: 1;
+        }
+
+        .details h3 {
+            font-size: 15px;
+            margin: 0 0 5px 0;
+            color: #111;
+        }
+
+        .details p {
+            font-size: 13px;
+            margin: 0;
+            color: #555;
+        }
+
+        .no-data {
+            background: #fff;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            color: #777;
+            width: 100%;
+            max-width: 600px;
+        }
+
+
+        /* =========================
+           نافذة تفعيل الإشعارات
+        ========================= */
+
+        .notification-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .notification-box {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: popup 0.3s ease;
+        }
+
+        @keyframes popup {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
             }
 
-            const container = document.getElementById('notificationsContainer');
-            const sound = document.getElementById('notifSound');
-            const sendBtn = document.getElementById('sendTestBtn');
-            const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 
-            let firstLoad = true;
+        .notification-icon {
+            width: 80px;
+            height: 80px;
+            background: #fff4d8;
+            color: #f59e0b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 35px;
+        }
 
-            // زر إرسال إشعار جديد إلى القاعدة
-            sendBtn.addEventListener('click', async () => {
-                const titleInput = document.getElementById('notifTitle').value;
-                const messageInput = document.getElementById('notifMessage').value;
+        .notification-box h2 {
+            margin: 0 0 10px;
+            color: #232f3e;
+            font-size: 22px;
+        }
+
+        .notification-box p {
+            margin: 0 0 25px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .notification-buttons {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .allow-btn,
+        .later-btn {
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .allow-btn {
+            background: #232f3e;
+            color: #febd69;
+        }
+
+        .allow-btn:hover {
+            background: #131a22;
+        }
+
+        .later-btn {
+            background: #eeeeee;
+            color: #555;
+        }
+
+        .later-btn:hover {
+            background: #dddddd;
+        }
+
+
+        /* =========================
+           حالة الإشعارات
+        ========================= */
+
+        .notification-status {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-enabled {
+            color: #137333;
+        }
+
+        .status-disabled {
+            color: #b3261e;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- صوت الإشعار -->
+    <audio id="notifSound"
+        src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
+        preload="auto">
+    </audio>
+
+
+    <!-- =========================
+         نافذة طلب الإذن
+    ========================= -->
+
+    <div id="notificationOverlay" class="notification-overlay">
+
+        <div class="notification-box">
+
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+
+            <h2>تفعيل الإشعارات 🔔</h2>
+
+            <p>
+                هل تريد السماح لموقع
+                <strong>St. Mina</strong>
+                بإرسال إشعارات إليك عند وصول طلبات شراء جديدة؟
+            </p>
+
+            <div class="notification-buttons">
+
+                <button id="allowNotificationsBtn" class="allow-btn">
+                    <i class="fas fa-bell"></i>
+                    تفعيل الإشعارات
+                </button>
+
+                <button id="laterNotificationsBtn" class="later-btn">
+                    لاحقًا
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         الصفحة
+    ========================= -->
+
+    <div class="header">
+        <i class="fas fa-church"></i>
+        متابعة طلبات St. Mina
+    </div>
+
+
+    <!-- حالة الإشعارات -->
+
+    <div id="notificationStatus" class="notification-status">
+        <i class="fas fa-spinner fa-spin"></i>
+        جاري فحص حالة الإشعارات...
+    </div>
+
+
+    <!-- لوحة إرسال إشعار -->
+
+    <div class="control-panel">
+
+        <input
+            type="text"
+            id="notifTitle"
+            placeholder="عنوان الإشعار"
+            value="طلب جديد من St. Mina">
+
+        <input
+            type="text"
+            id="notifMessage"
+            placeholder="محتوى الرسالة"
+            value="يوجد طلب شراء جديد بانتظار المراجعة.">
+
+        <button id="sendTestBtn">
+            <i class="fas fa-paper-plane"></i>
+            إرسال إشعار فوري وتنبيه
+        </button>
+
+    </div>
+
+
+    <!-- الإشعارات -->
+
+    <div id="notificationsContainer" class="list">
+
+        <div class="no-data">
+            جاري التحميل...
+        </div>
+
+    </div>
+
+
+
+    <script type="module">
+
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+        import {
+            getFirestore,
+            collection,
+            query,
+            orderBy,
+            onSnapshot,
+            addDoc
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
+        /* =========================
+           Firebase
+        ========================= */
+
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+
+            databaseURL:
+                "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+
+            projectId:
+                "st-mina-c01ec",
+
+            storageBucket:
+                "st-mina-c01ec.firebasestorage.app",
+
+            messagingSenderId:
+                "792349150559",
+
+            appId:
+                "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+
+            measurementId:
+                "G-XZGSBG05KR"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+
+        const db = getFirestore(app);
+
+
+
+        /* =========================
+           عناصر الصفحة
+        ========================= */
+
+        const overlay =
+            document.getElementById("notificationOverlay");
+
+        const allowBtn =
+            document.getElementById("allowNotificationsBtn");
+
+        const laterBtn =
+            document.getElementById("laterNotificationsBtn");
+
+        const status =
+            document.getElementById("notificationStatus");
+
+        const container =
+            document.getElementById("notificationsContainer");
+
+        const sound =
+            document.getElementById("notifSound");
+
+        const sendBtn =
+            document.getElementById("sendTestBtn");
+
+
+
+        /* =========================
+           تحديث حالة الإشعارات
+        ========================= */
+
+        function updateNotificationStatus() {
+
+            if (!("Notification" in window)) {
+
+                status.className =
+                    "notification-status status-disabled";
+
+                status.innerHTML =
+                    `<i class="fas fa-ban"></i>
+                     المتصفح لا يدعم الإشعارات`;
+
+                return;
+            }
+
+
+            if (Notification.permission === "granted") {
+
+                status.className =
+                    "notification-status status-enabled";
+
+                status.innerHTML =
+                    `<i class="fas fa-bell"></i>
+                     الإشعارات مفعلة`;
+
+            }
+
+            else if (Notification.permission === "denied") {
+
+                status.className =
+                    "notification-status status-disabled";
+
+                status.innerHTML =
+                    `<i class="fas fa-bell-slash"></i>
+                     الإشعارات محظورة من المتصفح`;
+
+            }
+
+            else {
+
+                status.className =
+                    "notification-status";
+
+                status.innerHTML =
+                    `<i class="fas fa-bell"></i>
+                     الإشعارات غير مفعلة`;
+
+            }
+
+        }
+
+
+
+        /* =========================
+           طلب إذن الإشعارات
+        ========================= */
+
+        async function requestNotifications() {
+
+            if (!("Notification" in window)) {
+
+                alert(
+                    "المتصفح الذي تستخدمه لا يدعم إشعارات المتصفح."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                const permission =
+                    await Notification.requestPermission();
+
+
+                updateNotificationStatus();
+
+
+                if (permission === "granted") {
+
+                    /*
+                     * إشعار تجريبي بعد السماح
+                     */
+
+                    new Notification(
+                        "تم تفعيل الإشعارات 🔔",
+                        {
+                            body:
+                                "سيتم تنبيهك عند وصول طلب شراء جديد من St. Mina."
+                        }
+                    );
+
+                    overlay.style.display = "none";
+
+                }
+
+                else if (permission === "denied") {
+
+                    alert(
+                        "تم رفض الإشعارات. يمكنك السماح بها لاحقًا من إعدادات المتصفح."
+                    );
+
+                    overlay.style.display = "none";
+
+                }
+
+                else {
+
+                    overlay.style.display = "none";
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "خطأ أثناء طلب الإذن:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        /* =========================
+           زر تفعيل الإشعارات
+        ========================= */
+
+        allowBtn.addEventListener(
+            "click",
+            requestNotifications
+        );
+
+
+
+        /* =========================
+           زر لاحقًا
+        ========================= */
+
+        laterBtn.addEventListener(
+            "click",
+            () => {
+
+                overlay.style.display = "none";
+
+            }
+        );
+
+
+
+        /* =========================
+           عند فتح الصفحة
+        ========================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                updateNotificationStatus();
+
+
+                /*
+                 * لو لم يتم تحديد القرار من قبل
+                 * نظهر النافذة الخاصة بنا.
+                 */
+
+                if (
+                    "Notification" in window &&
+                    Notification.permission === "default"
+                ) {
+
+                    setTimeout(
+                        () => {
+
+                            overlay.style.display =
+                                "flex";
+
+                        },
+                        800
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        /* =========================
+           Firestore
+        ========================= */
+
+        const q = query(
+            collection(db, "notifications"),
+            orderBy("timestamp", "desc")
+        );
+
+
+        let firstLoad = true;
+
+
+
+        /* =========================
+           إرسال إشعار جديد
+        ========================= */
+
+        sendBtn.addEventListener(
+            "click",
+            async () => {
+
+                const titleInput =
+                    document.getElementById(
+                        "notifTitle"
+                    ).value.trim();
+
+
+                const messageInput =
+                    document.getElementById(
+                        "notifMessage"
+                    ).value.trim();
+
 
                 if (!messageInput) {
-                    alert('يرجى كتابة نص الرسالة أولاً!');
+
+                    alert(
+                        "يرجى كتابة نص الرسالة أولاً!"
+                    );
+
                     return;
+
                 }
+
 
                 try {
-                    await addDoc(collection(db, "notifications"), {
-                        title: titleInput || "طلب جديد",
-                        message: messageInput,
-                        timestamp: new Date(),
-                        isRead: false
-                    });
-                    console.log("تم إرسال الطلب بنجاح");
-                } catch (e) {
-                    console.error("خطأ في الإرسال: ", e);
-                }
-            });
 
-            // الاستماع الفوري للتغييرات في قاعدة البيانات
-            onSnapshot(q, (snapshot) => {
-                container.innerHTML = '';
-                if (snapshot.empty) {
-                    container.innerHTML = `<div class="no-data">لا توجد طلبات جديدة حالياً</div>`;
-                    firstLoad = false;
-                    return;
-                }
+                    await addDoc(
+                        collection(
+                            db,
+                            "notifications"
+                        ),
+                        {
 
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === "added" && !firstLoad) {
-                        const data = change.doc.data();
-                        if ("Notification" in window && Notification.permission === "granted") {
-                            new Notification(data.title || "طلب جديد", { body: data.message });
+                            title:
+                                titleInput ||
+                                "طلب جديد",
+
+                            message:
+                                messageInput,
+
+                            timestamp:
+                                new Date(),
+
+                            isRead:
+                                false
+
                         }
-                        sound.play().catch(e => console.log("التفاعل الصوتي يتطلب تفاعل المستخدم"));
+                    );
+
+
+                    console.log(
+                        "تم إرسال الطلب بنجاح"
+                    );
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "خطأ في الإرسال:",
+                        error
+                    );
+
+                    alert(
+                        "حدث خطأ أثناء إرسال الإشعار."
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        /* =========================
+           الاستماع للتغييرات
+        ========================= */
+
+        onSnapshot(
+            q,
+            (snapshot) => {
+
+                container.innerHTML = "";
+
+
+                if (snapshot.empty) {
+
+                    container.innerHTML =
+                        `<div class="no-data">
+                            لا توجد طلبات جديدة حالياً
+                         </div>`;
+
+                    firstLoad = false;
+
+                    return;
+
+                }
+
+
+                snapshot.docChanges().forEach(
+                    (change) => {
+
+                        if (
+                            change.type === "added" &&
+                            !firstLoad
+                        ) {
+
+                            const data =
+                                change.doc.data();
+
+
+                            /*
+                             * إشعار المتصفح
+                             */
+
+                            if (
+                                "Notification" in window &&
+                                Notification.permission ===
+                                "granted"
+                            ) {
+
+                                new Notification(
+                                    data.title ||
+                                    "طلب جديد",
+                                    {
+                                        body:
+                                            data.message ||
+                                            "يوجد طلب جديد.",
+                                        icon:
+                                            "https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
+                                    }
+                                );
+
+                            }
+
+
+                            /*
+                             * تشغيل الصوت
+                             */
+
+                            sound.currentTime = 0;
+
+                            sound.play().catch(
+                                (error) => {
+
+                                    console.log(
+                                        "تشغيل الصوت يحتاج إلى تفاعل من المستخدم.",
+                                        error
+                                    );
+
+                                }
+                            );
+
+                        }
+
                     }
-                });
+                );
+
 
                 firstLoad = false;
 
-                snapshot.forEach((doc) => {
-                    const item = doc.data();
-                    const card = document.createElement('div');
-                    card.className = `card ${item.isRead ? '' : 'unread'}`;
-                    card.innerHTML = `
-                        <div class="icon"><i class="fas fa-gift"></i></div>
-                        <div class="details">
-                            <h3>${item.title || "طلب جديد"}</h3>
-                            <p>${item.message}</p>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            });
-        });
+
+
+                /* =========================
+                   عرض الطلبات
+                ========================= */
+
+                snapshot.forEach(
+                    (doc) => {
+
+                        const item =
+                            doc.data();
+
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            `card ${
+                                item.isRead
+                                    ? ""
+                                    : "unread"
+                            }`;
+
+
+                        card.innerHTML = `
+
+                            <div class="icon">
+
+                                <i class="fas fa-gift"></i>
+
+                            </div>
+
+                            <div class="details">
+
+                                <h3>
+                                    ${
+                                        item.title ||
+                                        "طلب جديد"
+                                    }
+                                </h3>
+
+                                <p>
+                                    ${
+                                        item.message ||
+                                        ""
+                                    }
+                                </p>
+
+                            </div>
+
+                        `;
+
+
+                        container.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+            },
+
+            (error) => {
+
+                console.error(
+                    "خطأ Firestore:",
+                    error
+                );
+
+                container.innerHTML =
+                    `<div class="no-data">
+                        حدث خطأ أثناء تحميل الإشعارات
+                     </div>`;
+
+            }
+        );
+
     </script>
+
 </body>
 </html>
