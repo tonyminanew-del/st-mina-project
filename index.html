@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامج كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap');
+        
+        /* جعل كلمة استيفانوس قابلة للنقر ويبدو عليها مؤشر الماوس */
+        #secret-click {
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- صندوق الترحيب بالنص الذهبي الرسمي -->
+    <div class="welcome-box">
+        <div class="formal-gold">
+            أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click">استيفانوس</span> ومارمينا العجايبي
+        </div>
+        
+        <!-- زر دخول مستخدم -->
+        <div>
+            <button type="button" id="login-btn" class="formal-button">دخول مستخدم</button>
+        </div>
+    </div>
+
+    <!-- كود الـ JavaScript للتحكم بالنظرات ووظائف الأزرار -->
+    <script>
+        // عداد النقرات على كلمة استيفانوس (5 مرات)
+        let clickCount = 0;
+        const targetWord = document.getElementById('secret-click');
+
+        targetWord.addEventListener('click', function() {
+            clickCount++;
+            if (clickCount === 5) {
+                window.location.href = 'a/sign.html';
+            }
+        });
+
+        // زر دخول مستخدم للانتقال إلى u/sign.html
+        document.getElementById('login-btn').addEventListener('click', function() {
+            window.location.href = 'u/sign.html';
+        });
+    </script>
+
+</body>
+</html>
