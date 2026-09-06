@@ -1,52 +1,150 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>برنامج كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap');
-        
-        /* جعل كلمة استيفانوس قابلة للنقر ويبدو عليها مؤشر الماوس */
-        #secret-click {
-            cursor: pointer;
-            user-select: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>برنامج كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap');
+
+  :root{
+    --bg:#0A0A0A;
+    --panel:#121212;
+    --gold:#C9A24B;
+    --gold-soft:#8A733A;
+    --text:#EDE6D6;
+    --text-dim:#A99C7F;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    height:100%;
+    margin:0;
+  }
+
+  body{
+    font-family:'Lateef', serif;
+    background:
+      radial-gradient(circle at 50% -20%, #1a1a1a 0%, var(--bg) 60%);
+    color:var(--text);
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+  }
+
+  .welcome-box{
+    width:100%;
+    max-width:440px;
+    background:var(--panel);
+    border:1px solid #2A2A2A;
+    outline:1px solid var(--gold-soft);
+    outline-offset:-6px;
+    border-radius:6px;
+    padding: 44px 28px 38px;
+    text-align:center;
+    box-shadow: 0 24px 60px -20px rgba(0,0,0,0.7);
+    position:relative;
+  }
+
+  /* زخرفة علوية بسيطة بدل الأيقونات */
+  .ornament{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin-bottom:24px;
+    color:var(--gold);
+  }
+  .ornament::before,
+  .ornament::after{
+    content:"";
+    height:1px;
+    flex:1;
+    background:linear-gradient(to var(--dir,left), transparent, var(--gold-soft));
+  }
+  .ornament::after{ --dir:right; }
+  .ornament span{
+    font-size:20px;
+    line-height:1;
+  }
+
+  .formal-gold{
+    font-weight:700;
+    font-size: clamp(24px, 6.5vw, 32px);
+    line-height:1.7;
+    color:var(--gold);
+  }
+
+  /* بدون أي تمييز بصري أو مؤشر - النص جزء طبيعي من الجملة */
+  .formal-gold #secret-click{
+    color:inherit;
+    font:inherit;
+  }
+
+  .subtitle{
+    margin-top:14px;
+    font-size: clamp(16px, 4vw, 18px);
+    color:var(--text-dim);
+  }
+
+  .formal-button{
+    margin-top:34px;
+    width:100%;
+    min-height:52px;
+    border:1px solid var(--gold-soft);
+    border-radius:4px;
+    background:transparent;
+    color:var(--gold);
+    font-family:'Lateef', serif;
+    font-weight:700;
+    font-size: clamp(18px, 5vw, 20px);
+    letter-spacing:0.5px;
+    cursor:pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+
+  .formal-button:active{
+    background:var(--gold);
+    color:#0A0A0A;
+  }
+
+  @media (max-width:360px){
+    .welcome-box{ padding: 34px 18px 30px; }
+  }
+</style>
 </head>
 <body>
 
-    <!-- صندوق الترحيب بالنص الذهبي الرسمي -->
-    <div class="welcome-box">
-        <div class="formal-gold">
-            أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click">استيفانوس</span> ومارمينا العجايبي
-        </div>
-        
-        <!-- زر دخول مستخدم -->
-        <div>
-            <button type="button" id="login-btn" class="formal-button">دخول مستخدم</button>
-        </div>
+  <div class="welcome-box">
+    <div class="ornament"><span>✝</span></div>
+
+    <div class="formal-gold">
+      أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click">استيفانوس</span> ومارمينا العجايبي
     </div>
 
-    <!-- كود الـ JavaScript للتحكم بالنظرات ووظائف الأزرار -->
-    <script>
-        // عداد النقرات على كلمة استيفانوس (5 مرات)
-        let clickCount = 0;
-        const targetWord = document.getElementById('secret-click');
+    <div class="subtitle">برجاء الدخول لمتابعة البرنامج</div>
 
-        targetWord.addEventListener('click', function() {
-            clickCount++;
-            if (clickCount === 5) {
-                window.location.href = 'a/sign.html';
-            }
-        });
+    <button type="button" id="login-btn" class="formal-button">دخول مستخدم</button>
+  </div>
 
-        // زر دخول مستخدم للانتقال إلى u/sign.html
-        document.getElementById('login-btn').addEventListener('click', function() {
-            window.location.href = 'u/sign.html';
-        });
-    </script>
+  <script>
+    let clickCount = 0;
+    const targetWord = document.getElementById('secret-click');
+
+    targetWord.addEventListener('click', function() {
+      clickCount++;
+      if (clickCount === 5) {
+        window.location.href = 'a/sign.html';
+      }
+    });
+
+    document.getElementById('login-btn').addEventListener('click', function() {
+      window.location.href = 'u/sign.html';
+    });
+  </script>
 
 </body>
 </html>
