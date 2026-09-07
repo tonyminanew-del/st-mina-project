@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم العليا - Mina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: linear-gradient(135deg, #050811 0%, #000000 100%);
+            min-height: 100vh;
+            font-family: 'Reem Kufi', 'Cairo', sans-serif;
+            color: #f3e5ab;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .main-container {
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* اسم Mina بخط ضخم جداً مع شادو أزرق وتأثير عكسي */
+        .super-admin-title {
+            font-size: clamp(70px, 12vw, 110px);
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+            text-shadow: 
+                0 0 15px rgba(0, 210, 255, 0.9), 
+                0 0 30px rgba(0, 210, 255, 0.7), 
+                0 0 60px rgba(0, 210, 255, 0.5),
+                0 0 100px rgba(0, 119, 255, 0.3),
+                4px 4px 0px #d4af37,
+                8px 8px 20px rgba(0, 0, 0, 0.9);
+            animation: blueGlow 3s ease-in-out infinite alternate;
+        }
+
+        .super-subtitle {
+            font-size: 22px;
+            color: #d4af37;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        /* حاوية الأقسام واللوحات داخل صفحة مينا */
+        .panels-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .panels-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .control-panel {
+            background: rgba(10, 15, 30, 0.85);
+            border: 2px solid #00d2ff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.15);
+            text-align: right;
+        }
+
+        .control-panel h3 {
+            font-size: 20px;
+            color: #f8fafc;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-panel h3 i {
+            color: #00d2ff;
+        }
+
+        .toggle-sys-btn, .action-btn {
+            background: linear-gradient(135deg, #10b981, #047857);
+            border: none;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-family: 'Reem Kufi', 'Cairo', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .toggle-sys-btn.locked-mode {
+            background: linear-gradient(135deg, #ef4444, #991b1b);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            text-decoration: none;
+        }
+
+        .toggle-sys-btn:hover, .action-btn:hover {
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+
+        .home-link {
+            display: inline-block;
+            margin-top: 40px;
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px dashed #d4af37;
+            padding-bottom: 3px;
+        }
+        .home-link:hover {
+            color: #fff;
+            border-color: #fff;
+        }
+
+        @keyframes blueGlow {
+            from {
+                text-shadow: 
+                    0 0 15px rgba(0, 210, 255, 0.7), 
+                    0 0 30px rgba(0, 210, 255, 0.5), 
+                    0 0 50px rgba(0, 210, 255, 0.3),
+                    4px 4px 0px #d4af37,
+                    8px 8px 20px rgba(0, 0, 0, 0.9);
+            }
+            to {
+                text-shadow: 
+                    0 0 25px rgba(0, 210, 255, 1), 
+                    0 0 50px rgba(0, 210, 255, 0.8), 
+                    0 0 90px rgba(0, 210, 255, 0.6),
+                    4px 4px 0px #d4af37,
+                    8px 8px 25px rgba(0, 0, 0, 0.9);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1 class="super-admin-title">Mina</h1>
+        <p class="super-subtitle">لوحة التحكم العليا - السوبر أدمن</p>
+
+        <div class="panels-grid">
+            <!-- لوحة التحكم في نظام استيفانوس -->
+            <div class="control-panel">
+                <h3><i class="fas fa-shield-alt"></i> نظام استيفانوس</h3>
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 15px;">التحكم في قفل أو فتح الصلاحية للضغط 5 مرات من الصفحة الرئيسية.</p>
+                <button id="sysToggleBtn" class="toggle-sys-btn" onclick="toggleStephanusSystem()">
+                    <i id="sysIcon" class="fas fa-unlock"></i> فتح صلاحية استيفانوس
+                </button>
+            </div>
+
+            <!-- لوحة عرض الخدام -->
+            <div class="control-panel">
+                <h3><i class="fas fa-users-cog"></i> قسم عرض الخدام</h3>
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 15px;">استعراض بيانات وقوائم الخدام المتاحة داخل النظام وإدارتها.</p>
+                <a href="servants.html" class="action-btn">
+                    <i class="fas fa-list-ul"></i> فتح قائمة وعرض الخدام
+                </a>
+            </div>
+        </div>
+
+        <div>
+            <a href="index.html" class="home-link"><i class="fas fa-home"></i> العودة للرئيسية</a>
+        </div>
+    </div>
+
+    <script>
+        const sysToggleBtn = document.getElementById('sysToggleBtn');
+
+        function updateButtonState() {
+            const isUnlocked = localStorage.getItem('stephanus_unlocked') === 'true';
+            if (isUnlocked) {
+                sysToggleBtn.innerHTML = '<i class="fas fa-lock"></i> إغلاق صلاحية استيفانوس';
+                sysToggleBtn.className = "toggle-sys-btn locked-mode";
+            } else {
+                sysToggleBtn.innerHTML = '<i class="fas fa-unlock"></i> فتح صلاحية استيفانوس';
+                sysToggleBtn.className = "toggle-sys-btn";
+            }
+        }
+
+        function toggleStephanusSystem() {
+            const currentStatus = localStorage.getItem('stephanus_unlocked') === 'true';
+            localStorage.setItem('stephanus_unlocked', !currentStatus);
+            updateButtonState();
+        }
+
+        window.onload = updateButtonState;
+    </script>
+</body>
+</html>

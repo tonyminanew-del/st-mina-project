@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الهدايا المستلمة - متجر الكنيسة</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+            projectId: "st-mina-c01ec",
+            storageBucket: "st-mina-c01ec.firebasestorage.app",
+            messagingSenderId: "792349150559",
+            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+            measurementId: "G-XZGSBG05KR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let allServants = [];
+        let allNotifications = [];
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            setupMenu();
+            await loadData();
+        });
+
+        function setupMenu() {
+            const logoutBtn = document.getElementById("logoutBtn");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", () => {
+                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
+                        localStorage.clear();
+                        window.location.href = "../index.html";
+                    }
+                });
+            }
+        }
+
+        async function loadData() {
+            showLoading();
+
+            try {
+                const usersSnapshot = await getDocs(collection(db, "users"));
+                allServants = [];
+
+                usersSnapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const username = data.username || data.userName || data.name || data.fullName || data.displayName || docSnap.id;
+                    const stage = data.stage || data.stageName || "عام";
+                    const grade = data.grade || data.className || "";
+
+                    allServants.push({
+                        id: docSnap.id,
+                        username: String(username).trim(),
+                        fullName: data.fullName || data.name || data.userName || username,
+                        stage: String(stage).trim(),
+                        grade: String(grade).trim(),
+                        image: data.image || data.photoBase64 || data.photo || ""
+                    });
+                });
+
+                const notificationsSnapshot = await getDocs(collection(db, "notifications"));
+                allNotifications = [];
+
+                notificationsSnapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.type && data.type !== "gift_order") return;
+
+                    allNotifications.push({
+                        id: docSnap.id,
+                        username: String(data.username || "").trim(),
+                        message: String(data.message || "").trim(),
+                        giftName: data.giftName || data.title || "هدية",
+                        giftImage: data.giftImage || data.image || data.photo || "", // جلب صورة الهدية إن وجدت
+                        pointsSpent: Number(data.pointsSpent || 0),
+                        timestamp: data.timestamp || null,
+                        deliveredAt: data.deliveredAt || data.updatedAt || null
+                    });
+                });
+
+                showServants();
+                setupSearch();
+
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                showError("حدث خطأ أثناء تحميل البيانات. تأكد من اتصالك بالإنترنت وصلاحيات Firestore.");
+            }
+        }
+
+        function showServants(searchText = "") {
+            const container = document.getElementById("servantsContainer");
+            container.innerHTML = "";
+
+            let servants = [...allServants];
+
+            if (searchText.trim()) {
+                const search = searchText.trim().toLowerCase();
+                servants = servants.filter(user => user.fullName.toLowerCase().includes(search));
+            }
+
+            servants.sort((a, b) => a.fullName.localeCompare(b.fullName, "ar"));
+            document.getElementById("servantsCount").textContent = servants.length;
+
+            if (servants.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-box">
+                        <div class="empty-icon"><i class="fas fa-user-slash"></i></div>
+                        <h3>لا يوجد مخدومون</h3>
+                        <p>لم يتم العثور على أي بيانات في قاعدة البيانات.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            servants.forEach(user => {
+                const card = document.createElement("div");
+                card.className = "servant-card";
+                const gifts = getServantGifts(user.fullName, user.username);
+                const giftCount = gifts.length;
+
+                let avatarHTML = user.image ? 
+                    `<img src="${user.image}" alt="${escapeHTML(user.fullName)}" class="servant-avatar">` :
+                    `<div class="servant-avatar default-avatar"><i class="fas fa-user"></i></div>`;
+
+                let displaySubText = user.grade ? `${user.stage} - ${user.grade}` : (user.stage || "مخدوم");
+
+                card.innerHTML = `
+                    <div class="servant-right">
+                        ${avatarHTML}
+                        <div class="servant-info">
+                            <div class="servant-name">${escapeHTML(user.fullName)}</div>
+                            <div class="servant-grade">
+                                <i class="fas fa-layer-group"></i>
+                                ${escapeHTML(displaySubText)}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="servant-left">
+                        <div class="gift-count">
+                            <i class="fas fa-gift"></i>
+                            <span>${giftCount}</span>
+                        </div>
+                        <i class="fas fa-chevron-left arrow"></i>
+                    </div>
+                `;
+
+                card.addEventListener("click", () => openServant(user, displaySubText));
+                container.appendChild(card);
+            });
+        }
+
+        function getServantGifts(fullName, username) {
+            return allNotifications.filter(notification => {
+                const notificationUser = String(notification.username || "").trim().toLowerCase();
+                const notificationMessage = String(notification.message || "").trim().toLowerCase();
+                const userName = String(username || "").trim().toLowerCase();
+                const full = String(fullName || "").trim().toLowerCase();
+                
+                return (
+                    (userName && notificationUser === userName) ||
+                    (full && notificationUser === full) ||
+                    (notificationUser && full.includes(notificationUser)) ||
+                    (notificationUser && notificationUser.includes(full)) ||
+                    (notificationMessage.includes(full))
+                );
+            });
+        }
+
+        function openServant(user, subText) {
+            const gifts = getServantGifts(user.fullName, user.username);
+
+            document.getElementById("servantsSection").style.display = "none";
+            document.getElementById("detailsSection").style.display = "block";
+
+            document.getElementById("selectedName").textContent = user.fullName;
+            document.getElementById("selectedGrade").textContent = subText;
+            document.getElementById("selectedGiftCount").textContent = gifts.length;
+
+            const container = document.getElementById("giftsContainer");
+            container.innerHTML = "";
+
+            if (gifts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-box">
+                        <div class="empty-icon"><i class="fas fa-gift"></i></div>
+                        <h3>لا توجد هدايا مستلمة</h3>
+                        <p>هذا المخدوم لم يستلم أي هدايا مسجلة حتى الآن.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            gifts.sort((a, b) => getDateValue(b.deliveredAt || b.timestamp) - getDateValue(a.deliveredAt || a.timestamp));
+
+            gifts.forEach((gift, index) => {
+                const card = document.createElement("div");
+                card.className = "gift-card";
+                const date = formatDate(gift.deliveredAt || gift.timestamp);
+
+                let giftImageHTML = gift.giftImage ?
+                    `<img src="${gift.giftImage}" alt="${escapeHTML(gift.giftName)}" class="gift-img">` :
+                    `<div class="gift-icon"><i class="fas fa-gift"></i></div>`;
+
+                card.innerHTML = `
+                    <div class="gift-number">${index + 1}</div>
+                    ${giftImageHTML}
+                    <div class="gift-details">
+                        <div class="gift-name">${escapeHTML(gift.giftName)}</div>
+                        <div class="gift-date"><i class="fas fa-calendar-alt"></i> ${date}</div>
+                        ${gift.message ? `<div class="gift-msg"><i class="fas fa-info-circle"></i> ${escapeHTML(gift.message)}</div>` : ''}
+                    </div>
+                    <div class="gift-points">
+                        <i class="fas fa-star"></i>
+                        <span>${gift.pointsSpent}</span>
+                        <small>نقطة</small>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function backToServants() {
+            document.getElementById("detailsSection").style.display = "none";
+            document.getElementById("servantsSection").style.display = "block";
+        }
+
+        function setupSearch() {
+            const search = document.getElementById("searchInput");
+            if (search) {
+                search.addEventListener("input", () => {
+                    showServants(search.value);
+                });
+            }
+        }
+
+        function getDateValue(value) {
+            if (!value) return 0;
+            if (typeof value.toDate === "function") return value.toDate().getTime();
+            if (value instanceof Date) return value.getTime();
+            const date = new Date(value);
+            return isNaN(date.getTime()) ? 0 : date.getTime();
+        }
+
+        function formatDate(value) {
+            if (!value) return "تاريخ غير محدد";
+            let date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
+            if (isNaN(date.getTime())) return "تاريخ غير محدد";
+            return date.toLocaleString("ar-EG", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
+        }
+
+        function escapeHTML(value) {
+            return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function showLoading() {
+            document.getElementById("servantsContainer").innerHTML = `
+                <div class="loading-box">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>جاري تحميل جميع المخدومين والمراحل...</p>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById("servantsContainer").innerHTML = `
+                <div class="error-box">
+                    <div class="error-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3>حدث خطأ</h3>
+                    <p>${escapeHTML(message)}</p>
+                    <button class="retry-btn" onclick="location.reload()"><i class="fas fa-redo"></i> إعادة المحاولة</button>
+                </div>
+            `;
+        }
+
+        window.backToServants = backToServants;
+    </script>
+
+    <style>
+        :root {
+            --wine-900: #4a0e16;
+            --wine-800: #6b1420;
+            --wine-700: #7c1b28;
+            --gold: #c9a04d;
+            --gold-light: #e6c878;
+            --paper: #f6f1e9;
+            --card: #ffffff;
+            --ink: #2a2320;
+            --ink-soft: #6b625c;
+            --line: #e9dfd0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #000000 0%, #001b3d 45%, #000000 100%);
+            font-family: "Cairo", sans-serif;
+            color: var(--ink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .navbar {
+            width: 100%;
+            background: linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(74, 14, 22, 0.25);
+            position: relative;
+        }
+        .navbar::after {
+            content: "";
+            position: absolute;
+            bottom: 0; right: 0; left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .navbar-actions { display: flex; gap: 10px; align-items: center; }
+        .nav-home-btn, .logout-btn-nav {
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(230,200,120,0.4);
+            color: var(--gold-light);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: "Cairo", sans-serif;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.25s;
+        }
+        .nav-home-btn:hover, .logout-btn-nav:hover {
+            background: rgba(230,200,120,0.15);
+            border-color: var(--gold);
+        }
+        .logout-btn-nav { border-color: rgba(220, 53, 69, 0.4); color: #ff6b6b; }
+        .logout-btn-nav:hover { background: rgba(220, 53, 69, 0.2); border-color: #dc3545; color: #ff8585; }
+        .navbar-title { color: var(--gold-light); font-weight: 700; font-family: "Amiri", serif; font-size: 20px; }
+        .main-content { width: 100%; max-width: 700px; padding: 26px 16px 60px; }
+        .page-title { color: var(--gold-light); font-family: "Amiri", serif; font-size: 27px; text-align: center; margin-bottom: 22px; }
+        .stage-card {
+            background: linear-gradient(145deg, #ffffff, #f8f1e5);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stage-card::before {
+            content: "";
+            position: absolute;
+            top: 0; right: 0; left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--wine-900), var(--gold), var(--wine-900));
+        }
+        .stage-info { display: flex; flex-direction: column; gap: 4px; }
+        .stage-label { color: var(--ink-soft); font-size: 13px; }
+        .stage-name { color: var(--wine-800); font-family: "Amiri", serif; font-size: 21px; font-weight: 700; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 3px 12px; }
+        .section-header h2 { color: #fbeed4; font-family: "Amiri", serif; font-size: 21px; }
+        .servants-count-badge {
+            background: rgba(201, 160, 77, 0.15);
+            color: var(--gold-light);
+            border: 1px solid rgba(230, 200, 120, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .search-box { position: relative; margin-bottom: 16px; }
+        .search-box input {
+            width: 100%;
+            padding: 13px 45px 13px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(230, 200, 120, 0.25);
+            border-radius: 14px;
+            color: #ffffff;
+            font-family: "Cairo", sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: 0.25s;
+        }
+        .search-box input:focus { border-color: var(--gold); background: rgba(255, 255, 255, 0.12); }
+        .search-box input::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .search-box i { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--gold-light); font-size: 15px; }
+        .servants-list { display: flex; flex-direction: column; gap: 10px; }
+        .servant-card {
+            background: linear-gradient(145deg, #ffffff, #f8f1e5);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            transition: 0.25s;
+        }
+        .servant-card:hover { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(201, 160, 77, 0.2); }
+        .servant-right { display: flex; align-items: center; gap: 14px; }
+        .servant-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
+        .default-avatar { background: var(--wine-900); color: var(--gold-light); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .servant-info { display: flex; flex-direction: column; gap: 2px; }
+        .servant-name { color: var(--wine-800); font-family: "Amiri", serif; font-size: 18px; font-weight: 700; }
+        .servant-grade { color: var(--ink-soft); font-size: 12px; display: flex; align-items: center; gap: 5px; }
+        .servant-left { display: flex; align-items: center; gap: 12px; }
+        .gift-count {
+            background: rgba(201, 160, 77, 0.12);
+            border: 1px solid rgba(201, 160, 77, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--wine-800);
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .gift-count i { color: var(--gold); }
+        .arrow { color: var(--ink-soft); font-size: 14px; transition: 0.2s; }
+        .servant-card:hover .arrow { color: var(--wine-800); transform: translateX(-3px); }
+        .details-section { display: none; }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(230, 200, 120, 0.3);
+            color: var(--gold-light);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-family: "Cairo", sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            transition: 0.25s;
+        }
+        .back-btn:hover { background: rgba(230, 200, 120, 0.15); border-color: var(--gold); }
+        .gifts-list { display: flex; flex-direction: column; gap: 12px; }
+        .gift-card {
+            background: linear-gradient(145deg, #ffffff, #f8f1e5);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+        .gift-number {
+            width: 30px; height: 30px;
+            background: var(--wine-900); color: var(--gold-light);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 12px; flex-shrink: 0;
+        }
+        .gift-img, .gift-icon {
+            width: 52px; height: 52px;
+            border-radius: 12px; object-fit: cover; border: 1.5px solid var(--gold);
+            flex-shrink: 0;
+        }
+        .gift-icon {
+            background: rgba(201, 160, 77, 0.15); color: var(--wine-800);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .gift-details { flex-grow: 1; display: flex; flex-direction: column; gap: 3px; }
+        .gift-name { color: var(--wine-800); font-family: "Amiri", serif; font-size: 18px; font-weight: 700; }
+        .gift-date, .gift-msg { color: var(--ink-soft); font-size: 11px; display: flex; align-items: center; gap: 5px; }
+        .gift-msg { color: var(--wine-700); font-weight: 600; }
+        .gift-points {
+            display: flex; flex-direction: column; align-items: center;
+            background: rgba(201, 160, 77, 0.12);
+            border: 1px solid rgba(201, 160, 77, 0.3);
+            padding: 6px 12px; border-radius: 12px; color: var(--wine-800); font-weight: 700;
+        }
+        .gift-points i { color: var(--gold); font-size: 13px; margin-bottom: 2px; }
+        .gift-points span { font-size: 15px; }
+        .gift-points small { font-size: 10px; color: var(--ink-soft); }
+        .empty-box, .loading-box, .error-box {
+            background: linear-gradient(145deg, #ffffff, #f8f1e5);
+            border: 1px solid var(--line);
+            border-radius: 20px; padding: 35px 20px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-top: 15px;
+        }
+        .empty-icon, .error-icon { font-size: 42px; color: var(--gold); margin-bottom: 12px; }
+        .loading-box i { font-size: 38px; color: var(--wine-800); margin-bottom: 12px; }
+        .empty-box h3, .error-box h3 { color: var(--wine-800); font-family: "Amiri", serif; font-size: 20px; margin-bottom: 6px; }
+        .empty-box p, .loading-box p, .error-box p { color: var(--ink-soft); font-size: 14px; }
+        .retry-btn {
+            margin-top: 14px; background: var(--wine-800); color: var(--gold-light);
+            border: none; padding: 8px 18px; border-radius: 10px;
+            font-family: "Cairo", sans-serif; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: 0.25s;
+        }
+        .retry-btn:hover { background: var(--wine-900); }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="navbar-title">متجر الكنيسة</div>
+        <div class="navbar-actions">
+            <a href="home.html" class="nav-home-btn">
+                <i class="fas fa-home"></i> الرئيسية
+            </a>
+            <button class="logout-btn-nav" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> خروج
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div id="servantsSection">
+            <h1 class="page-title">الهدايا المستلمة لجميع المخدومين</h1>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="ابحث باسم المخدوم في أي مرحلة...">
+                <i class="fas fa-search"></i>
+            </div>
+
+            <div class="section-header">
+                <h2>جميع المخدومين (كل المراحل)</h2>
+                <span class="servants-count-badge" id="servantsCount">0</span>
+            </div>
+
+            <div class="servants-list" id="servantsContainer"></div>
+        </div>
+
+        <div id="detailsSection" class="details-section">
+            <button class="back-btn" onclick="backToServants()">
+                <i class="fas fa-arrow-right"></i> العودة للقائمة العامة
+            </button>
+
+            <div class="stage-card">
+                <div class="stage-info">
+                    <div class="stage-label">سجل هدايا المخدوم</div>
+                    <div class="stage-name" id="selectedName">...</div>
+                    <div class="stage-label" id="selectedGrade" style="margin-top: 4px;">...</div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2>الهدايا المستلمة وتفاصيلها</h2>
+                <span class="servants-count-badge" id="selectedGiftCount">0</span>
+            </div>
+
+            <div class="gifts-list" id="giftsContainer"></div>
+        </div>
+    </main>
+</body>
+
+</html>
