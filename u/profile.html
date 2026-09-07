@@ -4,229 +4,290 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الملف الشخصي - لوحة التحكم</title>
-    
-    <!-- استيراد خط عربي فخم وأيقونات FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root{
+            --wine-900:#4a0e16;
+            --wine-800:#6b1420;
+            --wine-700:#7c1b28;
+            --gold:#c9a04d;
+            --gold-light:#e6c878;
+            --paper:#f6f1e9;
+            --card:#ffffff;
+            --ink:#2a2320;
+            --ink-soft:#6b625c;
+            --line:#e9dfd0;
+            --green:#16a34a;
+            --green-dark:#15803d;
         }
 
-        body {
-            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            font-family: 'Amiri', serif;
-            color: #f8fafc;
-            position: relative;
+        * { box-sizing:border-box; margin:0; padding:0; }
+
+        body{
+            background:var(--paper);
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+            font-family:'Cairo', sans-serif;
+            color:var(--ink);
         }
 
-        /* زر الرجوع للخلف */
-        .back-btn {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 2px solid rgba(56, 189, 248, 0.35);
-            color: #38bdf8;
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-family: 'Amiri', serif;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-            text-decoration: none;
+        /* ===== الهيدر ===== */
+        header.church-header{
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding:18px 18px 22px;
+            position:relative;
+            box-shadow:0 8px 20px rgba(74,14,22,0.25);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
         }
 
-        .back-btn:hover {
-            background: rgba(56, 189, 248, 0.15);
-            border-color: #38bdf8;
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        header.church-header::after{
+            content:'';
+            position:absolute;
+            bottom:0; right:0; left:0;
+            height:4px;
+            background:linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
-        .profile-container {
-            width: 100%;
-            max-width: 650px;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(16px);
-            padding: 35px;
-            border-radius: 24px;
-            box-shadow: 
-                0 0 30px rgba(56, 189, 248, 0.2),
-                0 20px 40px rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(56, 189, 248, 0.35);
-            margin-top: 30px; /* لترك مساحة لزر الرجوع في الشاشات الصغيرة */
+        header.church-header h2{
+            font-family:'Amiri', serif;
+            color:#fbeed4;
+            font-size:18px;
+            font-weight:700;
         }
 
-        .profile-header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid rgba(56, 189, 248, 0.2);
-            padding-bottom: 20px;
-            position: relative;
+        .back-btn{
+            background:rgba(255,255,255,0.08);
+            border:1.5px solid rgba(230,200,120,0.4);
+            color:var(--gold-light);
+            padding:8px 16px;
+            border-radius:20px;
+            font-family:'Cairo', sans-serif;
+            font-weight:600;
+            font-size:13px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            gap:6px;
+            text-decoration:none;
+            transition:all .25s ease;
         }
 
-        .avatar-container {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 15px auto;
+        .back-btn:hover{
+            background:rgba(230,200,120,0.15);
+            border-color:var(--gold);
+            transform:translateY(-2px);
         }
 
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #38bdf8;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
-            background: #1e293b;
+        /* ===== المحتوى ===== */
+        .main-content{
+            flex:1;
+            padding:18px 16px 40px;
+            max-width:620px;
+            width:100%;
+            margin:0 auto;
         }
 
-        .upload-btn-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            background: #38bdf8;
-            color: #020617;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            transition: 0.3s;
+        /* ===== الويدجت الموحد ===== */
+        .widget{
+            background:var(--card);
+            border-radius:22px;
+            border:1px solid var(--line);
+            box-shadow:0 12px 28px rgba(74,14,22,0.08);
+            margin-bottom:18px;
+            overflow:hidden;
+            position:relative;
         }
 
-        .upload-btn-label:hover {
-            background: #7dd3fc;
-            transform: scale(1.1);
+        .widget::before{
+            content:'';
+            position:absolute;
+            top:0; right:0; left:0;
+            height:3px;
+            background:linear-gradient(90deg, var(--wine-700), var(--gold), var(--wine-700));
+            opacity:.9;
         }
 
-        #avatar-input {
-            display: none;
+        .widget-head{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            padding:16px 18px 12px;
+            border-bottom:1px dashed var(--line);
         }
 
-        h1 {
-            color: #38bdf8;
-            font-size: 28px;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        .widget-head .title-row{
+            display:flex;
+            align-items:center;
+            gap:10px;
         }
 
-        .badge {
-            display: inline-block;
-            background: rgba(56, 189, 248, 0.1);
-            color: #38bdf8;
-            padding: 4px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            margin-top: 8px;
+        .widget-head .icon-badge{
+            width:30px; height:30px;
+            border-radius:10px;
+            background:var(--wine-700);
+            color:var(--gold-light);
+            display:flex; align-items:center; justify-content:center;
+            font-size:13px;
+            flex-shrink:0;
         }
 
-        .info-section {
-            background: #020617;
-            border: 1px solid #1e293b;
-            border-radius: 16px;
-            padding: 20px 25px;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+        .widget-head h3{
+            font-size:14px;
+            font-weight:700;
+            color:var(--wine-800);
         }
 
-        .section-title {
-            color: #94a3b8;
-            font-size: 18px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed #1e293b;
-            padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* بطاقة البروفايل */
+        .profile-widget .widget-body{
+            padding:22px 20px 26px;
+            text-align:center;
         }
 
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(30, 41, 59, 0.4);
+        .avatar-container{
+            position:relative;
+            width:104px;
+            height:104px;
+            margin:0 auto 14px;
         }
 
-        .info-row:last-child {
-            border-bottom: none;
+        .avatar-img{
+            width:100%;
+            height:100%;
+            border-radius:50%;
+            object-fit:cover;
+            border:3px solid var(--gold);
+            box-shadow:0 8px 20px rgba(74,14,22,0.2);
+            background:var(--paper);
         }
 
-        .info-label {
-            color: #64748b;
-            font-size: 16px;
+        .upload-btn-label{
+            position:absolute;
+            bottom:0; left:0;
+            background:var(--wine-700);
+            color:var(--gold-light);
+            width:34px; height:34px;
+            border-radius:50%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            cursor:pointer;
+            border:2px solid var(--card);
+            box-shadow:0 4px 10px rgba(0,0,0,0.25);
+            transition:.3s;
         }
 
-        .info-value {
-            color: #f1f5f9;
-            font-size: 17px;
-            font-weight: bold;
+        .upload-btn-label:hover{
+            background:var(--wine-900);
+            transform:scale(1.08);
         }
 
-        .info-value input {
-            background: #1e293b;
-            border: 1px solid #38bdf8;
-            color: #fff;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-family: 'Amiri', serif;
-            font-size: 16px;
-            width: 180px;
-            text-align: center;
+        #avatar-input{ display:none; }
+
+        .profile-widget h1{
+            font-family:'Amiri', serif;
+            font-size:23px;
+            color:var(--wine-800);
+            margin-bottom:8px;
         }
 
-        .btn {
-            background: linear-gradient(135deg, #0284c7, #0369a1);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-family: 'Amiri', serif;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(3, 105, 161, 0.4);
-            transition: 0.3s;
+        .badge{
+            display:inline-block;
+            background:var(--paper);
+            color:var(--wine-700);
+            padding:5px 16px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:600;
+            border:1px solid var(--line);
         }
 
-        .btn:hover {
-            background: linear-gradient(135deg, #0369a1, #075985);
-            transform: translateY(-2px);
+        /* قسم المعلومات */
+        .info-widget .widget-body{ padding:6px 18px 8px; }
+
+        .info-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:13px 0;
+            border-bottom:1px solid var(--line);
         }
 
-        .btn-save {
-            background: linear-gradient(135deg, #16a34a, #15803d);
-            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
+        .info-row:last-child{ border-bottom:none; }
+
+        .info-label{
+            color:var(--ink-soft);
+            font-size:14px;
         }
 
-        .btn-save:hover {
-            background: linear-gradient(135deg, #15803d, #166534);
+        .info-value{
+            color:var(--ink);
+            font-size:15px;
+            font-weight:700;
         }
 
-        .loading {
-            color: #fde047;
-            font-size: 22px;
-            font-weight: bold;
-            text-align: center;
-            padding: 40px;
+        .info-value input,
+        .info-value select{
+            background:var(--paper);
+            border:1.5px solid var(--gold);
+            color:var(--ink);
+            padding:6px 10px;
+            border-radius:8px;
+            font-family:'Cairo', sans-serif;
+            font-size:14px;
+            width:170px;
+            text-align:center;
+        }
+
+        .parents-title{
+            padding:14px 18px 4px;
+            font-weight:700;
+            font-size:13px;
+            color:var(--wine-800);
+        }
+
+        .parents-body{ padding:0 18px 6px; }
+
+        .btn{
+            background:linear-gradient(135deg, var(--wine-700), var(--wine-900));
+            color:#fbeed4;
+            border:none;
+            padding:9px 18px;
+            border-radius:20px;
+            font-family:'Cairo', sans-serif;
+            font-weight:600;
+            font-size:13px;
+            cursor:pointer;
+            box-shadow:0 4px 12px rgba(74,14,22,0.25);
+            transition:.3s;
+        }
+
+        .btn:hover{
+            background:linear-gradient(135deg, var(--wine-900), var(--wine-700));
+            transform:translateY(-1px);
+        }
+
+        .btn-save{
+            background:linear-gradient(135deg, var(--green), var(--green-dark));
+            box-shadow:0 4px 12px rgba(22,163,74,0.3);
+        }
+
+        .btn-save:hover{
+            background:linear-gradient(135deg, var(--green-dark), #166534);
+        }
+
+        .loading{
+            color:var(--wine-700);
+            font-size:18px;
+            font-weight:700;
+            text-align:center;
+            padding:50px 20px;
         }
     </style>
 
@@ -252,8 +313,7 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            
-            // محاولة جلب المعرف من الرابط أولاً، وإذا لم يوجد، يتم جلبه من الـ LocalStorage
+
             currentUsernameUrl = urlParams.get('user') || localStorage.getItem('userDocId');
 
             const loadingText = document.getElementById('loading-text');
@@ -261,11 +321,9 @@
 
             if (!currentUsernameUrl) {
                 loadingText.innerText = "يرجى تسجيل الدخول أولاً أو تحديد المستخدم!";
-                loadingText.style.color = "#f87171";
                 return;
             }
 
-            // تخزين المعرف احتياطياً في الـ LocalStorage
             localStorage.setItem('userDocId', currentUsernameUrl);
 
             try {
@@ -274,8 +332,7 @@
 
                 if (docSnap.exists()) {
                     const userData = docSnap.data();
-                    
-                    // تعبئة البيانات
+
                     document.getElementById('welcome-msg').innerText = `أهلاً بك يا ${userData.username || currentUsernameUrl}`;
                     document.getElementById('val-username').innerText = userData.username || "-";
                     document.getElementById('val-userid').innerText = userData.userId || "-";
@@ -286,11 +343,10 @@
                     document.getElementById('val-father').innerText = userData.fatherPhone || "-";
                     document.getElementById('val-mother').innerText = userData.motherPhone || "-";
 
-                    // عرض الصورة إن وجدت أو توليدها افتراضياً
                     if (userData.avatarUrl) {
                         document.getElementById('profile-avatar').src = userData.avatarUrl;
                     } else {
-                        document.getElementById('profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || 'User')}&background=0284c7&color=fff&size=150`;
+                        document.getElementById('profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || 'User')}&background=7c1b28&color=fbeed4&size=150`;
                     }
 
                     loadingText.style.display = 'none';
@@ -298,35 +354,65 @@
 
                 } else {
                     loadingText.innerText = "عذراً، لم يتم العثور على بيانات هذا المستخدم!";
-                    loadingText.style.color = "#f87171";
                 }
 
             } catch (error) {
                 console.error("خطأ في جلب البيانات:", error);
                 loadingText.innerText = "حدث خطأ أثناء الاتصال بقاعدة البيانات.";
-                loadingText.style.color = "#f87171";
             }
         });
 
-        // دالة تبديل وضع التعديل
+        // خيارات المرحلة والصف الدراسي
+        const stageGrades = {
+            'ابتدائي': ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'],
+            'إعدادي': ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'],
+            'ثانوي': ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي']
+        };
+
+        function buildStageSelect(current) {
+            const stages = Object.keys(stageGrades);
+            const options = stages.map(s => `<option value="${s}" ${s === current ? 'selected' : ''}>${s}</option>`).join('');
+            return `<select id="input-stage" onchange="onStageChange()">${options}</select>`;
+        }
+
+        function buildGradeSelect(stage, current) {
+            const grades = stageGrades[stage] || [];
+            const options = grades.map(g => `<option value="${g}" ${g === current ? 'selected' : ''}>${g}</option>`).join('');
+            return `<select id="input-grade">${options}</select>`;
+        }
+
+        window.onStageChange = function() {
+            const stage = document.getElementById('input-stage').value;
+            document.getElementById('val-grade').innerHTML = buildGradeSelect(stage, '');
+        }
+
         window.toggleEditMode = async function() {
-            const fields = ['username', 'birthdate', 'stage', 'grade', 'address', 'father', 'mother'];
+            const textFields = ['username', 'birthdate', 'address', 'father', 'mother'];
             const btn = document.getElementById('edit-btn');
 
             if (!isEditing) {
-                fields.forEach(field => {
+                textFields.forEach(field => {
                     const span = document.getElementById(`val-${field}`);
                     const val = span.innerText === '-' ? '' : span.innerText;
                     span.innerHTML = `<input type="text" id="input-${field}" value="${val}">`;
                 });
+
+                const currentStage = document.getElementById('val-stage').innerText;
+                const currentGrade = document.getElementById('val-grade').innerText;
+                const stageValue = (currentStage in stageGrades) ? currentStage : 'ابتدائي';
+
+                document.getElementById('val-stage').innerHTML = buildStageSelect(stageValue);
+                document.getElementById('val-grade').innerHTML = buildGradeSelect(stageValue, currentGrade === '-' ? '' : currentGrade);
+
                 btn.innerText = "حفظ التغييرات";
                 btn.classList.add('btn-save');
                 isEditing = true;
             } else {
+                const fields = ['username', 'birthdate', 'stage', 'grade', 'address', 'father', 'mother'];
                 btn.innerText = "جاري الحفظ...";
                 try {
                     const docRef = doc(db, "users", currentUsernameUrl);
-                    
+
                     const updatedData = {
                         username: document.getElementById('input-username').value,
                         birthdate: document.getElementById('input-birthdate').value,
@@ -359,7 +445,6 @@
             }
         }
 
-        // رفع وتغيير الصورة الشخصية
         window.handleImageUpload = async function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -384,72 +469,83 @@
 </head>
 <body>
 
-    <!-- زر الرجوع للرئيسية -->
-    <a href="home.html" class="back-btn">
-        <i class="fas fa-arrow-right"></i>
-        <span>الرئيسية</span>
-    </a>
+    <header class="church-header">
+        <h2>الملف الشخصي</h2>
+        <a href="home.html" class="back-btn">
+            <i class="fas fa-arrow-right"></i>
+            <span>الرئيسية</span>
+        </a>
+    </header>
 
-    <div class="profile-container">
+    <div class="main-content">
+
         <!-- رسالة التحميل -->
         <div id="loading-text" class="loading">جاري تحميل الملف الشخصي... ⏳</div>
 
         <!-- محتوى البروفايل -->
         <div id="profile-content" style="display: none;">
-            
-            <div class="profile-header">
-                <div class="avatar-container">
-                    <img id="profile-avatar" class="avatar-img" alt="صورة البروفايل">
-                    <label for="avatar-input" class="upload-btn-label" title="تغيير الصورة">
-                        <i class="fas fa-camera"></i>
-                    </label>
-                    <input type="file" id="avatar-input" accept="image/*" onchange="handleImageUpload(event)">
-                </div>
 
-                <h1 id="welcome-msg">أهلاً بك</h1>
-                <div class="badge">ملف اللاعب / المستخدم</div>
+            <!-- بطاقة البروفايل -->
+            <div class="widget profile-widget">
+                <div class="widget-body">
+                    <div class="avatar-container">
+                        <img id="profile-avatar" class="avatar-img" alt="صورة البروفايل">
+                        <label for="avatar-input" class="upload-btn-label" title="تغيير الصورة">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="avatar-input" accept="image/*" onchange="handleImageUpload(event)">
+                    </div>
+
+                    <h1 id="welcome-msg">أهلاً بك</h1>
+                </div>
             </div>
 
-            <div class="info-section">
-                <div class="section-title">
-                    <span>المعلومات الشخصية والدراسية</span>
+            <!-- المعلومات الشخصية والدراسية -->
+            <div class="widget info-widget">
+                <div class="widget-head">
+                    <div class="title-row">
+                        <div class="icon-badge"><i class="fas fa-id-card"></i></div>
+                    </div>
                     <button id="edit-btn" class="btn" onclick="toggleEditMode()">تعديل البيانات</button>
                 </div>
-                
-                <div class="info-row">
-                    <span class="info-label">اسم المستخدم:</span>
-                    <span class="info-value" id="val-username">--</span>
+
+                <div class="widget-body">
+                    <div class="info-row">
+                        <span class="info-label">اسم المستخدم:</span>
+                        <span class="info-value" id="val-username">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">رقم المستخدم:</span>
+                        <span class="info-value" id="val-userid">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">تاريخ الميلاد:</span>
+                        <span class="info-value" id="val-birthdate">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">المرحلة الدراسية:</span>
+                        <span class="info-value" id="val-stage">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">الصف الدراسي:</span>
+                        <span class="info-value" id="val-grade">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">العنوان:</span>
+                        <span class="info-value" id="val-address">--</span>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">رقم المستخدم:</span>
-                    <span class="info-value" id="val-userid">--</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">تاريخ الميلاد:</span>
-                    <span class="info-value" id="val-birthdate">--</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">المرحلة الدراسية:</span>
-                    <span class="info-value" id="val-stage">--</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">الصف الدراسي:</span>
-                    <span class="info-value" id="val-grade">--</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">العنوان:</span>
-                    <span class="info-value" id="val-address">--</span>
-                </div>
-                
-                <div class="section-title" style="margin-top: 20px;">أرقام أولياء الأمور</div>
-                
-                <div class="info-row">
-                    <span class="info-label">رقم الأب:</span>
-                    <span class="info-value" id="val-father">--</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">رقم الأم:</span>
-                    <span class="info-value" id="val-mother">--</span>
+
+                <div class="parents-title">أرقام أولياء الأمور</div>
+                <div class="widget-body parents-body">
+                    <div class="info-row">
+                        <span class="info-label">رقم الأب:</span>
+                        <span class="info-value" id="val-father">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">رقم الأم:</span>
+                        <span class="info-value" id="val-mother">--</span>
+                    </div>
                 </div>
             </div>
 
