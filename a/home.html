@@ -4,276 +4,243 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الرئيسية - لوحة الخادم</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root{
+            --wine-900:#4a0e16;
+            --wine-800:#6b1420;
+            --wine-700:#7c1b28;
+            --gold:#c9a04d;
+            --gold-light:#e6c878;
+            --paper:#f6f1e9;
+            --card:#ffffff;
+            --ink:#2a2320;
+            --ink-soft:#6b625c;
+            --line:#e9dfd0;
         }
 
-        body {
-            background: radial-gradient(circle at center, #111111 0%, #000000 100%);
-            min-height: 100vh;
-            font-family: 'Reem Kufi', 'Cairo', sans-serif;
-            color: #f3e5ab;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        * { box-sizing:border-box; margin:0; padding:0; }
+
+        body{
+            background:var(--paper);
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+            font-family:'Cairo', sans-serif;
+            color:var(--ink);
         }
 
-        .navbar {
-            width: 100%;
-            padding: 20px 30px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
+        /* ===== الهيدر ===== */
+        header.church-header{
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding:18px 20px 26px;
+            text-align:center;
+            position:relative;
+            box-shadow:0 8px 20px rgba(74,14,22,0.25);
         }
 
-        .menu-btn {
-            background: rgba(18, 18, 18, 0.9);
-            border: 2px solid #d4af37;
-            color: #d4af37;
-            font-size: 24px;
-            padding: 10px 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-            transition: 0.3s;
+        header.church-header::after{
+            content:'';
+            position:absolute;
+            bottom:0; right:0; left:0;
+            height:4px;
+            background:linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
-        .menu-btn:hover {
-            background: #d4af37;
-            color: #000;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        .church-logo{
+            width:52px;
+            height:52px;
+            border-radius:50%;
+            background:var(--wine-700);
+            border:2px solid var(--gold);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:0 auto 10px;
         }
 
-        /* القائمة الجانبية الثابتة والقوية في كل الصفحات */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100%;
-            background: rgba(12, 12, 12, 0.99);
-            backdrop-filter: blur(20px);
-            border-left: 2px solid #d4af37;
-            box-shadow: -15px 0 40px rgba(0, 0, 0, 0.95);
-            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 9999;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
+        .church-logo i{
+            color:var(--gold-light);
+            font-size:24px;
         }
 
-        .sidebar.active {
-            right: 0;
+        header.church-header h2{
+            font-family:'Amiri', serif;
+            color:#fbeed4;
+            font-size:18px;
+            font-weight:700;
         }
 
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+        /* ===== المحتوى ===== */
+        .main-content{
+            flex:1;
+            padding:18px 16px 100px;
+            max-width:620px;
+            width:100%;
+            margin:0 auto;
         }
 
-        .sidebar-header h3 {
-            color: #d4af37;
-            font-size: 22px;
+        /* ===== الويدجت الموحد ===== */
+        .widget{
+            background:var(--card);
+            border-radius:22px;
+            border:1px solid var(--line);
+            box-shadow:0 12px 28px rgba(74,14,22,0.08);
+            margin-bottom:18px;
+            overflow:hidden;
+            position:relative;
         }
 
-        .close-btn {
-            background: none;
-            border: none;
-            color: #ff6b6b;
-            font-size: 24px;
-            cursor: pointer;
-            transition: 0.2s;
+        .widget::before{
+            content:'';
+            position:absolute;
+            top:0; right:0; left:0;
+            height:3px;
+            background:linear-gradient(90deg, var(--wine-700), var(--gold), var(--wine-700));
+            opacity:.9;
         }
 
-        .close-btn:hover {
-            color: #ff4545;
-            transform: scale(1.1);
+        .widget-head{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:16px 18px 4px;
         }
 
-        .sidebar-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            flex-grow: 1;
-            overflow-y: auto;
+        .widget-head .icon-badge{
+            width:30px; height:30px;
+            border-radius:10px;
+            background:var(--wine-700);
+            color:var(--gold-light);
+            display:flex; align-items:center; justify-content:center;
+            font-size:13px;
+            flex-shrink:0;
         }
 
-        .sidebar-links::-webkit-scrollbar {
-            width: 5px;
-        }
-        .sidebar-links::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.3);
-            border-radius: 10px;
+        .widget-head h3{
+            font-size:14px;
+            font-weight:700;
+            color:var(--wine-800);
         }
 
-        .sidebar-links a, .logout-link {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 14px 18px;
-            background: rgba(22, 22, 22, 0.85);
-            border: 1px solid rgba(212, 175, 55, 0.25);
-            border-radius: 14px;
-            color: #f3e5ab;
-            text-decoration: none;
-            font-size: 18px;
-            transition: 0.3s;
-            cursor: pointer;
-            width: 100%;
-            font-family: 'Reem Kufi', 'Cairo', sans-serif;
-            text-align: right;
+        /* بطاقة الترحيب */
+        .welcome-widget .widget-body{
+            padding:14px 20px 22px;
+            text-align:center;
         }
 
-        .sidebar-links a:hover {
-            background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
-            color: #000;
-            border-color: #d4af37;
-            transform: translateX(-5px);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        .welcome-widget h1{
+            font-family:'Amiri', serif;
+            font-size:22px;
+            color:var(--wine-800);
+            margin-bottom:4px;
         }
 
-        .logout-link {
-            border-color: rgba(255, 107, 107, 0.4);
-            color: #ff8b8b;
-            margin-top: auto;
+        .welcome-widget .sub{
+            color:var(--ink-soft);
+            font-size:13px;
         }
 
-        .logout-link:hover {
-            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
-            color: #fff;
-            border-color: #ff6b6b;
-            transform: translateX(-5px);
+        /* آية اليوم */
+        .verse-widget .widget-body{
+            padding:8px 18px 20px;
         }
 
-        .main-content {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            max-width: 750px;
-            width: 100%;
+        .verse-widget p{
+            font-family:'Amiri', serif;
+            font-style:italic;
+            font-size:18px;
+            line-height:1.9;
+            color:var(--ink);
+            background:var(--paper);
+            border-right:4px solid var(--gold);
+            padding:14px 16px;
+            border-radius:12px;
         }
 
-        .welcome-card {
-            background: rgba(18, 18, 18, 0.95);
-            border: 2px solid #d4af37;
-            padding: 40px 30px;
-            border-radius: 24px;
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.2), 0 20px 40px rgba(0, 0, 0, 0.8);
+        .verse-widget span{
+            display:block;
+            text-align:left;
+            font-size:13px;
+            color:var(--wine-700);
+            font-weight:700;
+            margin-top:10px;
         }
 
-        h1 {
-            color: #d4af37;
-            font-size: 32px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        /* ===== شريط التنقل السفلي ===== */
+        nav.bottom-nav{
+            position:fixed;
+            bottom:0; right:0; left:0;
+            background:var(--wine-900);
+            border-top:1px solid rgba(230,200,120,0.25);
+            display:flex;
+            justify-content:space-around;
+            padding:10px 4px calc(10px + env(safe-area-inset-bottom));
+            box-shadow:0 -8px 20px rgba(0,0,0,0.25);
+            overflow-x:auto;
+            z-index:10;
         }
 
-        /* تنسيق الآية المقدسة الواضحة والمعبرة */
-        .bible-verse {
-            background: rgba(24, 24, 24, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-right: 5px solid #d4af37;
-            padding: 20px 25px;
-            margin: 25px 0;
-            border-radius: 16px;
-            text-align: right;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        nav.bottom-nav a, nav.bottom-nav button{
+            background:none;
+            border:none;
+            color:#c9b7a8;
+            text-decoration:none;
+            font-size:10px;
+            font-family:'Cairo', sans-serif;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:4px;
+            transition:all .25s ease;
+            cursor:pointer;
+            padding:4px 6px;
+            flex-shrink:0;
         }
 
-        .bible-verse p {
-            color: #fceea7;
-            font-size: 20px;
-            line-height: 1.7;
-            margin-bottom: 10px;
-            font-weight: 600;
+        nav.bottom-nav a i, nav.bottom-nav button i{ font-size:17px; }
+
+        nav.bottom-nav a:hover,
+        nav.bottom-nav a.active{
+            color:var(--gold-light);
+            transform:translateY(-2px);
         }
 
-        .bible-verse span {
-            display: block;
-            color: #d4af37;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
+        nav.bottom-nav .logout-link{
+            color:#e88a84;
         }
 
-        .info-box {
-            background: #0a0a0a;
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            padding: 18px;
-            border-radius: 16px;
-            font-size: 21px;
-            color: #f3e5ab;
-            font-weight: bold;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-            margin-top: 20px;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(3px);
-            display: none;
-            z-index: 998;
-            transition: 0.3s;
-        }
-
-        .overlay.active {
-            display: block;
+        nav.bottom-nav .logout-link:hover{
+            color:#ff6b6b;
+            transform:translateY(-2px);
         }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const menuBtn = document.getElementById('menuBtn');
-            const closeBtn = document.getElementById('closeBtn');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
             const logoutBtn = document.getElementById('logoutBtn');
-
-            function openSidebar() {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-            }
-
-            function closeSidebar() {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            }
-
-            if (menuBtn) menuBtn.addEventListener('click', openSidebar);
-            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-            if (overlay) overlay.addEventListener('click', closeSidebar);
-
-            // جلب البيانات من الـ LocalStorage وعرضها فوراً
-            const servantTitle = localStorage.getItem('servantTitle') || '';
-            const fullName = localStorage.getItem('fullName') || 'خادم الرب';
-            const servantStage = localStorage.getItem('servantStage') || 'عامة';
-
             const welcomeMsg = document.getElementById('welcome-msg');
-            if (welcomeMsg) {
-                welcomeMsg.innerText = `أهلاً يا ${servantTitle} ${fullName}`;
+
+            // محاولة جلب بيانات المستخدم من الكائن المخزن في LocalStorage (currentUser أو adminData)
+            let userData = null;
+            try {
+                const storedUser = localStorage.getItem('currentUser') || localStorage.getItem('adminData');
+                if (storedUser) {
+                    userData = JSON.parse(storedUser);
+                }
+            } catch (e) {
+                console.error("Error parsing user data:", e);
             }
 
-            const stageInfo = document.getElementById('stage-info');
-            if (stageInfo) {
-                stageInfo.innerText = `خادم في خدمة مرحلة ${servantStage}`;
+            // استخراج اللقب والاسم الكامل من الكائن أو من المفاتيح المباشرة كخطوة احتياطية
+            const servantTitle = (userData && (userData.servantTitle || userData.title)) || localStorage.getItem('servantTitle') || '';
+            const fullName = (userData && (userData.fullName || userData.name || userData.username)) || localStorage.getItem('fullName') || 'خادم الرب';
+
+            if (welcomeMsg) {
+                welcomeMsg.innerText = `أهلاً بك يا ${servantTitle} ${fullName}`.trim();
             }
 
             // زر تسجيل الخروج
@@ -290,44 +257,65 @@
 </head>
 <body>
 
-    <div class="navbar">
-        <button id="menuBtn" class="menu-btn">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-
-    <!-- القائمة الجانبية الثابتة (ماسكة نفسها في كل الصفحات لو نسختها بنفسك) -->
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h3>قائمة الخادم</h3>
-            <button id="closeBtn" class="close-btn"><i class="fas fa-times"></i></button>
-        </div>
-        <ul class="sidebar-links">
-            <li><a href="home.html"><i class="fas fa-home"></i>الرئيسية</a></li>
-            <li><a href="profile.html"><i class="fas fa-user-circle"></i>البروفايل</a></li>
-            <li><a href="gifts.html"><i class="fas fa-gift"></i>معرض الهدايا</a></li>
-            <li><a href="control.html"><i class="fas fa-cogs"></i>الإدارة</a></li>
-            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>السلة</a></li>
-            <li><a href="../notifications/index.html"><i class="fas fa-bell"></i>الإشعارات</a></li>
-            <li><button id="logoutBtn" class="logout-link"><i class="fas fa-sign-out-alt"></i>تسجيل خروج</button></li>
-        </ul>
-    </div>
-
-    <div id="overlay" class="overlay"></div>
+    <header class="church-header">
+        <div class="church-logo"><i class="fas fa-cross"></i></div>
+        <h2>كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي</h2>
+    </header>
 
     <div class="main-content">
-        <div class="welcome-card">
-            <h1 id="welcome-msg">أهلاً بك يا خادم الرب</h1>
-            
-            <!-- آية مقدسة واضحة وقوية -->
-            <div class="bible-verse">
-                <p>"لِذَلِكَ كُونُوا رَاسِخِينَ، غَيْرَ مُتَزَحْزِحِينَ، مُكْثِرِينَ فِي عَمَلِ الرَّبِّ كُلَّ حِينٍ، عَالِمِينَ أَنَّ تَعَبَكُمْ لَيْسَ بَاطِلاً فِي الرَّبِّ."</p>
+
+        <!-- بطاقة الترحيب -->
+        <div class="widget welcome-widget">
+            <div class="widget-body">
+                <h1 id="welcome-msg">أهلاً بك يا خادم الرب</h1>
+            </div>
+        </div>
+
+        <!-- آية اليوم -->
+        <div class="widget verse-widget">
+            <div class="widget-head">
+                <div class="icon-badge"><i class="fas fa-book-bible"></i></div>
+                <h3>آية اليوم</h3>
+            </div>
+            <div class="widget-body">
+                <p>"لِذَلِكَ كُونُوا رَاسِخِينَ، غَيْرَ مُتَزَحْزِحِينَ، مُكْثِرِينَ فِي عَمَلِ الرَّبِّ كُلَّ حِينٍ، عَالِمِينَ أَنَّ تَعَبَكُمْ لَيْسَ بَاطِلاً فِي الرَّبِّ."</p>
                 <span>(1 كورنثوس 15: 58)</span>
             </div>
-
-            <div id="stage-info" class="info-box">خادم في خدمة مرحلة جاري التحميل...</div>
         </div>
+
     </div>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="bottom-nav">
+        <a class="active" href="home.html">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="profile.html">
+            <i class="fas fa-user-circle"></i>
+            <span>البروفايل</span>
+        </a>
+        <a href="gifts.html">
+            <i class="fas fa-gift"></i>
+            <span>الهدايا</span>
+        </a>
+        <a href="control.html">
+            <i class="fas fa-cogs"></i>
+            <span>الإدارة</span>
+        </a>
+        <a href="cart.html">
+            <i class="fas fa-shopping-cart"></i>
+            <span>السلة</span>
+        </a>
+        <a href="../notifications/index.html">
+            <i class="fas fa-bell"></i>
+            <span>الإشعارات</span>
+        </a>
+        <button id="logoutBtn" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>خروج</span>
+        </button>
+    </nav>
 
 </body>
 </html>
