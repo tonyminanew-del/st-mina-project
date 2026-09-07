@@ -4,309 +4,260 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>البروفايل - لوحة الخادم</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root{
+            --wine-900:#4a0e16;
+            --wine-800:#6b1420;
+            --wine-700:#7c1b28;
+            --gold:#c9a04d;
+            --gold-light:#e6c878;
+            --paper:#f6f1e9;
+            --card:#ffffff;
+            --ink:#2a2320;
+            --ink-soft:#6b625c;
+            --line:#e9dfd0;
         }
 
-        body {
-            background: radial-gradient(circle at center, #111111 0%, #000000 100%);
-            min-height: 100vh;
-            font-family: 'Reem Kufi', 'Cairo', sans-serif;
-            color: #f3e5ab;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        * { box-sizing:border-box; margin:0; padding:0; }
+
+        body{
+            background:var(--paper);
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+            font-family:'Cairo', sans-serif;
+            color:var(--ink);
         }
 
-        /* زر فتح القائمة في النافبار */
-        .navbar {
-            width: 100%;
-            padding: 20px 30px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
+        /* ===== الهيدر ===== */
+        header.church-header{
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding:22px 20px 26px;
+            text-align:center;
+            position:relative;
+            box-shadow:0 8px 20px rgba(74,14,22,0.25);
         }
 
-        .menu-btn {
-            background: rgba(18, 18, 18, 0.9);
-            border: 2px solid #d4af37;
-            color: #d4af37;
-            font-size: 24px;
-            padding: 10px 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-            transition: 0.3s;
+        header.church-header::after{
+            content:'';
+            position:absolute;
+            bottom:0; right:0; left:0;
+            height:4px;
+            background:linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
-        .menu-btn:hover {
-            background: #d4af37;
-            color: #000;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        .church-logo{
+            width:52px;
+            height:52px;
+            border-radius:50%;
+            background:var(--wine-700);
+            border:2px solid var(--gold);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:0 auto 10px;
         }
 
-        /* تنسيقات السليد بار (القائمة الجانبية) الثابتة والقوية */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100%;
-            background: rgba(12, 12, 12, 0.99);
-            backdrop-filter: blur(20px);
-            border-left: 2px solid #d4af37;
-            box-shadow: -15px 0 40px rgba(0, 0, 0, 0.95);
-            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 9999;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
+        .church-logo i{
+            color:var(--gold-light);
+            font-size:24px;
         }
 
-        .sidebar.active {
-            right: 0;
+        header.church-header h2{
+            font-family:'Amiri', serif;
+            color:#fbeed4;
+            font-size:18px;
+            font-weight:700;
         }
 
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+        /* ===== المحتوى ===== */
+        .main-content{
+            flex:1;
+            padding:18px 16px 40px;
+            max-width:620px;
+            width:100%;
+            margin:0 auto;
         }
 
-        .sidebar-header h3 {
-            color: #d4af37;
-            font-size: 22px;
+        /* ===== الويدجت الموحد ===== */
+        .widget{
+            background:var(--card);
+            border-radius:22px;
+            border:1px solid var(--line);
+            box-shadow:0 12px 28px rgba(74,14,22,0.08);
+            margin-bottom:18px;
+            overflow:hidden;
+            position:relative;
         }
 
-        .close-btn {
-            background: none;
-            border: none;
-            color: #ff6b6b;
-            font-size: 24px;
-            cursor: pointer;
-            transition: 0.2s;
+        .widget::before{
+            content:'';
+            position:absolute;
+            top:0; right:0; left:0;
+            height:3px;
+            background:linear-gradient(90deg, var(--wine-700), var(--gold), var(--wine-700));
+            opacity:.9;
         }
 
-        .close-btn:hover {
-            color: #ff4545;
-            transform: scale(1.1);
+        .widget-head{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:16px 18px 4px;
         }
 
-        .sidebar-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            flex-grow: 1;
-            overflow-y: auto;
+        .widget-head .icon-badge{
+            width:30px; height:30px;
+            border-radius:10px;
+            background:var(--wine-700);
+            color:var(--gold-light);
+            display:flex; align-items:center; justify-content:center;
+            font-size:13px;
+            flex-shrink:0;
         }
 
-        .sidebar-links::-webkit-scrollbar {
-            width: 5px;
-        }
-        .sidebar-links::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.3);
-            border-radius: 10px;
+        .widget-head h3{
+            font-size:14px;
+            font-weight:700;
+            color:var(--wine-800);
         }
 
-        .sidebar-links a, .logout-link {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 14px 18px;
-            background: rgba(22, 22, 22, 0.85);
-            border: 1px solid rgba(212, 175, 55, 0.25);
-            border-radius: 14px;
-            color: #f3e5ab;
-            text-decoration: none;
-            font-size: 18px;
-            transition: 0.3s;
-            cursor: pointer;
-            width: 100%;
-            font-family: 'Reem Kufi', 'Cairo', sans-serif;
-            text-align: right;
+        /* بطاقة الصورة الشخصية */
+        .avatar-widget .widget-body{
+            padding:14px 20px 22px;
+            text-align:center;
         }
 
-        .sidebar-links a:hover {
-            background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
-            color: #000;
-            border-color: #d4af37;
-            transform: translateX(-5px);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        .avatar-widget h1{
+            font-family:'Amiri', serif;
+            font-size:21px;
+            color:var(--wine-800);
+            margin-bottom:16px;
         }
 
-        .logout-link {
-            border-color: rgba(255, 107, 107, 0.4);
-            color: #ff8b8b;
-            margin-top: auto;
+        .avatar-container{
+            position:relative;
+            width:120px;
+            height:120px;
+            margin:0 auto;
         }
 
-        .logout-link:hover {
-            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
-            color: #fff;
-            border-color: #ff6b6b;
-            transform: translateX(-5px);
+        .avatar{
+            width:100%;
+            height:100%;
+            border-radius:50%;
+            border:3px solid var(--gold);
+            object-fit:cover;
+            background:var(--paper);
+            box-shadow:0 6px 16px rgba(74,14,22,0.25);
         }
 
-        /* خلفية شفافة عند فتح القائمة */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(3px);
-            display: none;
-            z-index: 998;
-            transition: 0.3s;
+        .upload-label{
+            position:absolute;
+            bottom:0;
+            left:0;
+            background:linear-gradient(135deg, var(--gold-light), var(--gold));
+            color:var(--wine-900);
+            width:34px;
+            height:34px;
+            border-radius:50%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            cursor:pointer;
+            box-shadow:0 4px 10px rgba(74,14,22,0.35);
+            transition:.3s;
+            border:2px solid var(--card);
         }
 
-        .overlay.active {
-            display: block;
+        .upload-label:hover{
+            transform:scale(1.08);
         }
 
-        /* محتوى صفحة البروفايل */
-        .main-content {
+        #avatar-input{ display:none; }
+
+        /* بطاقة بيانات الخادم */
+        .info-widget .widget-body{
+            padding:8px 18px 20px;
+        }
+
+        .info-list{
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+
+        .info-item{
+            background:var(--paper);
+            border:1px solid var(--line);
+            border-right:4px solid var(--gold);
+            padding:12px 16px;
+            border-radius:12px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+        }
+
+        .info-label{
+            color:var(--wine-700);
+            font-weight:700;
+            font-size:14px;
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        .info-label i{ width:16px; text-align:center; }
+
+        .info-value{
+            color:var(--ink);
+            font-size:14px;
+            font-weight:600;
+        }
+
+        /* ===== زر الرجوع الأنيق ===== */
+        .back-btn-container {
+            margin-top: 25px;
             text-align: center;
-            margin-top: 10px;
-            padding: 20px;
-            max-width: 600px;
-            width: 100%;
         }
 
-        .profile-card {
-            background: rgba(18, 18, 18, 0.95);
-            border: 2px solid #d4af37;
-            padding: 40px 30px;
-            border-radius: 24px;
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.2), 0 20px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        h1 {
-            color: #d4af37;
-            font-size: 30px;
-            margin-bottom: 25px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-        }
-
-        /* تصميم قسم الصورة الشخصية وزر تغييرها */
-        .avatar-container {
-            position: relative;
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 25px auto;
-        }
-
-        .avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid #d4af37;
-            object-fit: cover;
-            background: #111;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-        }
-
-        .upload-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
-            color: #000;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            transition: 0.3s;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--wine-800), var(--wine-900));
+            color: #fbeed4;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            border: 2px solid var(--gold);
+            box-shadow: 0 6px 18px rgba(74,14,22,0.25);
+            transition: all 0.3s ease;
         }
 
-        .upload-label:hover {
-            transform: scale(1.1);
-            background: #f3e5ab;
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--wine-700), var(--wine-800));
+            color: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(74,14,22,0.35);
         }
 
-        #avatar-input {
-            display: none;
-        }
-
-        /* تفاصيل بيانات الخادم */
-        .info-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            text-align: right;
-        }
-
-        .info-item {
-            background: #0a0a0a;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 15px 20px;
-            border-radius: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 18px;
-        }
-
-        .info-label {
-            color: #c5b358;
-            font-weight: bold;
-        }
-
-        .info-value {
-            color: #f3e5ab;
+        .back-btn i {
+            font-size: 16px;
+            color: var(--gold);
         }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // عناصر السليد بار والتحكم فيها
-            const menuBtn = document.getElementById('menuBtn');
-            const closeBtn = document.getElementById('closeBtn');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const logoutBtn = document.getElementById('logoutBtn');
-
-            function openSidebar() {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-            }
-
-            function closeSidebar() {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            }
-
-            if (menuBtn) menuBtn.addEventListener('click', openSidebar);
-            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-            if (overlay) overlay.addEventListener('click', closeSidebar);
-
-            // زر تسجيل الخروج
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
-                        localStorage.clear();
-                        window.location.href = 'index.html';
-                    }
-                });
-            }
-
             // جلب وعرض البيانات من الـ LocalStorage
             const username = localStorage.getItem('username') || 'غير محدد';
             const fullName = localStorage.getItem('fullName') || 'خادم الرب';
@@ -314,10 +265,15 @@
             const servantStage = localStorage.getItem('servantStage') || 'غير محددة';
             const servantNumber = localStorage.getItem('servantNumber') || 'غير متوفر';
 
-            document.getElementById('val-username').innerText = username;
-            document.getElementById('val-fullname').innerText = `${servantTitle} ${fullName}`;
-            document.getElementById('val-stage').innerText = servantStage;
-            document.getElementById('val-number').innerText = servantNumber;
+            const usernameEl = document.getElementById('val-username');
+            const fullnameEl = document.getElementById('val-fullname');
+            const stageEl = document.getElementById('val-stage');
+            const numberEl = document.getElementById('val-number');
+
+            if (usernameEl) usernameEl.innerText = username;
+            if (fullnameEl) fullnameEl.innerText = servantTitle ? `${servantTitle} ${fullName}` : fullName;
+            if (stageEl) stageEl.innerText = servantStage;
+            if (numberEl) numberEl.innerText = servantNumber;
 
             // معالجة رفع وعرض الصورة الشخصية وحفظها محلياً
             const avatarInput = document.getElementById('avatar-input');
@@ -325,88 +281,86 @@
 
             // تحميل الصورة المحفوظة مسبقاً إن وجدت
             const savedImage = localStorage.getItem('profileImage');
-            if (savedImage) {
+            if (savedImage && profileImage) {
                 profileImage.src = savedImage;
             }
 
-            avatarInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const base64Image = e.target.result;
-                        profileImage.src = base64Image;
-                        localStorage.setItem('profileImage', base64Image); // حفظ الصورة
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+            if (avatarInput && profileImage) {
+                avatarInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const base64Image = e.target.result;
+                            profileImage.src = base64Image;
+                            localStorage.setItem('profileImage', base64Image); // حفظ الصورة
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
         });
     </script>
 </head>
 <body>
 
-    <!-- زر القائمة الجانبية (السليد بار) -->
-    <div class="navbar">
-        <button id="menuBtn" class="menu-btn">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
+    <header class="church-header">
+        <div class="church-logo"><i class="fas fa-cross"></i></div>
+        <h2>كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي</h2>
+    </header>
 
-    <!-- السليد بار (القائمة الجانبية) موجودة ومدمجة بالكامل هنا -->
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h3>قائمة الخادم</h3>
-            <button id="closeBtn" class="close-btn"><i class="fas fa-times"></i></button>
-        </div>
-        <ul class="sidebar-links">
-            <li><a href="home.html"><i class="fas fa-home"></i>الرئيسية</a></li>
-            <li><a href="profile.html"><i class="fas fa-user-circle"></i>البروفايل</a></li>
-            <li><a href="gifts.html"><i class="fas fa-gift"></i>معرض الهدايا</a></li>
-            <li><a href="admin_dashboard.html"><i class="fas fa-cogs"></i>الإدارة</a></li>
-            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>السلة</a></li>
-            <li><a href="notifications.html"><i class="fas fa-bell"></i>الإشعارات</a></li>
-            <li><button id="logoutBtn" class="logout-link"><i class="fas fa-sign-out-alt"></i>تسجيل خروج</button></li>
-        </ul>
-    </div>
-
-    <!-- طبقة التعتيم عند فتح القائمة -->
-    <div id="overlay" class="overlay"></div>
-
-    <!-- محتوى البروفايل -->
     <div class="main-content">
-        <div class="profile-card">
-            <h1>الملف الشخصي للخادم</h1>
 
-            <!-- الصورة الشخصية مع زر التعديل -->
-            <div class="avatar-container">
-                <img id="profile-image" class="avatar" src="https://via.placeholder.com/150/111/d4af37?text=صورة+الخادم" alt="صورة الخادم">
-                <label for="avatar-input" class="upload-label" title="تغيير الصورة">
-                    <i class="fas fa-camera"></i>
-                </label>
-                <input type="file" id="avatar-input" accept="image/*">
-            </div>
-
-            <!-- عرض البيانات المستخرجة من الـ LocalStorage -->
-            <div class="info-list">
-                <div class="info-item">
-                    <span class="info-label"><i class="fas fa-user"></i> اسم المستخدم:</span>
-                    <span id="val-username" class="info-value">جاري التحميل...</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label"><i class="fas fa-id-badge"></i> الاسم الكامل:</span>
-                    <span id="val-fullname" class="info-value">جاري التحميل...</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label"><i class="fas fa-graduation-cap"></i> المرحلة الخدمية:</span>
-                    <span id="val-stage" class="info-value">جاري التحميل...</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label"><i class="fas fa-hashtag"></i> رقم الخادم:</span>
-                    <span id="val-number" class="info-value">جاري التحميل...</span>
+        <!-- بطاقة الصورة الشخصية -->
+        <div class="widget avatar-widget">
+            <div class="widget-body">
+                <h1>الملف الشخصي للخادم</h1>
+                <div class="avatar-container">
+                    <img id="profile-image" class="avatar" src="https://via.placeholder.com/150/f6f1e9/7c1b28?text=صورة+الخادم" alt="صورة الخادم">
+                    <label for="avatar-input" class="upload-label" title="تغيير الصورة">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="avatar-input" accept="image/*">
                 </div>
             </div>
         </div>
+
+        <!-- بطاقة بيانات الخادم -->
+        <div class="widget info-widget">
+            <div class="widget-head">
+                <div class="icon-badge"><i class="fas fa-id-card"></i></div>
+                <h3>بيانات الخادم</h3>
+            </div>
+            <div class="widget-body">
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-user"></i> اسم المستخدم:</span>
+                        <span id="val-username" class="info-value">جاري التحميل...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-id-badge"></i> الاسم الكامل:</span>
+                        <span id="val-fullname" class="info-value">جاري التحميل...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-graduation-cap"></i> المرحلة الخدمية:</span>
+                        <span id="val-stage" class="info-value">جاري التحميل...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-hashtag"></i> رقم الخادم:</span>
+                        <span id="val-number" class="info-value">جاري التحميل...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- زر الرجوع الأنيق -->
+        <div class="back-btn-container">
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-right"></i>
+                <span>العودة إلى الرئيسية</span>
+            </a>
+        </div>
+
     </div>
 
 </body>
