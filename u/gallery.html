@@ -1,557 +1,1719 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معرض الهدايا - متجر الكنيسة</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- ربط مكتبات فايربيس -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    <title>معرض الهدايا - St. Mina</title>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-            authDomain: "st-mina-c01ec.firebaseapp.com",
-            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
-            projectId: "st-mina-c01ec",
-            storageBucket: "st-mina-c01ec.firebasestorage.app",
-            messagingSenderId: "792349150559",
-            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
-            measurementId: "G-XZGSBG05KR"
-        };
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window.openModal = function(imgSrc, imgTitle) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImg');
-            const modalTitle = document.getElementById('modalTitle');
-            if (modal && modalImg) {
-                modalImg.src = imgSrc;
-                modalTitle.innerText = imgTitle;
-                modal.style.display = 'flex';
-            }
-        };
-
-        window.closeModal = function() {
-            const modal = document.getElementById('imageModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            // طلب إذن الإشعارات من المتصفح عند فتح الصفحة إذا لم يتم منحه مسبقاً
-            if ("Notification" in window) {
-                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-                    Notification.requestPermission();
-                }
-            }
-
-            const menuBtn = document.getElementById('menuBtn');
-            const closeBtn = document.getElementById('closeBtn');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const logoutBtn = document.getElementById('logoutBtn');
-
-            function openSidebar() {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-            }
-            function closeSidebar() {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            }
-
-            if (menuBtn) menuBtn.addEventListener('click', openSidebar);
-            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-            if (overlay) overlay.addEventListener('click', closeSidebar);
-
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
-                        localStorage.clear();
-                        window.location.href = 'index.html';
-                    }
-                });
-            }
-
-            const userPointsBadge = document.getElementById('userPointsBadge');
-            const userStageBadge = document.getElementById('userStageBadge');
-            const giftsContainer = document.getElementById('giftsContainer');
-
-            const loggedInUsername = localStorage.getItem('currentUser') || localStorage.getItem('username') || "tony1";
-
-            let userDocId = null;
-            let currentUserPoints = 0;
-            let currentUserStage = "غير محدد";
-            let currentUserGrade = "غير محدد";
-            let isUserBanned = false;
-
-            async function fetchUserData() {
-                try {
-                    const querySnapshot = await getDocs(collection(db, "users"));
-                    let found = false;
-
-                    querySnapshot.forEach((docSnap) => {
-                        const data = docSnap.data();
-                        if (docSnap.id === loggedInUsername || data.username === loggedInUsername) {
-                            userDocId = docSnap.id;
-                            currentUserPoints = Number(data.points || 0);
-                            currentUserStage = data.stage || "غير محدد";
-                            currentUserGrade = data.grade || "غير محدد";
-                            isUserBanned = Boolean(data.isBanned || data.banned || false);
-                            found = true;
-                        }
-                    });
-
-                    if (!found) {
-                        const directRef = doc(db, "users", loggedInUsername);
-                        const directSnap = await getDoc(directRef);
-                        if (directSnap.exists()) {
-                            userDocId = directSnap.id;
-                            const data = directSnap.data();
-                            currentUserPoints = Number(data.points || 0);
-                            currentUserStage = data.stage || "غير محدد";
-                            currentUserGrade = data.grade || "غير محدد";
-                            isUserBanned = Boolean(data.isBanned || data.banned || false);
-                            found = true;
-                        }
-                    }
-
-                    userPointsBadge.innerText = currentUserPoints;
-                    userStageBadge.innerText = `${currentUserStage} (${currentUserGrade})`;
-
-                    if (isUserBanned) {
-                        const warningDiv = document.createElement('div');
-                        warningDiv.style.cssText = "background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center;";
-                        warningDiv.innerHTML = "⚠️ تنبيه: حسابك موقوف/محظور حالياً، لا يمكنك استبدال أو شراء الهدايا.";
-                        document.querySelector('.main-content').prepend(warningDiv);
-                    }
-
-                } catch (error) {
-                    console.error("خطأ في جلب بيانات المستخدم:", error);
-                }
-            }
-
-            await fetchUserData();
-
-            async function renderGifts() {
-                giftsContainer.innerHTML = `<div class="no-gifts">جاري تحميل الهدايا...</div>`;
-                try {
-                    const querySnapshot = await getDocs(collection(db, "gifts"));
-                    giftsContainer.innerHTML = '';
-                    let itemsCount = 0;
-
-                    querySnapshot.forEach((docSnap) => {
-                        const gift = docSnap.data();
-                        const giftId = docSnap.id;
-                        const giftQuantity = Number(gift.quantity || 0);
-
-                        if (giftQuantity <= 0) {
-                            return; 
-                        }
-
-                        const giftGrade = gift.grade || "";
-
-                        itemsCount++;
-                        const card = document.createElement('div');
-                        card.className = 'amazon-card';
-                        
-                        const imgSrc = gift.image || 'https://via.placeholder.com/500x400/222/ffa41c?text=Gift';
-
-                        let buttonDisabledClass = isUserBanned ? 'disabled' : '';
-                        let buttonText = isUserBanned ? '🚫 الحساب محظور' : 'استبدال الآن';
-
-                        card.innerHTML = `
-                            <div class="amz-img-col" onclick="openModal('${imgSrc}', '${gift.name}')">
-                                <img src="${imgSrc}" alt="${gift.name}">
-                                <span class="zoom-badge"><i class="fas fa-search-plus"></i> انقر للتكبير</span>
-                            </div>
-
-                            <div class="amz-info-col">
-                                <h2 class="amz-title">${gift.name}</h2>
-                                
-                                <div class="amz-price-section">
-                                    <span class="amz-price-symbol">نقطة</span>
-                                    <span class="amz-price-value">${gift.points}</span>
-                                </div>
-
-                                <div class="amz-stock-status in">
-                                    ✔ متوفر في مخزن الكنيسة
-                                </div>
-
-                                <div class="amz-details-list">
-                                    <div><i class="fas fa-graduation-cap"></i> المرحلة المخصصة: <strong>${giftGrade}</strong></div>
-                                    <div><i class="fas fa-boxes"></i> الكمية المتاحة: <strong id="qty-${giftId}">${giftQuantity}</strong> قطعة</div>
-                                </div>
-
-                                <div class="amz-actions">
-                                    <button class="amz-btn-cart ${buttonDisabledClass}" data-id="${giftId}" data-name="${gift.name}" data-points="${gift.points}" data-qty="${giftQuantity}">
-                                        <i class="fas fa-shopping-cart"></i> ${buttonText}
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        giftsContainer.appendChild(card);
-                    });
-
-                    if (itemsCount === 0) {
-                        giftsContainer.innerHTML = `<div class="no-gifts">لا توجد هدايا متاحة حالياً أو نفدت الكميات.</div>`;
-                    } else {
-                        document.querySelectorAll('.amz-btn-cart').forEach(btn => {
-                            if (!btn.classList.contains('disabled')) {
-                                btn.addEventListener('click', async (e) => {
-                                    const buttonElement = e.currentTarget;
-                                    const giftId = buttonElement.getAttribute('data-id');
-                                    const giftName = buttonElement.getAttribute('data-name');
-                                    const giftPoints = Number(buttonElement.getAttribute('data-points'));
-                                    const currentQty = Number(buttonElement.getAttribute('data-qty'));
-
-                                    await buyGift(giftId, giftName, giftPoints, currentQty);
-                                });
-                            } else {
-                                btn.addEventListener('click', () => {
-                                    if (isUserBanned) {
-                                        alert("❌ عذراً، حسابك موقوف من قبل أمين الخدمة ولا يمكنك إتمام عمليات الشراء.");
-                                    }
-                                });
-                            }
-                        });
-                    }
-                } catch (error) {
-                    console.error("خطأ في جلب الهدايا:", error);
-                    giftsContainer.innerHTML = `<div class="no-gifts">حدث خطأ أثناء تحميل الهدايا.</div>`;
-                }
-            }
-
-            async function buyGift(giftId, giftName, giftPoints, currentQty) {
-                if (!userDocId) {
-                    alert("خطأ: لم يتم التعرف على مستند المستخدم.");
-                    return;
-                }
-
-                if (isUserBanned) {
-                    alert("❌ عذراً، حسابك محظور ولا يمكنك الشراء.");
-                    return;
-                }
-
-                if (currentUserPoints < giftPoints) {
-                    alert(`❌ رصيد نقاطك الحالي (${currentUserPoints}) غير كافٍ. تحتاج إلى ${giftPoints} نقطة لاقتناء هذه الهدية.`);
-                    return;
-                }
-
-                if (!confirm(`هل أنت متأكد من رغبتك في استبدال هذه الهدية مقابل خصم ${giftPoints} نقطة؟`)) {
-                    return;
-                }
-
-                try {
-                    const userRef = doc(db, "users", userDocId);
-                    const freshSnap = await getDoc(userRef);
-                    if (freshSnap.exists()) {
-                        const freshData = freshSnap.data();
-                        if (freshData.isBanned || freshData.banned) {
-                            alert("❌ تم حظرك مؤخراً، لا يمكن إتمام العملية.");
-                            location.reload();
-                            return;
-                        }
-                    }
-
-                    // 1. خصم النقاط من المستخدم
-                    await updateDoc(userRef, {
-                        points: currentUserPoints - giftPoints
-                    });
-
-                    // 2. تقليل كمية الهدية في المخزن
-                    const giftRef = doc(db, "gifts", giftId);
-                    await updateDoc(giftRef, {
-                        quantity: currentQty - 1
-                    });
-
-                    // 3. إضافة إشعار الطلب في قاعدة البيانات للأدمين/الخادم
-                    await addDoc(collection(db, "notifications"), {
-                        title: "طلب هدية جديد",
-                        message: `قام المخدوم (${loggedInUsername}) من مرحلة (${currentUserStage} - ${currentUserGrade}) بشراء واستبدال هدية: "${giftName}" مقابل ${giftPoints} نقطة.`,
-                        username: loggedInUsername,
-                        stage: currentUserStage,
-                        grade: currentUserGrade,
-                        giftName: giftName,
-                        pointsSpent: giftPoints,
-                        timestamp: serverTimestamp(),
-                        isRead: false
-                    });
-
-                    currentUserPoints -= giftPoints;
-                    userPointsBadge.innerText = currentUserPoints;
-
-                    // 4. إظهار إشعار حقيقي على شاشة المتصفح للمخدوم نفسه
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("تم الشراء بنجاح! 🎉", {
-                            body: `لقد قمت بشراء هدية "${giftName}" بنجاح. توجه لأمين الخدمة لاستلامها.`,
-                        });
-                    }
-
-                    alert("🎉 تم الاستبدال بنجاح! وتم تسجيل الطلب وإرسال التنبيه. توجه لأمين الخدمة لاستلام هديتك.");
-                    renderGifts();
-
-                } catch (error) {
-                    console.error("خطأ أثناء الشراء:", error);
-                    alert("حدث خطأ أثناء تنفيذ الطلب.");
-                }
-            }
-
-            renderGifts();
-        });
-    </script>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #eaeded;
-            min-height: 100vh;
-            font-family: 'Cairo', sans-serif;
-            color: #0f1111;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .navbar { width: 100%; background-color: #131921; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .menu-btn { background: none; border: 1px solid #febd69; color: #febd69; font-size: 20px; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
-        .menu-btn:hover { background: rgba(254, 189, 105, 0.1); }
-        
-        .user-info-badges { display: flex; gap: 12px; }
-        .badge-box { background: #232f3e; border: 1px solid #3a4553; padding: 6px 14px; border-radius: 4px; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 6px; }
-        .badge-box span { color: #febd69; font-weight: bold; }
-
-        .sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background: #232f3e; border-left: 1px solid #3a4553; transition: right 0.3s ease; z-index: 9999; padding: 20px; display: flex; flex-direction: column; }
-        .sidebar.active { right: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3a4553; padding-bottom: 12px; margin-bottom: 20px; }
-        .sidebar-header h3 { color: #fff; font-size: 18px; }
-        .close-btn { background: none; border: none; color: #ff6b6b; font-size: 22px; cursor: pointer; }
-        .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-        .sidebar-links a, .logout-link { display: flex; align-items: center; gap: 12px; padding: 12px 15px; background: #131921; border-radius: 4px; color: #fff; text-decoration: none; font-size: 16px; transition: 0.2s; cursor: pointer; }
-        .sidebar-links a:hover { background: #febd69; color: #0f1111; }
-        .logout-link { color: #ff8b8b; margin-top: auto; border: 1px solid rgba(255,107,107,0.3); }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 998; }
-        .overlay.active { display: block; }
-
-        .main-content { max-width: 1200px; width: 100%; padding: 25px 15px; }
-        h1 { color: #0f1111; font-size: 26px; margin-bottom: 20px; font-weight: 700; text-align: right; }
-
-        .gifts-grid { display: flex; flex-direction: column; gap: 20px; }
-        .amazon-card {
-            background: #fff;
-            border: 1px solid #d5d9d9;
-            border-radius: 8px;
+            margin: 0;
             padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            align-items: flex-start;
-            text-align: right;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            font-family: "Cairo", sans-serif;
+            background: #f4f6f8;
+            color: #222;
         }
 
-        .amz-img-col {
-            flex: 1;
-            min-width: 240px;
-            text-align: center;
-            position: relative;
-            cursor: pointer;
-            background: #fafafa;
-            border: 1px solid #eee;
-            border-radius: 6px;
-            padding: 15px;
-        }
-        .amz-img-col img {
-            max-width: 100%;
-            height: 220px;
-            object-fit: contain;
-            transition: transform 0.2s;
-        }
-        .amz-img-col:hover img {
-            transform: scale(1.05);
-        }
-        .zoom-badge {
-            display: block;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #007185;
-            font-weight: 600;
-        }
-
-        .amz-info-col {
-            flex: 2;
-            min-width: 260px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .amz-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0f1111;
-            line-height: 1.4;
-        }
-        .amz-price-section {
-            display: flex;
-            align-items: baseline;
-            gap: 5px;
-        }
-        .amz-price-symbol {
-            font-size: 13px;
-            color: #0f1111;
-            vertical-align: super;
-        }
-        .amz-price-value {
-            font-size: 26px;
-            font-weight: 700;
-            color: #B12704;
-        }
-        .amz-stock-status {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .amz-stock-status.in { color: #007600; }
-
-        .amz-details-list {
-            font-size: 14px;
-            color: #565959;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            border-top: 1px solid #e7e7e7;
-            border-bottom: 1px solid #e7e7e7;
-            padding: 10px 0;
-        }
-        .amz-details-list strong { color: #0f1111; }
-
-        .amz-btn-cart {
-            background: #ffd814;
-            border: 1px solid #fcd200;
-            color: #0f1111;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            box-shadow: 0 2px 5px rgba(213,217,217,.5);
+        .container {
             width: 100%;
-            max-width: 220px;
-        }
-        .amz-btn-cart:hover { background: #f7ca00; }
-        .amz-btn-cart.disabled {
-            background: #e3e6e6;
-            border-color: #d5d9d9;
-            color: #888;
-            cursor: not-allowed;
-            box-shadow: none;
+            max-width: 1100px;
+            margin: auto;
         }
 
-        .no-gifts {
-            padding: 40px;
-            background: #fff;
-            border: 1px solid #d5d9d9;
-            border-radius: 8px;
-            color: #565959;
-            font-size: 16px;
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            background: #232f3e;
+            color: #febd69;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .header p {
+            margin: 7px 0 0;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        /* =========================
+           POINTS
+        ========================= */
+
+        .points-box {
+            background: white;
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .07);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+
+            background: #232f3e;
+            color: #febd69;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+        }
+
+        .user-info h3 {
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .user-info p {
+            margin: 3px 0 0;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .points-label {
+            font-size: 11px;
+            color: #777;
             text-align: center;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
+        .points {
+            font-size: 21px;
+            font-weight: 900;
+            color: #f59e0b;
+        }
+
+        /* =========================
+           SECTION
+        ========================= */
+
+        .section-title {
+            margin-bottom: 15px;
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        /* =========================
+           GIFTS
+        ========================= */
+
+        .gifts-grid {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(220px, 1fr)
+            );
+
+            gap: 18px;
+        }
+
+        .gift-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+
+            box-shadow:
+                0 7px 20px rgba(0, 0, 0, .08);
+
+            transition: .25s;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gift-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .gift-image {
+            width: 100%;
+            height: 200px;
+
+            background: #f1f3f5;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+        }
+
+        .gift-image img {
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            object-fit: cover;
         }
-        .modal-content {
-            background: #fff;
-            border-radius: 8px;
-            padding: 25px;
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-            position: relative;
+
+        .gift-image i {
+            font-size: 60px;
+            color: #f59e0b;
         }
-        .modal-content img {
-            max-width: 100%;
-            max-height: 450px;
-            object-fit: contain;
-            border-radius: 4px;
-            margin-bottom: 15px;
+
+        .gift-content {
+            padding: 15px;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 9px;
+
+            flex: 1;
         }
-        .close-modal {
-            position: absolute;
-            top: 12px;
-            left: 15px;
-            font-size: 26px;
-            color: #0f1111;
+
+        .gift-name {
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .gift-price {
+            color: #f59e0b;
+            font-weight: 900;
+        }
+
+        .gift-quantity {
+            font-size: 12px;
+            color: #137333;
+        }
+
+        .buy-btn {
+            border: none;
+
+            background: #232f3e;
+            color: #febd69;
+
+            padding: 11px;
+
+            border-radius: 10px;
+
+            font-family: "Cairo", sans-serif;
+
+            font-weight: 900;
+
             cursor: pointer;
-            background: #f0f2f2;
-            width: 35px;
-            height: 35px;
+
+            margin-top: auto;
+        }
+
+        .buy-btn:hover {
+            opacity: .9;
+        }
+
+        .buy-btn:disabled {
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            background: white;
+
+            border-radius: 15px;
+
+            padding: 30px;
+
+            text-align: center;
+
+            color: #777;
+        }
+
+        /* =========================
+           SUCCESS
+        ========================= */
+
+        .success {
+            background: #e8f5e9;
+            color: #137333;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            margin-bottom: 15px;
+
+            display: none;
+
+            text-align: center;
+
+            font-weight: bold;
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal {
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0, 0, 0, .65);
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 99999;
+        }
+
+        .modal-box {
+            background: white;
+
+            width: 100%;
+
+            max-width: 420px;
+
+            border-radius: 20px;
+
+            padding: 25px;
+
+            text-align: center;
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, .3);
+        }
+
+        .modal-icon {
+            width: 75px;
+            height: 75px;
+
             border-radius: 50%;
+
+            background: #fff4d8;
+
+            color: #f59e0b;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
+            margin: auto auto 15px;
+
+            font-size: 32px;
         }
+
+        .modal-box h2 {
+            margin: 0 0 10px;
+
+            font-size: 20px;
+        }
+
+        .modal-box p {
+            color: #666;
+
+            font-size: 14px;
+
+            line-height: 1.8;
+        }
+
+        .modal-buttons {
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+
+            border: none;
+
+            padding: 11px;
+
+            border-radius: 10px;
+
+            font-family: "Cairo", sans-serif;
+
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .confirm-btn {
+            background: #137333;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #eee;
+            color: #555;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media(max-width:600px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .gifts-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 10px;
+            }
+
+            .gift-image {
+                height: 150px;
+            }
+
+            .gift-name {
+                font-size: 14px;
+            }
+
+            .gift-content {
+                padding: 10px;
+            }
+
+            .points-box {
+                padding: 12px;
+            }
+
+            .header h1 {
+                font-size: 21px;
+            }
+        }
+
     </style>
 </head>
+
+
 <body>
+    <form action="home.html" method="get">
+<a href="home.html" class="back-home-btn">
+    <i class="fas fa-home"></i>
+    <span>العودة للرئيسية</span>
+</a>
+</form>
+<div class="container">
 
-    <div class="navbar">
-        <button id="menuBtn" class="menu-btn"><i class="fas fa-bars"></i> القائمة</button>
-        <div class="user-info-badges">
-            <div class="badge-box"><i class="fas fa-coins" style="color: #febd69;"></i> رصيدك: <span id="userPointsBadge">0</span></div>
-            <div class="badge-box"><i class="fas fa-user"></i> <span id="userStageBadge">جاري...</span></div>
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <div class="header">
+
+        <h1>
+
+            <i class="fas fa-gift"></i>
+
+            معرض الهدايا
+
+        </h1>
+
+        <p>
+
+            St. Mina - اختر هديتك باستخدام نقاطك ⭐
+
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         USER POINTS
+    ========================= -->
+
+    <div class="points-box">
+
+        <div class="user-info">
+
+            <div class="user-icon">
+
+                <i class="fas fa-user"></i>
+
+            </div>
+
+            <div>
+
+                <h3 id="usernameDisplay">
+                    جاري التحميل...
+                </h3>
+
+                <p id="userStageDisplay">
+                    جاري تحميل البيانات...
+                </p>
+
+            </div>
+
         </div>
-    </div>
 
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h3>خيارات الحساب</h3>
-            <button id="closeBtn" class="close-btn"><i class="fas fa-times"></i></button>
+
+        <div>
+
+            <div class="points-label">
+                نقاطك
+            </div>
+
+            <div class="points">
+
+                ⭐
+
+                <span id="pointsDisplay">
+                    0
+                </span>
+
+            </div>
+
         </div>
-        <ul class="sidebar-links">
-            <li><a href="home.html"><i class="fas fa-home"></i>الرئيسية</a></li>
-            <li><a href="profile.html"><i class="fas fa-user-circle"></i>البروفايل</a></li>
-            <li><a href="gallery.html"><i class="fas fa-gift"></i>معرض الهدايا</a></li>
-            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>السلة</a></li>
-            <li><a href="notifications.html"><text><i class="fas fa-bell"></i>الإشعارات</text></a></li>
-            <li><button id="logoutBtn" class="logout-link"><i class="fas fa-sign-out-alt"></i>تسجيل خروج</button></li>
-        </ul>
+
     </div>
 
-    <div id="overlay" class="overlay"></div>
 
-    <div class="main-content">
-        <h1>متجر هدايا الكنيسة</h1>
+    <!-- =========================
+         SUCCESS
+    ========================= -->
 
-        <div id="giftsContainer" class="gifts-grid"></div>
+    <div id="successMessage" class="success">
+
+        تم إرسال طلب الهدية بنجاح ✅
+
     </div>
 
-    <div id="imageModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h3 id="modalTitle" style="color: #0f1111; margin-bottom: 15px; font-size: 18px;">معاينة الهدية</h3>
-            <img id="modalImg" src="" alt="صورة مكبرة">
-            <p style="color: #565959; font-size: 13px;">صورة تفصيلية للهدية المقدمة من خدمة الكنيسة.</p>
+
+    <!-- =========================
+         GIFTS
+    ========================= -->
+
+    <div class="section-title">
+
+        <i class="fas fa-store"></i>
+
+        الهدايا المتاحة
+
+    </div>
+
+
+    <div id="giftsContainer" class="gifts-grid">
+
+        <div
+            class="loading"
+            style="grid-column:1/-1;">
+
+            <i class="fas fa-spinner fa-spin"></i>
+
+            جاري تحميل الهدايا...
+
         </div>
+
     </div>
+
+</div>
+
+
+<!-- =========================
+     CONFIRM MODAL
+========================= -->
+
+<div id="confirmModal" class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon">
+
+            <i class="fas fa-gift"></i>
+
+        </div>
+
+
+        <h2>
+
+            تأكيد طلب الهدية
+
+        </h2>
+
+
+        <p id="confirmText">
+
+            هل تريد طلب هذه الهدية؟
+
+        </p>
+
+
+        <div class="modal-buttons">
+
+            <button
+                id="confirmBuyBtn"
+                class="confirm-btn">
+
+                <i class="fas fa-check"></i>
+
+                تأكيد الطلب
+
+            </button>
+
+
+            <button
+                id="cancelBuyBtn"
+                class="cancel-btn">
+
+                إلغاء
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    addDoc,
+    serverTimestamp,
+    runTransaction
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+
+    authDomain:
+        "st-mina-c01ec.firebaseapp.com",
+
+    databaseURL:
+        "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+
+    projectId:
+        "st-mina-c01ec",
+
+    storageBucket:
+        "st-mina-c01ec.firebasestorage.app",
+
+    messagingSenderId:
+        "792349150559",
+
+    appId:
+        "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+
+    measurementId:
+        "G-XZGSBG05KR"
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getFirestore(app);
+
+
+/* =====================================================
+   USERNAME
+===================================================== */
+
+const loggedInUsername =
+    localStorage.getItem("currentUser") ||
+    localStorage.getItem("username") ||
+    "tony1";
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let currentUserDoc = null;
+
+let currentUserData = null;
+
+let currentUserPoints = 0;
+
+let currentUserStage = "";
+
+let currentUserGrade = "";
+
+let selectedGift = null;
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const giftsContainer =
+    document.getElementById(
+        "giftsContainer"
+    );
+
+
+const pointsDisplay =
+    document.getElementById(
+        "pointsDisplay"
+    );
+
+
+const usernameDisplay =
+    document.getElementById(
+        "usernameDisplay"
+    );
+
+
+const userStageDisplay =
+    document.getElementById(
+        "userStageDisplay"
+    );
+
+
+const confirmModal =
+    document.getElementById(
+        "confirmModal"
+    );
+
+
+const confirmText =
+    document.getElementById(
+        "confirmText"
+    );
+
+
+const confirmBuyBtn =
+    document.getElementById(
+        "confirmBuyBtn"
+    );
+
+
+const cancelBuyBtn =
+    document.getElementById(
+        "cancelBuyBtn"
+    );
+
+
+const successMessage =
+    document.getElementById(
+        "successMessage"
+    );
+
+
+/* =====================================================
+   LOAD USER
+===================================================== */
+
+async function loadUser() {
+
+    const usersSnap =
+        await getDocs(
+            collection(
+                db,
+                "users"
+            )
+        );
+
+
+    const target =
+        String(
+            loggedInUsername
+        )
+        .trim()
+        .toLowerCase();
+
+
+    for (
+        const userDoc
+        of usersSnap.docs
+    ) {
+
+        const data =
+            userDoc.data();
+
+
+        const docUsername =
+            String(
+                userDoc.id
+            )
+            .trim()
+            .toLowerCase();
+
+
+        const fieldUsername =
+            data.username
+                ? String(
+                    data.username
+                )
+                .trim()
+                .toLowerCase()
+                : "";
+
+
+        if (
+            docUsername === target ||
+            fieldUsername === target
+        ) {
+
+            currentUserDoc =
+                userDoc;
+
+            currentUserData =
+                data;
+
+            break;
+        }
+    }
+
+
+    if (!currentUserDoc) {
+
+        throw new Error(
+            "لم يتم العثور على حساب المخدوم."
+        );
+    }
+
+
+    currentUserPoints =
+        Number(
+            currentUserData.points || 0
+        );
+
+
+    currentUserStage =
+        currentUserData.stage || "";
+
+
+    currentUserGrade =
+        currentUserData.grade || "";
+
+
+    usernameDisplay.textContent =
+        currentUserData.username ||
+        currentUserDoc.id;
+
+
+    userStageDisplay.textContent =
+        `المرحلة: ${
+            currentUserStage ||
+            "غير محددة"
+        } - الصف: ${
+            currentUserGrade ||
+            "غير محدد"
+        }`;
+
+
+    updatePointsUI();
+}
+
+
+/* =====================================================
+   POINTS UI
+===================================================== */
+
+function updatePointsUI() {
+
+    pointsDisplay.textContent =
+        currentUserPoints;
+}
+
+
+/* =====================================================
+   LOAD GIFTS
+===================================================== */
+
+async function loadGifts() {
+
+    try {
+
+        giftsContainer.innerHTML = `
+
+            <div
+                class="loading"
+                style="grid-column:1/-1;">
+
+                <i class="fas fa-spinner fa-spin"></i>
+
+                جاري تحميل الهدايا...
+
+            </div>
+
+        `;
+
+
+        const giftsSnap =
+            await getDocs(
+                collection(
+                    db,
+                    "gifts"
+                )
+            );
+
+
+        giftsContainer.innerHTML = "";
+
+
+        let foundAny = false;
+
+
+        for (
+            const giftDoc
+            of giftsSnap.docs
+        ) {
+
+            const gift =
+                giftDoc.data();
+
+
+            /*
+             * =============================
+             * الكمية
+             * =============================
+             */
+
+            const quantity =
+                Number(
+                    gift.quantity || 0
+                );
+
+
+            /*
+             * =============================
+             * لو الكمية صفر
+             *
+             * لا تعرض الهدية نهائيًا
+             * =============================
+             */
+
+            if (
+                quantity <= 0
+            ) {
+
+                continue;
+            }
+
+
+            /*
+             * =============================
+             * فلترة الصف
+             * =============================
+             */
+
+            if (
+                gift.grade &&
+                currentUserGrade &&
+                String(gift.grade)
+                    .trim()
+                    .toLowerCase() !==
+                String(currentUserGrade)
+                    .trim()
+                    .toLowerCase()
+            ) {
+
+                continue;
+            }
+
+
+            foundAny = true;
+
+
+            const giftId =
+                giftDoc.id;
+
+
+            const giftName =
+                gift.name ||
+                "هدية بدون اسم";
+
+
+            const giftPoints =
+                Number(
+                    gift.points || 0
+                );
+
+
+            const image =
+                gift.image ||
+                gift.imageUrl ||
+                "";
+
+
+            const enoughPoints =
+                currentUserPoints >=
+                giftPoints;
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "gift-card";
+
+
+            const imageHTML =
+                image
+
+                    ? `
+                        <img
+                            src="${escapeHtmlAttribute(image)}"
+                            alt="${escapeHtmlAttribute(giftName)}">
+                      `
+
+                    : `
+                        <i class="fas fa-gift"></i>
+                      `;
+
+
+            let buttonText =
+                "طلب الهدية";
+
+
+            if (!enoughPoints) {
+
+                buttonText =
+                    "النقاط غير كافية";
+            }
+
+
+            card.innerHTML = `
+
+                <div class="gift-image">
+
+                    ${imageHTML}
+
+                </div>
+
+
+                <div class="gift-content">
+
+                    <div class="gift-name">
+
+                        ${escapeHtml(giftName)}
+
+                    </div>
+
+
+                    <div class="gift-price">
+
+                        ⭐
+
+                        ${giftPoints}
+
+                        نقطة
+
+                    </div>
+
+
+                    <div class="gift-quantity">
+
+                        <i class="fas fa-box"></i>
+
+                        المتبقي:
+
+                        ${quantity}
+
+                        قطعة
+
+                    </div>
+
+
+                    <button
+                        class="buy-btn"
+                        ${!enoughPoints ? "disabled" : ""}>
+
+                        <i class="fas fa-gift"></i>
+
+                        ${buttonText}
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+            const buyButton =
+                card.querySelector(
+                    ".buy-btn"
+                );
+
+
+            if (enoughPoints) {
+
+                buyButton.addEventListener(
+                    "click",
+                    () => {
+
+                        openConfirmModal({
+
+                            id:
+                                giftId,
+
+                            name:
+                                giftName,
+
+                            points:
+                                giftPoints,
+
+                            quantity:
+                                quantity,
+
+                            image:
+                                image
+                        });
+
+                    }
+                );
+            }
+
+
+            giftsContainer.appendChild(
+                card
+            );
+        }
+
+
+        /*
+         * =============================
+         * لا توجد هدايا
+         * =============================
+         */
+
+        if (!foundAny) {
+
+            giftsContainer.innerHTML = `
+
+                <div
+                    class="loading"
+                    style="grid-column:1/-1;">
+
+                    <i class="fas fa-box-open"></i>
+
+                    <br><br>
+
+                    لا توجد هدايا متاحة حاليًا 🎁
+
+                </div>
+
+            `;
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "LOAD GIFTS ERROR:",
+            error
+        );
+
+
+        giftsContainer.innerHTML = `
+
+            <div
+                class="loading"
+                style="grid-column:1/-1;">
+
+                حدث خطأ أثناء تحميل الهدايا ❌
+
+                <br><br>
+
+                ${escapeHtml(error.message)}
+
+            </div>
+
+        `;
+    }
+}
+
+
+/* =====================================================
+   OPEN MODAL
+===================================================== */
+
+function openConfirmModal(gift) {
+
+    selectedGift =
+        gift;
+
+
+    confirmText.innerHTML = `
+
+        هل تريد طلب:
+
+        <strong>
+            ${escapeHtml(gift.name)}
+        </strong>
+
+        ؟
+
+        <br><br>
+
+        سيتم خصم
+
+        <strong>
+            ${gift.points}
+        </strong>
+
+        نقطة ⭐
+
+        <br>
+
+        وسيتم حجز قطعة واحدة من المعرض 🎁
+
+    `;
+
+
+    confirmModal.style.display =
+        "flex";
+}
+
+
+/* =====================================================
+   CANCEL
+===================================================== */
+
+cancelBuyBtn.addEventListener(
+    "click",
+    () => {
+
+        selectedGift =
+            null;
+
+        confirmModal.style.display =
+            "none";
+    }
+);
+
+
+confirmModal.addEventListener(
+    "click",
+    (event) => {
+
+        if (
+            event.target ===
+            confirmModal
+        ) {
+
+            selectedGift =
+                null;
+
+            confirmModal.style.display =
+                "none";
+        }
+    }
+);
+
+
+/* =====================================================
+   CONFIRM BUY
+===================================================== */
+
+confirmBuyBtn.addEventListener(
+    "click",
+    async () => {
+
+        if (!selectedGift) {
+            return;
+        }
+
+
+        confirmBuyBtn.disabled =
+            true;
+
+
+        confirmBuyBtn.innerHTML = `
+
+            <i class="fas fa-spinner fa-spin"></i>
+
+            جاري تنفيذ الطلب...
+
+        `;
+
+
+        try {
+
+            await createGiftOrder(
+                selectedGift
+            );
+
+
+            confirmModal.style.display =
+                "none";
+
+
+            successMessage.style.display =
+                "block";
+
+
+            setTimeout(
+                () => {
+
+                    successMessage.style.display =
+                        "none";
+
+                },
+                5000
+            );
+
+
+            selectedGift =
+                null;
+
+
+            /*
+             * تحديث البيانات
+             */
+
+            await loadUser();
+
+            await loadGifts();
+
+
+        } catch (error) {
+
+            console.error(
+                "BUY ERROR:",
+                error
+            );
+
+
+            alert(
+                error.message ||
+                "حدث خطأ أثناء طلب الهدية."
+            );
+
+
+        } finally {
+
+            confirmBuyBtn.disabled =
+                false;
+
+
+            confirmBuyBtn.innerHTML = `
+
+                <i class="fas fa-check"></i>
+
+                تأكيد الطلب
+
+            `;
+        }
+    }
+);
+
+
+/* =====================================================
+   CREATE ORDER
+===================================================== */
+
+async function createGiftOrder(gift) {
+
+    if (!currentUserDoc) {
+
+        throw new Error(
+            "لم يتم تحميل حسابك."
+        );
+    }
+
+
+    const userRef =
+        currentUserDoc.ref;
+
+
+    const giftRef =
+        doc(
+            db,
+            "gifts",
+            gift.id
+        );
+
+
+    /*
+     * =========================================
+     * TRANSACTION
+     * =========================================
+     */
+
+    await runTransaction(
+        db,
+        async (transaction) => {
+
+            const userSnap =
+                await transaction.get(
+                    userRef
+                );
+
+
+            const giftSnap =
+                await transaction.get(
+                    giftRef
+                );
+
+
+            if (!userSnap.exists()) {
+
+                throw new Error(
+                    "حسابك غير موجود."
+                );
+            }
+
+
+            if (!giftSnap.exists()) {
+
+                throw new Error(
+                    "هذه الهدية لم تعد موجودة."
+                );
+            }
+
+
+            const userData =
+                userSnap.data();
+
+
+            const giftData =
+                giftSnap.data();
+
+
+            const actualPoints =
+                Number(
+                    userData.points || 0
+                );
+
+
+            const actualQuantity =
+                Number(
+                    giftData.quantity || 0
+                );
+
+
+            const giftPoints =
+                Number(
+                    giftData.points || 0
+                );
+
+
+            /*
+             * =================================
+             * تأكيد وجود الكمية
+             * =================================
+             */
+
+            if (
+                actualQuantity <= 0
+            ) {
+
+                throw new Error(
+                    "آسف، هذه الهدية نفدت بالفعل."
+                );
+            }
+
+
+            /*
+             * =================================
+             * تأكيد النقاط
+             * =================================
+             */
+
+            if (
+                actualPoints <
+                giftPoints
+            ) {
+
+                throw new Error(
+                    `نقاطك غير كافية. تحتاج ${giftPoints} نقطة، ولديك ${actualPoints} نقطة فقط.`
+                );
+            }
+
+
+            /*
+             * =================================
+             * خصم النقاط
+             * =================================
+             */
+
+            transaction.update(
+                userRef,
+                {
+                    points:
+                        actualPoints -
+                        giftPoints
+                }
+            );
+
+
+            /*
+             * =================================
+             * خصم قطعة
+             * =================================
+             */
+
+            transaction.update(
+                giftRef,
+                {
+                    quantity:
+                        actualQuantity -
+                        1
+                }
+            );
+        }
+    );
+
+
+    /*
+     * =========================================
+     * إنشاء الطلب
+     * =========================================
+     */
+
+    await addDoc(
+        collection(
+            db,
+            "notifications"
+        ),
+        {
+
+            type:
+                "gift_order",
+
+
+            title:
+                "طلب هدية جديد",
+
+
+            message:
+                `قام المخدوم (${loggedInUsername}) من مرحلة (${currentUserStage} - ${currentUserGrade}) بطلب الهدية "${gift.name}" مقابل ${gift.points} نقطة.`,
+
+
+            username:
+                loggedInUsername,
+
+
+            stage:
+                currentUserStage,
+
+
+            grade:
+                currentUserGrade,
+
+
+            /*
+             * مهم جدًا
+             */
+
+            giftId:
+                gift.id,
+
+
+            giftName:
+                gift.name,
+
+
+            pointsSpent:
+                Number(gift.points),
+
+
+            /*
+             * حالة الطلب
+             */
+
+            status:
+                "pending",
+
+
+            /*
+             * لم يتم استرجاعه
+             */
+
+            refundProcessed:
+                false,
+
+
+            /*
+             * لم يتم رفضه
+             */
+
+            isRejected:
+                false,
+
+
+            /*
+             * لم يتم تسليمه
+             */
+
+            isDelivered:
+                false,
+
+
+            timestamp:
+                serverTimestamp(),
+
+
+            isRead:
+                false
+        }
+    );
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(text) {
+
+    return String(text)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+function escapeHtmlAttribute(text) {
+
+    return String(text)
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /'/g,
+            "\\'"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /\n/g,
+            " "
+        );
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+async function start() {
+
+    try {
+
+        await loadUser();
+
+        await loadGifts();
+
+    } catch (error) {
+
+        console.error(error);
+
+        giftsContainer.innerHTML = `
+
+            <div
+                class="loading"
+                style="grid-column:1/-1;">
+
+                حدث خطأ ❌
+
+                <br><br>
+
+                ${escapeHtml(error.message)}
+
+            </div>
+
+        `;
+    }
+}
+
+
+start();
+
+</script>
 
 </body>
 </html>
