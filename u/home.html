@@ -4,156 +4,233 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الصفحة الرئيسية</title>
-    
-    <!-- خط فخم وتصميم أيقونات FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root{
+            --wine-900:#4a0e16;
+            --wine-800:#6b1420;
+            --wine-700:#7c1b28;
+            --gold:#c9a04d;
+            --gold-light:#e6c878;
+            --paper:#f6f1e9;
+            --card:#ffffff;
+            --ink:#2a2320;
+            --ink-soft:#6b625c;
+            --line:#e9dfd0;
         }
 
-        body {
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: 'Amiri', serif;
-            color: #f8fafc;
+        * { box-sizing:border-box; margin:0; padding:0; }
+
+        body{
+            background:var(--paper);
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+            font-family:'Cairo', sans-serif;
+            color:var(--ink);
         }
 
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
+        /* ===== الهيدر ===== */
+        header.church-header{
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding:22px 20px 26px;
+            text-align:center;
+            position:relative;
+            box-shadow:0 8px 20px rgba(74,14,22,0.25);
         }
 
-        .welcome-card {
-            background: rgba(30, 41, 59, 0.85);
-            backdrop-filter: blur(12px);
-            padding: 45px 30px;
-            border-radius: 20px;
-            box-shadow: 
-                0 0 30px rgba(234, 179, 8, 0.15),
-                inset 0 0 15px rgba(234, 179, 8, 0.05),
-                0 25px 50px rgba(0, 0, 0, 0.8);
-            border: 2px solid rgba(234, 179, 8, 0.3);
-            max-width: 600px;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
+        header.church-header::after{
+            content:'';
+            position:absolute;
+            bottom:0; right:0; left:0;
+            height:4px;
+            background:linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
-        .welcome-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #ca8a04, #eab308, #ca8a04);
+        .church-logo{
+            width:52px;
+            height:52px;
+            border-radius:50%;
+            background:var(--wine-700);
+            border:2px solid var(--gold);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:0 auto 10px;
         }
 
-        .cross-icon {
-            font-size: 50px;
-            color: #eab308;
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px rgba(234, 179, 8, 0.5);
+        .church-logo i{
+            color:var(--gold-light);
+            font-size:24px;
         }
 
-        h1 {
-            font-size: 36px;
-            color: #facc15;
-            text-shadow: 
-                0 0 10px rgba(250, 204, 21, 0.4),
-                2px 2px 0px #000;
-            margin-bottom: 15px;
+        header.church-header h2{
+            font-family:'Amiri', serif;
+            color:#fbeed4;
+            font-size:19px;
+            font-weight:700;
         }
 
-        .error-msg {
-            color: #ef4444 !important;
-            font-size: 28px !important;
+        header.church-header p{
+            color:var(--gold-light);
+            font-size:12px;
+            margin-top:4px;
+            letter-spacing:.3px;
         }
 
-        .bible-verse {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 12px;
-            border-right: 4px solid #eab308;
-            text-align: right;
+        /* ===== المحتوى ===== */
+        .main-content{
+            flex:1;
+            padding:18px 16px 100px;
+            max-width:620px;
+            width:100%;
+            margin:0 auto;
         }
 
-        .bible-verse p {
-            font-size: 20px;
-            color: #e2e8f0;
-            line-height: 1.8;
-            font-style: italic;
-            margin-bottom: 8px;
+        /* ===== الويدجت الموحد ===== */
+        .widget{
+            background:var(--card);
+            border-radius:22px;
+            border:1px solid var(--line);
+            box-shadow:0 12px 28px rgba(74,14,22,0.08);
+            margin-bottom:18px;
+            overflow:hidden;
+            position:relative;
         }
 
-        .bible-verse span {
-            font-size: 16px;
-            color: #facc15;
-            display: block;
-            text-align: left;
-            font-weight: bold;
+        .widget::before{
+            content:'';
+            position:absolute;
+            top:0; right:0; left:0;
+            height:3px;
+            background:linear-gradient(90deg, var(--wine-700), var(--gold), var(--wine-700));
+            opacity:.9;
         }
 
-        .logout-btn {
-            margin-top: 20px;
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Amiri', serif;
-            font-size: 16px;
-            transition: background 0.3s;
+        .widget-head{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:16px 18px 4px;
         }
 
-        .logout-btn:hover {
-            background-color: #dc2626;
+        .widget-head .icon-badge{
+            width:30px; height:30px;
+            border-radius:10px;
+            background:var(--wine-700);
+            color:var(--gold-light);
+            display:flex; align-items:center; justify-content:center;
+            font-size:13px;
+            flex-shrink:0;
         }
 
-        /* شريط التنقل السفلي */
-        nav.gamer-nav {
-            background: rgba(15, 23, 42, 0.95);
-            border-top: 2px solid rgba(234, 179, 8, 0.3);
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 10px;
-            box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.8);
+        .widget-head h3{
+            font-size:14px;
+            font-weight:700;
+            color:var(--wine-800);
         }
 
-        nav.gamer-nav a {
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        /* بطاقة الترحيب */
+        .welcome-widget .widget-body{
+            padding:14px 20px 22px;
+            text-align:center;
         }
 
-        nav.gamer-nav a i {
-            font-size: 20px;
+        .welcome-widget .avatar-wrap{
+            width:76px;
+            height:76px;
+            margin:0 auto 10px;
+            position:relative;
         }
 
-        nav.gamer-nav a:hover, nav.gamer-nav a.active {
-            color: #facc15;
-            transform: translateY(-3px);
-            text-shadow: 0 0 10px rgba(234, 179, 8, 0.8);
+        .welcome-widget .avatar-wrap img{
+            width:100%;
+            height:100%;
+            border-radius:50%;
+            object-fit:cover;
+            border:3px solid var(--gold);
+            box-shadow:0 6px 16px rgba(74,14,22,0.25);
+            background:var(--paper);
+        }
+
+        .welcome-widget h1{
+            font-family:'Amiri', serif;
+            font-size:23px;
+            color:var(--wine-800);
+            margin-bottom:4px;
+        }
+
+        .welcome-widget .sub{
+            color:var(--ink-soft);
+            font-size:13px;
+        }
+
+        .error-msg{
+            color:#b3261e !important;
+            font-size:20px !important;
+        }
+
+        /* آية اليوم */
+        .verse-widget .widget-body{
+            padding:8px 18px 20px;
+        }
+
+        .verse-widget p{
+            font-family:'Amiri', serif;
+            font-style:italic;
+            font-size:18px;
+            line-height:1.9;
+            color:var(--ink);
+            background:var(--paper);
+            border-right:4px solid var(--gold);
+            padding:14px 16px;
+            border-radius:12px;
+        }
+
+        .verse-widget span{
+            display:block;
+            text-align:left;
+            font-size:13px;
+            color:var(--wine-700);
+            font-weight:700;
+            margin-top:10px;
+        }
+
+        /* ===== شريط التنقل السفلي ===== */
+        nav.gamer-nav{
+            position:fixed;
+            bottom:0; right:0; left:0;
+            background:var(--wine-900);
+            border-top:1px solid rgba(230,200,120,0.25);
+            display:flex;
+            justify-content:space-around;
+            padding:10px 6px calc(10px + env(safe-area-inset-bottom));
+            box-shadow:0 -8px 20px rgba(0,0,0,0.25);
+            z-index:10;
+        }
+
+        nav.gamer-nav a{
+            color:#c9b7a8;
+            text-decoration:none;
+            font-size:11px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:4px;
+            transition:all .25s ease;
+            cursor:pointer;
+            padding:4px 6px;
+        }
+
+        nav.gamer-nav a i{ font-size:18px; }
+
+        nav.gamer-nav a:hover,
+        nav.gamer-nav a.active{
+            color:var(--gold-light);
+            transform:translateY(-2px);
         }
     </style>
 
@@ -176,15 +253,13 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             const welcomeElement = document.getElementById('welcomeName');
-            
-            // قراءة معرف المستخدم من الـ localStorage
+            const avatarElement = document.getElementById('homeAvatar');
+
             const userId = localStorage.getItem('userDocId');
 
             if (!userId) {
-                welcomeElement.innerText = "خطأ: يرجى تسجيل الدخول أولاً!";
+                welcomeElement.innerText = "خطأ: في تسجيل الدخول!";
                 welcomeElement.classList.add('error-msg');
-                // يمكنك تفعيل التحويل التلقائي لصفحة تسجيل الدخول هكذا:
-                // setTimeout(() => window.location.href = 'sign.html', 2000);
                 return;
             }
 
@@ -195,6 +270,12 @@
                 if (docSnap.exists()) {
                     const userData = docSnap.data();
                     welcomeElement.innerText = `أهلاً بك يا ${userData.username || userId}`;
+
+                    if (userData.avatarUrl) {
+                        avatarElement.src = userData.avatarUrl;
+                    } else {
+                        avatarElement.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || userId)}&background=7c1b28&color=fbeed4&size=150`;
+                    }
                 } else {
                     welcomeElement.innerText = "خطأ: لم يتم العثور على المستخدم في قاعدة البيانات!";
                     welcomeElement.classList.add('error-msg');
@@ -209,12 +290,6 @@
     </script>
 
     <script>
-        function logout() {
-            localStorage.removeItem('userDocId');
-            window.location.href = 'sign.html'; // أو صفحة تسجيل الدخول لديك
-        }
-
-        // توجيه لصفحات التنقل مع تمرير المستخدم إن وجد
         function navigateTo(page) {
             const userId = localStorage.getItem('userDocId');
             if(page === 'profile.html' && userId) {
@@ -227,22 +302,35 @@
 </head>
 <body>
 
+    <header class="church-header">
+        <div class="church-logo"><i class="fas fa-cross"></i></div>
+        <h2>كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي </h2>
+    </header>
+
     <div class="main-content">
-        <div class="welcome-card">
-            <div class="cross-icon">
-                <i class="fas fa-cross"></i>
+
+        <!-- بطاقة الترحيب -->
+        <div class="widget welcome-widget">
+            <div class="widget-body">
+                <div class="avatar-wrap">
+                    <img id="homeAvatar" src="https://ui-avatars.com/api/?background=7c1b28&color=fbeed4&size=150" alt="صورة المستخدم">
+                </div>
+                <h1 id="welcomeName">جاري التحميل...</h1>
             </div>
-            <h1 id="welcomeName">جاري التحميل...</h1>
-            
-            <div class="bible-verse">
+        </div>
+
+        <!-- آية اليوم -->
+        <div class="widget verse-widget">
+            <div class="widget-head">
+                <div class="icon-badge"><i class="fas fa-book-bible"></i></div>
+              
+            </div>
+            <div class="widget-body">
                 <p>"الرب نورى وخلاصى ممن أخاف؟ الرب حصن حياتى ممن أرتعب؟"</p>
                 <span>(مزمور 27 : 1)</span>
             </div>
-
-            <button class="logout-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
-            </button>
         </div>
+
     </div>
 
     <!-- شريط التنقل السفلي -->
@@ -251,13 +339,13 @@
             <i class="fas fa-user"></i>
             <span>البروفايل</span>
         </a>
-        <a class="active" onclick="navigateTo('home.html')">
-            <i class="fas fa-house-chimney"></i>
-            <span>الرئيسية</span>
-        </a>
         <a onclick="navigateTo('gallery.html')">
             <i class="fas fa-images"></i>
             <span>المعرض</span>
+        </a>
+        <a class="active" onclick="navigateTo('home.html')">
+            <i class="fas fa-house-chimney"></i>
+            <span>الرئيسية</span>
         </a>
         <a onclick="navigateTo('cart.html')">
             <i class="fas fa-heart"></i>
