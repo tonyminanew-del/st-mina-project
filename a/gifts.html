@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>معرض الهدايا - لوحة الخادم</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- ربط مكتبات فايربيس -->
@@ -28,35 +28,6 @@
         const db = getFirestore(app);
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const menuBtn = document.getElementById('menuBtn');
-            const closeBtn = document.getElementById('closeBtn');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const logoutBtn = document.getElementById('logoutBtn');
-
-            function openSidebar() {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-            }
-
-            function closeSidebar() {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            }
-
-            if (menuBtn) menuBtn.addEventListener('click', openSidebar);
-            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-            if (overlay) overlay.addEventListener('click', closeSidebar);
-
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
-                        localStorage.clear();
-                        window.location.href = 'index.html';
-                    }
-                });
-            }
-
             const currentServantGradeBadge = document.getElementById('currentServantGradeBadge');
             const giftGradeSelect = document.getElementById('giftGradeSelect');
             const filterGrade = document.getElementById('filterGrade');
@@ -102,7 +73,6 @@
                         "الصف الأول الثانوي", "الصف الثاني الثانوي", "الصف الثالث الثانوي"
                     ];
                 } else {
-                    // افتراضي يعرض الكل لو لم يتم التعرف عليها
                     return [
                         "الصف الأول الابتدائي", "الصف الثاني الابتدائي", "الصف الثالث الابتدائي",
                         "الصف الرابع الابتدائي", "الصف الخامس الابتدائي", "الصف السادس الابتدائي",
@@ -142,7 +112,7 @@
                 }
             });
 
-            // جلب وعرض الهدايا حسب الفلتر والمرحلة
+            // جلب وعرض الهدايا حسب الفلتر والمرحلة (مع استبعاد الكميات التي تساوي صفر أو أقل)
             async function renderGifts(selectedFilter = "all") {
                 giftsContainer.innerHTML = `<div class="no-gifts">جاري تحميل الهدايا...</div>`;
                 try {
@@ -155,6 +125,10 @@
                     querySnapshot.forEach((docSnap) => {
                         const gift = docSnap.data();
 
+                        // التحقق من أن الكمية أكبر من الصفر أولاً
+                        const qty = Number(gift.quantity) || 0;
+                        if (qty <= 0) return; // تخطي الهدية تماماً إذا كانت كميتها 0 أو أقل
+
                         const isMyStage = allowedGrades.includes(gift.grade);
                         const matchesFilter = (selectedFilter === "all" && isMyStage) || (gift.grade === selectedFilter);
 
@@ -163,14 +137,14 @@
                             const card = document.createElement('div');
                             card.className = 'gift-card';
                             card.innerHTML = `
-                                <img src="${gift.image || 'https://via.placeholder.com/250x180/111/d4af37?text=هدية'}" alt="${gift.name}" class="gift-img">
+                                <img src="${gift.image || 'https://via.placeholder.com/250x180/f6f1e9/7c1b28?text=هدية'}" alt="${gift.name}" class="gift-img">
                                 <div class="gift-details">
                                     <div class="gift-title">${gift.name}</div>
-                                    <div class="gift-info" style="color: #d4af37; font-size: 14px; font-weight: bold;">
+                                    <div class="gift-info" style="color: var(--gold); font-size: 13px; font-weight: bold;">
                                         <span>الصف: <span>${gift.grade || 'غير محدد'}</span></span>
                                     </div>
                                     <div class="gift-info">
-                                        <span>الكمية: <span>${gift.quantity}</span></span>
+                                        <span>الكمية: <span>${qty}</span></span>
                                     </div>
                                     <div class="gift-info">
                                         <span>النقاط: <span>${gift.points} نقطة</span></span>
@@ -182,7 +156,7 @@
                     });
 
                     if (itemsCount === 0) {
-                        giftsContainer.innerHTML = `<div class="no-gifts">لا توجد هدايا مضافة لهذه الصفوف حالياً.</div>`;
+                        giftsContainer.innerHTML = `<div class="no-gifts">لا توجد هدايا مضافة لهذه الصفوف حالياً أو نفدت الكميات.</div>`;
                     }
                 } catch (error) {
                     console.error("خطأ في جلب الهدايا: ", error);
@@ -208,6 +182,11 @@
                     return;
                 }
 
+                if (quantity <= 0) {
+                    alert("لا يمكن إضافة هدية بكمية صفر أو أقل!");
+                    return;
+                }
+
                 const submitBtn = giftForm.querySelector('button[type="submit"]');
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...`;
@@ -220,7 +199,7 @@
                         grade: selectedGrade,
                         stage: formattedStage,
                         addedBy: loggedInUser || 'خادم',
-                        image: base64Image || 'https://via.placeholder.com/250x180/111/d4af37?text=هدية',
+                        image: base64Image || 'https://via.placeholder.com/250x180/f6f1e9/7c1b28?text=هدية',
                         createdAt: serverTimestamp()
                     });
 
@@ -243,92 +222,335 @@
     </script>
 
     <style>
+        :root{
+            --wine-900:#4a0e16;
+            --wine-800:#6b1420;
+            --wine-700:#7c1b28;
+            --gold:#c9a04d;
+            --gold-light:#e6c878;
+            --paper:#f6f1e9;
+            --card:#ffffff;
+            --ink:#2a2320;
+            --ink-soft:#6b625c;
+            --line:#e9dfd0;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: radial-gradient(circle at center, #111111 0%, #000000 100%);
+            background: var(--paper);
             min-height: 100vh;
-            font-family: 'Reem Kufi', 'Cairo', sans-serif;
-            color: #f3e5ab;
+            font-family: 'Cairo', sans-serif;
+            color: var(--ink);
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
-        .navbar { width: 100%; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .menu-btn { background: rgba(18, 18, 18, 0.9); border: 2px solid #d4af37; color: #d4af37; font-size: 24px; padding: 10px 14px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .menu-btn:hover { background: #d4af37; color: #000; }
-        .servant-badge { background: rgba(18, 18, 18, 0.9); border: 1px solid #d4af37; padding: 8px 15px; border-radius: 10px; font-size: 16px; color: #d4af37; }
-        
-        .sidebar { position: fixed; top: 0; right: -320px; width: 320px; height: 100%; background: rgba(12, 12, 12, 0.99); border-left: 2px solid #d4af37; transition: right 0.35s ease; z-index: 9999; padding: 30px 20px; display: flex; flex-direction: column; }
-        .sidebar.active { right: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px; margin-bottom: 25px; }
-        .sidebar-header h3 { color: #d4af37; }
-        .close-btn { background: none; border: none; color: #ff6b6b; font-size: 24px; cursor: pointer; }
-        .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
-        .sidebar-links a, .logout-link { display: flex; align-items: center; gap: 15px; padding: 14px 18px; background: rgba(22, 22, 22, 0.85); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 14px; color: #f3e5ab; text-decoration: none; font-size: 18px; transition: 0.3s; cursor: pointer; }
-        .sidebar-links a:hover { background: #d4af37; color: #000; transform: translateX(-5px); }
-        .logout-link { border-color: rgba(255, 107, 107, 0.4); color: #ff8b8b; margin-top: auto; }
-        .logout-link:hover { background: #ff6b6b; color: #fff; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: none; z-index: 998; }
-        .overlay.active { display: block; }
 
-        .main-content { text-align: center; margin-top: 10px; padding: 20px; max-width: 1000px; width: 100%; }
-        h1 { color: #d4af37; font-size: 32px; margin-bottom: 20px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+        /* ===== الهيدر ===== */
+        header.church-header{
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding:22px 20px 26px;
+            text-align:center;
+            position:relative;
+            box-shadow:0 8px 20px rgba(74,14,22,0.25);
+        }
 
-        .filter-bar { background: rgba(18, 18, 18, 0.95); border: 1px solid rgba(212, 175, 55, 0.4); padding: 15px 20px; border-radius: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; text-align: right; }
-        .filter-bar label { color: #d4af37; font-size: 18px; font-weight: bold; }
-        .filter-select { background: #0a0a0a; border: 1px solid #d4af37; color: #f3e5ab; padding: 10px 15px; border-radius: 10px; font-size: 16px; min-width: 240px; cursor: pointer; font-family: 'Reem Kufi', 'Cairo', sans-serif; }
+        header.church-header::after{
+            content:'';
+            position:absolute;
+            bottom:0; right:0; left:0;
+            height:4px;
+            background:linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
 
-        .add-gift-box { background: rgba(18, 18, 18, 0.95); border: 2px solid #d4af37; padding: 25px; border-radius: 20px; margin-bottom: 30px; text-align: right; box-shadow: 0 0 20px rgba(212, 175, 55, 0.1); }
-        .add-gift-box h3 { color: #d4af37; margin-bottom: 15px; font-size: 20px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        .form-control { background: #0a0a0a; border: 1px solid rgba(212, 175, 55, 0.4); color: #f3e5ab; padding: 12px 15px; border-radius: 10px; font-family: 'Reem Kufi', 'Cairo', sans-serif; font-size: 16px; width: 100%; }
-        .form-control:focus { outline: none; border-color: #d4af37; box-shadow: 0 0 8px rgba(212, 175, 55, 0.3); }
+        .church-logo{
+            width:52px;
+            height:52px;
+            border-radius:50%;
+            background:var(--wine-700);
+            border:2px solid var(--gold);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:0 auto 10px;
+        }
 
-        .file-upload-wrapper { background: #0a0a0a; border: 1px dashed rgba(212, 175, 55, 0.5); padding: 12px 15px; border-radius: 10px; color: #c5b358; font-size: 16px; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; transition: 0.3s; }
-        .file-upload-wrapper:hover { border-color: #d4af37; background: rgba(212, 175, 55, 0.05); }
+        .church-logo i{
+            color:var(--gold-light);
+            font-size:24px;
+        }
+
+        header.church-header h2{
+            font-family:'Amiri', serif;
+            color:#fbeed4;
+            font-size:18px;
+            font-weight:700;
+        }
+
+        .servant-badge {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-right: 4px solid var(--gold);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--wine-800);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(74,14,22,0.06);
+            margin-bottom: 20px;
+        }
+
+        .servant-badge i {
+            color: var(--gold);
+        }
+
+        .main-content { 
+            flex: 1;
+            text-align: center; 
+            padding: 24px 16px 40px; 
+            max-width: 680px; 
+            width: 100%; 
+            margin: 0 auto; 
+        }
+
+        h1 { 
+            font-family: 'Amiri', serif;
+            color: var(--wine-800); 
+            font-size: 24px; 
+            margin-bottom: 15px; 
+        }
+
+        .filter-bar { 
+            background: var(--card); 
+            border: 1px solid var(--line); 
+            padding: 15px 18px; 
+            border-radius: 18px; 
+            margin-bottom: 22px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 12px; 
+            text-align: right; 
+            box-shadow: 0 8px 20px rgba(74,14,22,0.05);
+        }
+
+        .filter-bar label { 
+            color: var(--wine-700); 
+            font-size: 14px; 
+            font-weight: 700; 
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-select { 
+            background: var(--paper); 
+            border: 1px solid var(--line); 
+            color: var(--ink); 
+            padding: 10px 14px; 
+            border-radius: 10px; 
+            font-size: 13px; 
+            font-weight: 600;
+            min-width: 210px; 
+            cursor: pointer; 
+            font-family: 'Cairo', sans-serif; 
+        }
+        .filter-select:focus { outline: none; border-color: var(--gold); }
+
+        .add-gift-box { 
+            background: var(--card); 
+            border: 1px solid var(--line); 
+            border-top: 3px solid var(--gold);
+            padding: 22px; 
+            border-radius: 20px; 
+            margin-bottom: 25px; 
+            text-align: right; 
+            box-shadow: 0 10px 25px rgba(74,14,22,0.06); 
+        }
+
+        .add-gift-box h3 { 
+            color: var(--wine-800); 
+            margin-bottom: 15px; 
+            font-size: 16px; 
+            font-weight: 700;
+        }
+
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 12px; 
+            margin-bottom: 12px; 
+        }
+
+        .form-control { 
+            background: var(--paper); 
+            border: 1px solid var(--line); 
+            color: var(--ink); 
+            padding: 11px 14px; 
+            border-radius: 10px; 
+            font-family: 'Cairo', sans-serif; 
+            font-size: 13px; 
+            font-weight: 600;
+            width: 100%; 
+        }
+        .form-control::placeholder { color: var(--ink-soft); }
+        .form-control:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 8px rgba(201,160,77,0.25); }
+
+        .file-upload-wrapper { 
+            background: var(--paper); 
+            border: 1px dashed var(--gold); 
+            padding: 12px 15px; 
+            border-radius: 10px; 
+            color: var(--wine-700); 
+            font-size: 13px; 
+            font-weight: 600;
+            text-align: center; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            margin-bottom: 15px; 
+            transition: 0.3s; 
+        }
+        .file-upload-wrapper:hover { background: rgba(201,160,77,0.08); }
         .file-upload-wrapper input { display: none; }
 
-        .btn-gold { background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%); color: #000; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; font-size: 17px; cursor: pointer; width: 100%; font-family: 'Reem Kufi', 'Cairo', sans-serif; transition: 0.3s; }
-        .btn-gold:hover { background: #f3e5ab; transform: translateY(-2px); }
+        .btn-gold { 
+            background: linear-gradient(135deg, var(--wine-800), var(--wine-900)); 
+            color: #fbeed4; 
+            border: 2px solid var(--gold); 
+            padding: 12px 25px; 
+            border-radius: 50px; 
+            font-weight: 700; 
+            font-size: 14px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-family: 'Cairo', sans-serif; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 15px rgba(74,14,22,0.2);
+        }
+        .btn-gold:hover { 
+            background: linear-gradient(135deg, var(--wine-700), var(--wine-800)); 
+            color: var(--gold-light);
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 18px rgba(74,14,22,0.3);
+        }
 
-        .gifts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .gift-card { background: rgba(18, 18, 18, 0.95); border: 2px solid rgba(212, 175, 55, 0.4); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; }
-        .gift-card:hover { border-color: #d4af37; transform: translateY(-5px); box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2); }
-        .gift-img { width: 100%; height: 180px; object-fit: cover; background: #000; border-bottom: 1px solid rgba(212, 175, 55, 0.3); }
-        .gift-details { padding: 15px; text-align: right; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
-        .gift-title { color: #d4af37; font-size: 20px; font-weight: bold; }
-        .gift-info { `display: flex; justify-content: space-between; font-size: 16px; color: #f3e5ab; }
-        .gift-info span span { color: #c5b358; font-weight: bold; }
-        .no-gifts { grid-column: 1 / -1; padding: 30px; background: rgba(18, 18, 18, 0.8); border: 1px dashed rgba(212, 175, 55, 0.4); border-radius: 15px; color: #c5b358; font-size: 18px; }
+        .gifts-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 16px; 
+            text-align: right;
+        }
+
+        .gift-card { 
+            background: var(--card); 
+            border: 1px solid var(--line); 
+            border-radius: 18px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            transition: 0.3s; 
+            box-shadow: 0 8px 20px rgba(74,14,22,0.06);
+        }
+        .gift-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 12px 25px rgba(74,14,22,0.1); }
+        
+        .gift-img { 
+            width: 100%; 
+            height: 160px; 
+            object-fit: cover; 
+            background: var(--paper); 
+            border-bottom: 1px solid var(--line); 
+        }
+
+        .gift-details { 
+            padding: 14px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+            flex-grow: 1; 
+        }
+
+        .gift-title { 
+            color: var(--wine-800); 
+            font-size: 16px; 
+            font-weight: 700; 
+            font-family: 'Amiri', serif;
+        }
+
+        .gift-info { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 13px; 
+            color: var(--ink-soft); 
+        }
+        .gift-info span span { color: var(--wine-700); font-weight: 700; }
+
+        .no-gifts { 
+            grid-column: 1 / -1; 
+            padding: 30px; 
+            background: var(--card); 
+            border: 1px dashed var(--line); 
+            border-radius: 15px; 
+            color: var(--ink-soft); 
+            font-size: 14px; 
+            font-weight: 600;
+        }
+
+        /* ===== زر الرجوع الأنيق ===== */
+        .back-btn-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--wine-800), var(--wine-900));
+            color: #fbeed4;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            border: 2px solid var(--gold);
+            box-shadow: 0 6px 18px rgba(74,14,22,0.25);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--wine-700), var(--wine-800));
+            color: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(74,14,22,0.35);
+        }
+
+        .back-btn i {
+            font-size: 15px;
+            color: var(--gold);
+        }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <button id="menuBtn" class="menu-btn"><i class="fas fa-bars"></i></button>
-        <div class="servant-badge"><i class="fas fa-user-shield"></i> مرحلتك: <span id="currentServantGradeBadge">جاري التحميل...</span></div>
-    </div>
-
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h3>قائمة الخادم</h3>
-            <button id="closeBtn" class="close-btn"><i class="fas fa-times"></i></button>
-        </div>
-        <ul class="sidebar-links">
-            <li><a href="home.html"><i class="fas fa-home"></i>الرئيسية</a></li>
-            <li><a href="profile.html"><i class="fas fa-user-circle"></i>البروفايل</a></li>
-            <li><a href="gifts.html"><i class="fas fa-gift"></i>معرض الهدايا</a></li>
-            <li><a href="admin_dashboard.html"><i class="fas fa-cogs"></i>الإدارة</a></li>
-            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>السلة</a></li>
-            <li><a href="notifications.html"><i class="fas fa-bell"></i>الإشعارات</a></li>
-            <li><button id="logoutBtn" class="logout-link"><i class="fas fa-sign-out-alt"></i>تسجيل خروج</button></li>
-        </ul>
-    </div>
-
-    <div id="overlay" class="overlay"></div>
+    <header class="church-header">
+        <div class="church-logo"><i class="fas fa-cross"></i></div>
+        <h2>كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي</h2>
+    </header>
 
     <div class="main-content">
         <h1>معرض هدايا الخدام</h1>
+
+        <div>
+            <div class="servant-badge"><i class="fas fa-user-shield"></i> مرحلتك: <span id="currentServantGradeBadge">جاري التحميل...</span></div>
+        </div>
 
         <div class="filter-bar">
             <label for="filterGrade"><i class="fas fa-filter"></i> عرض هدايا الصف:</label>
@@ -338,14 +560,14 @@
         </div>
 
         <div class="add-gift-box">
-            <h3>إضافة هدية جديدة <span style="font-size: 13px; color: #c5b358;">(متاحة لصفوف مرحلتك فقط)</span></h3>
+            <h3>إضافة هدية جديدة <span style="font-size: 11px; color: var(--gold); font-weight: normal;">(متاحة لصفوف مرحلتك فقط)</span></h3>
             <form id="giftForm">
                 <div class="form-grid">
                     <input type="text" id="giftName" class="form-control" placeholder="اسم الهدية" required>
-                    <input type="number" id="giftQuantity" class="form-control" placeholder="الكمية المتاحة" required>
-                    <input type="number" id="giftPoints" class="form-control" placeholder="النقاط المطلوبة" required>
+                    <input type="number" id="giftQuantity" class="form-control" placeholder="الكمية المتاحة" min="1" required>
+                    <input type="number" id="giftPoints" class="form-control" placeholder="النقاط المطلوبة" min="1" required>
                     
-                    <select id="giftGradeSelect" class="form-control" required style="background: #0a0a0a; color: #f3e5ab; cursor: pointer;">
+                    <select id="giftGradeSelect" class="form-control" required style="cursor: pointer;">
                         <option value="" disabled selected>اختر الصف المستهدف</option>
                     </select>
                 </div>
@@ -361,6 +583,14 @@
         </div>
 
         <div id="giftsContainer" class="gifts-grid"></div>
+
+        <!-- زر الرجوع الأنيق -->
+        <div class="back-btn-container">
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-right"></i>
+                <span>العودة إلى الرئيسية</span>
+            </a>
+        </div>
     </div>
 
 </body>
