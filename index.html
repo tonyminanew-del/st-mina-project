@@ -49,7 +49,6 @@
     position:relative;
   }
 
-  /* زخرفة علوية بسيطة بدل الأيقونات */
   .ornament{
     display:flex;
     align-items:center;
@@ -78,10 +77,12 @@
     color:var(--gold);
   }
 
-  /* بدون أي تمييز بصري أو مؤشر - النص جزء طبيعي من الجملة */
+  /* كلمة استيفانوس السرية (تتفاعل فقط إذا سمح مينا بذلك) */
   .formal-gold #secret-click{
     color:inherit;
     font:inherit;
+    cursor: pointer;
+    user-select: none;
   }
 
   .subtitle{
@@ -111,6 +112,12 @@
     color:#0A0A0A;
   }
 
+  .lock-status {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #ef4444;
+  }
+
   @media (max-width:360px){
     .welcome-box{ padding: 34px 18px 30px; }
   }
@@ -122,22 +129,40 @@
     <div class="ornament"><span>✝</span></div>
 
     <div class="formal-gold">
-      أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click">استيفانوس</span> ومارمينا العجايبي
+      أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click" title="خاص">استيفانوس</span> ومارمينا العجايبي
     </div>
 
     <div class="subtitle">برجاء الدخول لمتابعة البرنامج</div>
 
     <button type="button" id="login-btn" class="formal-button">دخول مستخدم</button>
+    <div id="lockStatusMsg" class="lock-status"></div>
   </div>
 
   <script>
     let clickCount = 0;
     const targetWord = document.getElementById('secret-click');
+    const lockStatusMsg = document.getElementById('lockStatusMsg');
 
     targetWord.addEventListener('click', function() {
+      // التحقق مما إذا كان السوبر أدمن (Mina) قد فتح الصلاحية أم لا
+      const isUnlockedByMina = localStorage.getItem('stephanus_unlocked') === 'true';
+
+      if (!isUnlockedByMina) {
+        lockStatusMsg.textContent = "عذراً، هذا المسار مغلق ولا يمكن فتحه إلا بواسطة السوبر أدمن.";
+        setTimeout(() => { lockStatusMsg.textContent = ""; }, 3500);
+        return;
+      }
+
       clickCount++;
-      if (clickCount === 5) {
-        window.location.href = 'a/sign.html';
+      if (clickCount < 5) {
+        lockStatusMsg.style.color = "#fbbf24";
+        lockStatusMsg.textContent = `متبقي ${5 - clickCount} ضغطات...`;
+      } else {
+        lockStatusMsg.style.color = "#10b981";
+        lockStatusMsg.textContent = "تم التحقق بنجاح!";
+        setTimeout(() => {
+          window.location.href = 'a/sign.html'; // أو صفحة مينا حسب المسار الخاص بك
+        }, 500);
       }
     });
 
