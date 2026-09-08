@@ -4,138 +4,182 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>برنامج كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
+    rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap');
-
   :root{
-    --bg:#0A0A0A;
-    --panel:#121212;
-    --gold:#C9A24B;
-    --gold-soft:#8A733A;
-    --text:#EDE6D6;
-    --text-dim:#A99C7F;
+    --navy-deep: #041a36;
+    --navy-mid: #062348;
+    --navy-edge: #000b18;
+
+    --maroon-dark: #5d101c;
+    --maroon: #7d1424;
+    --maroon-light: #9b1c30;
+
+    --ink: #1f1715;
+    --muted: #8a817c;
   }
 
-  *{ box-sizing:border-box; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
 
-  html,body{
-    height:100%;
-    margin:0;
-  }
+  html,body{ height:100%; }
 
   body{
-    font-family:'Lateef', serif;
+    font-family:'Tajawal', sans-serif;
     background:
-      radial-gradient(circle at 50% -20%, #1a1a1a 0%, var(--bg) 60%);
-    color:var(--text);
+      radial-gradient(circle at center, var(--navy-mid) 0%, var(--navy-deep) 45%, var(--navy-edge) 100%);
+    color:var(--ink);
     min-height:100dvh;
     display:flex;
     align-items:center;
     justify-content:center;
-    padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+    padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
   }
 
   .welcome-box{
     width:100%;
     max-width:440px;
-    background:var(--panel);
-    border:1px solid #2A2A2A;
-    outline:1px solid var(--gold-soft);
-    outline-offset:-6px;
-    border-radius:6px;
-    padding: 44px 28px 38px;
-    text-align:center;
-    box-shadow: 0 24px 60px -20px rgba(0,0,0,0.7);
+    background:#ffffff;
+    border-radius:30px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
     position:relative;
+    overflow:hidden;
   }
 
-  .ornament{
+  .drag-handle{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    padding-top:12px;
+    padding-bottom:4px;
+    background: linear-gradient(180deg, #fbeef0 0%, #ffffff 60%);
+  }
+
+  .drag-handle span{
+    width:44px;
+    height:4px;
+    border-radius:4px;
+    background:#e3c9cd;
+  }
+
+  .box-body{
+    padding: 12px 30px 38px;
+    text-align:center;
+  }
+
+  .logo-container{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:8px;
+    margin-bottom:18px;
+  }
+
+  .church-logo{
+    width:76px;
+    height:76px;
+    border-radius:50%;
+    background: linear-gradient(150deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:14px;
-    margin-bottom:24px;
-    color:var(--gold);
-  }
-  .ornament::before,
-  .ornament::after{
-    content:"";
-    height:1px;
-    flex:1;
-    background:linear-gradient(to var(--dir,left), transparent, var(--gold-soft));
-  }
-  .ornament::after{ --dir:right; }
-  .ornament span{
-    font-size:20px;
-    line-height:1;
+    color:#ffffff;
+    font-size:36px;
+    box-shadow: 0 10px 22px rgba(125, 20, 36, 0.35);
   }
 
   .formal-gold{
+    font-family:'Amiri', serif;
     font-weight:700;
-    font-size: clamp(24px, 6.5vw, 32px);
+    font-size: clamp(21px, 6vw, 25px);
     line-height:1.7;
-    color:var(--gold);
+    color: var(--ink);
   }
 
   /* كلمة استيفانوس السرية (تتفاعل فقط إذا سمح مينا بذلك) */
   .formal-gold #secret-click{
-    color:inherit;
+    color: var(--maroon);
     font:inherit;
     cursor: pointer;
     user-select: none;
   }
 
   .subtitle{
-    margin-top:14px;
-    font-size: clamp(16px, 4vw, 18px);
-    color:var(--text-dim);
+    margin-top:12px;
+    font-size: clamp(14px, 4vw, 15px);
+    color: var(--muted);
   }
 
   .formal-button{
-    margin-top:34px;
+    margin-top:30px;
     width:100%;
-    min-height:52px;
-    border:1px solid var(--gold-soft);
-    border-radius:4px;
-    background:transparent;
-    color:var(--gold);
-    font-family:'Lateef', serif;
+    min-height:54px;
+    border:none;
+    border-radius:14px;
+    background: linear-gradient(135deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
+    color:#ffffff;
+    font-family:'Tajawal', sans-serif;
     font-weight:700;
-    font-size: clamp(18px, 5vw, 20px);
-    letter-spacing:0.5px;
+    font-size: clamp(16px, 5vw, 18px);
+    letter-spacing:0.3px;
     cursor:pointer;
-    transition: background .15s ease, color .15s ease;
+    box-shadow: 0 10px 22px rgba(125, 20, 36, 0.35);
+    transition: all 0.25s ease;
+  }
+
+  .formal-button:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(125, 20, 36, 0.45);
   }
 
   .formal-button:active{
-    background:var(--gold);
-    color:#0A0A0A;
+    transform: translateY(1px);
+    box-shadow: 0 5px 12px rgba(125, 20, 36, 0.25);
   }
 
   .lock-status {
-    margin-top: 15px;
-    font-size: 14px;
-    color: #ef4444;
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #9f1239;
+    min-height: 18px;
   }
 
   @media (max-width:360px){
-    .welcome-box{ padding: 34px 18px 30px; }
+    .box-body{ padding: 10px 20px 30px; }
   }
 </style>
 </head>
 <body>
 
   <div class="welcome-box">
-    <div class="ornament"><span>✝</span></div>
 
-    <div class="formal-gold">
-      أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click" title="خاص">استيفانوس</span> ومارمينا العجايبي
+    <div class="drag-handle"><span></span></div>
+
+    <div class="box-body">
+
+      <div class="logo-container">
+        <div class="church-logo">
+          <i class="fas fa-cross"></i>
+        </div>
+      </div>
+
+      <div class="formal-gold">
+        أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click" title="خاص">استيفانوس</span> ومارمينا العجايبي
+      </div>
+
+      <div class="subtitle">برجاء الدخول لمتابعة البرنامج</div>
+
+      <button type="button" id="login-btn" class="formal-button">دخول مستخدم</button>
+      <div id="lockStatusMsg" class="lock-status"></div>
+
     </div>
 
-    <div class="subtitle">برجاء الدخول لمتابعة البرنامج</div>
-
-    <button type="button" id="login-btn" class="formal-button">دخول مستخدم</button>
-    <div id="lockStatusMsg" class="lock-status"></div>
   </div>
 
   <script>
@@ -155,10 +199,10 @@
 
       clickCount++;
       if (clickCount < 5) {
-        lockStatusMsg.style.color = "#fbbf24";
+        lockStatusMsg.style.color = "#b45309";
         lockStatusMsg.textContent = `متبقي ${5 - clickCount} ضغطات...`;
       } else {
-        lockStatusMsg.style.color = "#10b981";
+        lockStatusMsg.style.color = "#137333";
         lockStatusMsg.textContent = "تم التحقق بنجاح!";
         setTimeout(() => {
           window.location.href = 'a/sign.html'; // أو صفحة مينا حسب المسار الخاص بك
