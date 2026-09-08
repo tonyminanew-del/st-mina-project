@@ -2,6 +2,55 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <body>
+       <!-- زر رجوع أنيق -->
+        <form action="../a/home.html" method="get">
+<a href="#" id="backButton" class="back-btn" title="رجوع">
+    <button type="submit">للرئيسيه</button>
+    <i class="fas fa-arrow-right"></i>
+    <span>رجوع</span>
+</a>
+</form>
+
+<style>
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--primary, #7c1b28), #5a121d);
+        color: var(--white, #ffffff);
+        padding: 10px 18px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(124, 27, 40, 0.25);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+
+    .back-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: linear-gradient(135deg, #5a121d, var(--primary, #7c1b28));
+        box-shadow: 0 6px 16px rgba(124, 27, 40, 0.35);
+        transform: translateY(-2px);
+    }
+
+    .back-btn:hover i {
+        transform: translateX(4px); /* حركة خفيفة للأيقونة لليمين لأن الموقع لغة عربية */
+    }
+
+    .back-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(124, 27, 40, 0.2);
+    }
+</style>
+    </body>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -1551,9 +1600,10 @@
                 .replace(/"/g, "&quot;")
                 .replace(/\n/g, " ");
         }
-
+ 
     </script>
-
+     <form action="../u/home.html" method="post">
+     </form>
 </body>
 
 </html>
