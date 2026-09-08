@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
 
-    <title>إنشاء حساب اللاعب</title>
-
-    <!-- الخطوط -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        :root {
+            --navy-deep: #041a36;
+            --navy-mid: #062348;
+            --navy-edge: #000b18;
+
+            --maroon-dark: #5d101c;
+            --maroon: #7d1424;
+            --maroon-light: #9b1c30;
+
+            --ink: #1f1715;
+            --muted: #8a817c;
+            --field-border: #e1d8d0;
         }
 
         body {
@@ -28,9 +38,9 @@
             background:
                 radial-gradient(
                     circle at center,
-                    #062348 0%,
-                    #02162e 50%,
-                    #000b18 100%
+                    var(--navy-mid) 0%,
+                    var(--navy-deep) 45%,
+                    var(--navy-edge) 100%
                 );
 
             display: flex;
@@ -39,27 +49,50 @@
 
             padding: 20px;
 
-            font-family: 'Amiri', serif;
+            font-family: 'Tajawal', sans-serif;
         }
 
         /* =========================
-           الكارت الأبيض
+           الكارت
         ========================= */
 
         .form-card {
             width: 100%;
-            max-width: 480px;
+            max-width: 420px;
 
             background: #ffffff;
 
-            padding: 35px 30px;
-
-            border-radius: 28px;
+            border-radius: 30px;
 
             box-shadow:
-                0 25px 60px rgba(0, 0, 0, 0.45);
+                0 30px 70px rgba(0, 0, 0, 0.5);
 
             position: relative;
+
+            overflow: hidden;
+        }
+
+        .drag-handle {
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+
+            padding-top: 12px;
+            padding-bottom: 4px;
+
+            background: linear-gradient(180deg, #fbeef0 0%, #ffffff 60%);
+        }
+
+        .drag-handle span {
+            width: 44px;
+            height: 4px;
+            border-radius: 4px;
+            background: #e3c9cd;
+        }
+
+        .card-body {
+            padding: 10px 32px 34px;
         }
 
         /* =========================
@@ -73,16 +106,17 @@
             justify-content: center;
             align-items: center;
 
-            margin-bottom: 15px;
+            margin-top: 10px;
+            margin-bottom: 16px;
         }
 
         .church-logo {
-            width: 75px;
-            height: 75px;
+            width: 74px;
+            height: 74px;
 
             border-radius: 50%;
 
-            background: #7d1424;
+            background: linear-gradient(150deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
 
             display: flex;
             justify-content: center;
@@ -90,10 +124,10 @@
 
             color: #ffffff;
 
-            font-size: 38px;
+            font-size: 34px;
 
             box-shadow:
-                0 8px 20px rgba(125, 20, 36, 0.25);
+                0 10px 22px rgba(125, 20, 36, 0.35);
         }
 
         /* =========================
@@ -103,13 +137,15 @@
         h2 {
             text-align: center;
 
-            color: #1f1715;
+            color: var(--ink);
 
-            font-size: 28px;
+            font-family: 'Amiri', serif;
+
+            font-size: 27px;
 
             font-weight: 700;
 
-            margin-bottom: 8px;
+            margin-bottom: 6px;
 
             letter-spacing: 0.5px;
         }
@@ -117,7 +153,7 @@
         .subtitle {
             text-align: center;
 
-            color: #8a817c;
+            color: var(--muted);
 
             font-size: 14px;
 
@@ -128,8 +164,7 @@
            رسالة الخطأ
         ========================= */
 
-        #error-msg,
-        #error-msg-2 {
+        #error-msg {
 
             color: #9f1239;
 
@@ -139,50 +174,9 @@
 
             font-weight: bold;
 
-            margin-bottom: 15px;
+            margin-bottom: 14px;
 
             min-height: 20px;
-        }
-
-        /* =========================
-           الملاحظة
-        ========================= */
-
-        .notebook-note {
-
-            background: #eef6fd;
-
-            border: 1px solid #c9e1fa;
-
-            color: #34495e;
-
-            padding: 12px 15px;
-
-            border-radius: 12px;
-
-            margin-bottom: 22px;
-
-            font-family: 'Amiri', serif;
-        }
-
-        .notebook-note h4 {
-
-            color: #7d1424;
-
-            font-size: 17px;
-
-            margin-bottom: 3px;
-        }
-
-        .notebook-note p {
-
-            color: #555;
-
-            font-size: 14px;
-
-            line-height: 1.7;
-
-            font-weight: bold;
         }
 
         /* =========================
@@ -202,9 +196,9 @@
 
             color: #6b625c;
 
-            font-size: 14px;
+            font-size: 13px;
 
-            font-weight: bold;
+            font-weight: 700;
 
             margin-bottom: 6px;
 
@@ -215,34 +209,64 @@
            الحقول
         ========================= */
 
-        input,
-        select {
+        .field-wrap {
+            position: relative;
+        }
+
+        .field-wrap i.field-icon {
+            position: absolute;
+            top: 50%;
+            right: 16px;
+            transform: translateY(-50%);
+
+            color: #b9afa8;
+            font-size: 15px;
+
+            pointer-events: none;
+        }
+
+        .field-wrap i.field-toggle {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+
+            color: #b9afa8;
+            font-size: 15px;
+
+            cursor: pointer;
+        }
+
+        input {
 
             width: 100%;
 
-            padding: 13px 15px;
+            padding: 13px 42px 13px 42px;
 
-            background: #ffffff;
+            background: #faf8f7;
 
-            border: 1.5px solid #e1d8d0;
+            border: 1.5px solid var(--field-border);
 
-            border-radius: 12px;
+            border-radius: 13px;
 
-            color: #2a2320;
+            color: var(--ink);
 
             font-size: 15px;
 
-            font-family: 'Amiri', serif;
+            font-family: 'Tajawal', sans-serif;
 
             outline: none;
 
             transition: all 0.25s ease;
         }
 
-        input:focus,
-        select:focus {
+        input::placeholder {
+            color: #b9afa8;
+        }
 
-            border-color: #7d1424;
+        input:focus {
+
+            border-color: var(--maroon);
 
             background: #ffffff;
 
@@ -250,22 +274,27 @@
                 0 0 0 3px rgba(125, 20, 36, 0.10);
         }
 
-        /* =========================
-           Select
-        ========================= */
-
-        select {
-
-            cursor: pointer;
-
-            appearance: auto;
+        /* حقل اسم المستخدم لا يحتاج مساحة يسار لأنه بلا زر عين */
+        #username {
+            padding-left: 15px;
         }
 
-        select option {
+        /* =========================
+           رابط نسيت كلمة المرور
+        ========================= */
 
-            background: #ffffff;
+        .forgot-link {
+            display: block;
+            text-align: center;
+            color: var(--maroon);
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
 
-            color: #2a2320;
+        .forgot-link:hover {
+            text-decoration: underline;
         }
 
         /* =========================
@@ -276,9 +305,9 @@
 
             width: 100%;
 
-            padding: 14px;
+            padding: 15px;
 
-            margin-top: 8px;
+            margin-top: 6px;
 
             border: none;
 
@@ -287,42 +316,32 @@
             background:
                 linear-gradient(
                     135deg,
-                    #8b1728 0%,
-                    #71111f 100%
+                    var(--maroon-light) 0%,
+                    var(--maroon-dark) 100%
                 );
 
             color: #ffffff;
 
-            font-family: 'Amiri', serif;
+            font-family: 'Tajawal', sans-serif;
 
-            font-size: 18px;
+            font-size: 17px;
 
-            font-weight: bold;
+            font-weight: 700;
 
             cursor: pointer;
 
             transition: all 0.25s ease;
 
             box-shadow:
-                0 8px 20px rgba(125, 20, 36, 0.30);
-
-            text-shadow:
-                0 2px 3px rgba(0, 0, 0, 0.3);
+                0 10px 22px rgba(125, 20, 36, 0.35);
         }
 
         .btn-action:hover {
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #9b1c30 0%,
-                    #7d1424 100%
-                );
-
             transform: translateY(-1px);
 
             box-shadow:
-                0 10px 25px rgba(125, 20, 36, 0.40);
+                0 12px 26px rgba(125, 20, 36, 0.45);
         }
 
         .btn-action:active {
@@ -343,46 +362,24 @@
         }
 
         /* =========================
-           زر الرجوع
+           رابط أسفل الكارت
         ========================= */
 
-        .btn-secondary {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #5d101c 0%,
-                    #3e0912 100%
-                );
-
-            margin-top: 10px;
-
-            box-shadow:
-                0 7px 18px rgba(62, 9, 18, 0.25);
+        .bottom-note {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--muted);
         }
 
-        .btn-secondary:hover {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #721421 0%,
-                    #4e0b16 100%
-                );
+        .bottom-note a {
+            color: var(--maroon);
+            font-weight: 700;
+            text-decoration: none;
         }
 
-        /* =========================
-           إخفاء الخطوات
-        ========================= */
-
-        .step-section {
-
-            display: none;
-        }
-
-        .step-section.active {
-
-            display: block;
+        .bottom-note a:hover {
+            text-decoration: underline;
         }
 
         /* =========================
@@ -391,756 +388,164 @@
 
         @media (max-width: 500px) {
 
-            body {
-                padding: 15px;
-            }
+            .card-body {
 
-            .form-card {
-
-                padding: 30px 20px;
-
-                border-radius: 24px;
+                padding: 8px 22px 28px;
             }
 
             h2 {
 
-                font-size: 25px;
+                font-size: 24px;
             }
 
             .church-logo {
 
-                width: 68px;
-                height: 68px;
+                width: 66px;
+                height: 66px;
 
-                font-size: 34px;
+                font-size: 30px;
             }
         }
-
     </style>
 
-
-    <!-- =========================
-         Firebase
-    ========================= -->
-
     <script type="module">
-
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-        import {
-            getFirestore,
-            collection,
-            query,
-            where,
-            getDocs,
-            setDoc,
-            doc
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
-
             apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-
             authDomain: "st-mina-c01ec.firebaseapp.com",
-
             projectId: "st-mina-c01ec",
-
             storageBucket: "st-mina-c01ec.firebasestorage.app",
-
             messagingSenderId: "792349150559",
-
             appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea"
         };
 
-
         const app = initializeApp(firebaseConfig);
-
         const db = getFirestore(app);
 
+        window.togglePassword = function () {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePasswordIcon');
 
-        /* =========================
-           تحديث الصفوف
-        ========================= */
-
-        window.updateGrades = function () {
-
-            const stageSelect =
-                document.getElementById('stage');
-
-            const gradeSelect =
-                document.getElementById('grade');
-
-            const selectedStage =
-                stageSelect.value;
-
-
-            gradeSelect.innerHTML =
-                '<option value="" disabled selected>اختر الصف الدراسي</option>';
-
-
-            let gradesOptions = [];
-
-
-            if (selectedStage === "ابتدائي") {
-
-                gradesOptions = [
-
-                    "الأول الابتدائي",
-
-                    "الثاني الابتدائي",
-
-                    "الثالث الابتدائي",
-
-                    "الرابع الابتدائي",
-
-                    "الخامس الابتدائي",
-
-                    "السادس الابتدائي"
-                ];
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
             }
-
-
-            else if (selectedStage === "إعدادي") {
-
-                gradesOptions = [
-
-                    "الصف الأول الإعدادي",
-
-                    "الصف الثاني الإعدادي",
-
-                    "الصف الثالث الإعدادي"
-                ];
-            }
-
-
-            else if (selectedStage === "ثانوي") {
-
-                gradesOptions = [
-
-                    "الصف الأول الثانوي",
-
-                    "الصف الثاني الثانوي",
-
-                    "الصف الثالث الثانوي"
-                ];
-            }
-
-
-            gradesOptions.forEach(grade => {
-
-                const opt =
-                    document.createElement('option');
-
-                opt.value = grade;
-
-                opt.textContent = grade;
-
-                gradeSelect.appendChild(opt);
-
-            });
-
         };
 
+        window.handleLogin = async function(event) {
+            event.preventDefault();
 
-        /* =========================
-           الانتقال للخطوة الثانية
-        ========================= */
-
-        window.nextStep = async function () {
-
-            const username =
-                document
-                    .getElementById('username')
-                    .value
-                    .trim();
-
-
-            const password =
-                document
-                    .getElementById('password')
-                    .value
-                    .trim();
-
-
-            const errorMsg =
-                document.getElementById('error-msg');
-
-
-            const btn1 =
-                document.getElementById('btnNext');
-
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMsg = document.getElementById('error-msg');
+            const loginBtn = document.getElementById('loginBtn');
 
             errorMsg.innerText = "";
 
-
             if (!username || !password) {
-
-                errorMsg.innerText =
-                    "يرجى إدخال اسم المستخدم وكلمة المرور أولاً!";
-
+                errorMsg.innerText = "يرجى إدخال اسم المستخدم وكلمة المرور!";
                 return;
             }
 
-
-            btn1.innerText =
-                "جاري الفحص...";
-
-            btn1.disabled = true;
-
+            loginBtn.innerText = "جاري الدخول...";
+            loginBtn.disabled = true;
 
             try {
+                // اسم المستخدم هو نفسه معرف المستند في Firestore
+                const userDocRef = doc(db, "users", username);
+                const userSnap = await getDoc(userDocRef);
 
-                const usersRef =
-                    collection(db, "users");
-
-
-                const qUsername =
-                    query(
-                        usersRef,
-                        where(
-                            "username",
-                            "==",
-                            username
-                        )
-                    );
-
-
-                const usernameSnapshot =
-                    await getDocs(qUsername);
-
-
-                if (!usernameSnapshot.empty) {
-
-                    errorMsg.innerText =
-                        "اسم المستخدم هذا مستخدم من قبل، اختر اسماً آخر.";
-
-                    btn1.innerText =
-                        "التالي ➔";
-
-                    btn1.disabled = false;
-
+                if (!userSnap.exists()) {
+                    errorMsg.innerText = "اسم المستخدم غير موجود.";
+                    loginBtn.innerText = "دخول";
+                    loginBtn.disabled = false;
                     return;
                 }
 
+                const userData = userSnap.data();
 
-                document
-                    .getElementById('step-1')
-                    .classList
-                    .remove('active');
+                if (userData.password !== password) {
+                    errorMsg.innerText = "كلمة المرور غير صحيحة.";
+                    loginBtn.innerText = "دخول";
+                    loginBtn.disabled = false;
+                    return;
+                }
 
+                // حفظ بيانات الدخول محلياً عشان تبقى متاحة داخل صفحة الهوم
+                localStorage.setItem('userDocId', username);
+                localStorage.setItem('currentUser', username);
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
 
-                document
-                    .getElementById('step-2')
-                    .classList
-                    .add('active');
+                window.location.href = "home.html";
 
-
-                btn1.innerText =
-                    "التالي ➔";
-
-                btn1.disabled = false;
-
-            }
-
-            catch (error) {
-
+            } catch (error) {
                 console.error(error);
-
-                errorMsg.innerText =
-                    "حدث خطأ في الاتصال بقاعدة البيانات.";
-
-                btn1.innerText =
-                    "التالي ➔";
-
-                btn1.disabled = false;
+                errorMsg.innerText = "حدث خطأ في الاتصال بقاعدة البيانات.";
+                loginBtn.innerText = "دخول";
+                loginBtn.disabled = false;
             }
-
-        };
-
-
-        /* =========================
-           الرجوع للخطوة الأولى
-        ========================= */
-
-        window.prevStep = function () {
-
-            document
-                .getElementById('step-2')
-                .classList
-                .remove('active');
-
-
-            document
-                .getElementById('step-1')
-                .classList
-                .add('active');
-
-        };
-
-
-        /* =========================
-           حفظ الحساب
-        ========================= */
-
-        window.handleRegister = async function (event) {
-
-            event.preventDefault();
-
-
-            const username =
-                document
-                    .getElementById('username')
-                    .value
-                    .trim();
-
-
-            const password =
-                document
-                    .getElementById('password')
-                    .value
-                    .trim();
-
-
-            const userId =
-                document
-                    .getElementById('userId')
-                    .value
-                    .trim();
-
-
-            const birthdate =
-                document
-                    .getElementById('birthdate')
-                    .value;
-
-
-            const fatherPhone =
-                document
-                    .getElementById('fatherPhone')
-                    .value
-                    .trim();
-
-
-            const motherPhone =
-                document
-                    .getElementById('motherPhone')
-                    .value
-                    .trim();
-
-
-            const address =
-                document
-                    .getElementById('address')
-                    .value
-                    .trim();
-
-
-            const stage =
-                document
-                    .getElementById('stage')
-                    .value;
-
-
-            const grade =
-                document
-                    .getElementById('grade')
-                    .value;
-
-
-            const errorMsg =
-                document.getElementById('error-msg-2');
-
-
-            const submitBtn =
-                document.getElementById('submitBtn');
-
-
-            errorMsg.innerText = "";
-
-
-            if (!stage || !grade) {
-
-                errorMsg.innerText =
-                    "يرجى اختيار المرحلة والصف الدراسي!";
-
-                return;
-            }
-
-
-            submitBtn.innerText =
-                "جاري حفظ البيانات...";
-
-            submitBtn.disabled = true;
-
-
-            try {
-
-                const userDocRef =
-                    doc(
-                        db,
-                        "users",
-                        username
-                    );
-
-
-                await setDoc(
-                    userDocRef,
-                    {
-
-                        username: username,
-
-                        password: password,
-
-                        userId: userId,
-
-                        birthdate: birthdate,
-
-                        fatherPhone: fatherPhone,
-
-                        motherPhone: motherPhone,
-
-                        address: address,
-
-                        stage: stage,
-
-                        grade: grade,
-
-                        points: 0,
-
-                        createdAt:
-                            new Date().toISOString()
-                    }
-                );
-
-
-                localStorage.setItem(
-                    'userDocId',
-                    username
-                );
-
-
-                localStorage.setItem(
-                    'currentUser',
-                    username
-                );
-
-
-                localStorage.setItem(
-                    'username',
-                    username
-                );
-
-
-                window.location.href =
-                    "home.html";
-
-            }
-
-            catch (error) {
-
-                console.error(error);
-
-                errorMsg.innerText =
-                    "حدث خطأ أثناء الحفظ.";
-
-                submitBtn.innerText =
-                    "حفظ البيانات";
-
-                submitBtn.disabled = false;
-            }
-
-        };
-
+        }
     </script>
-
 </head>
-
-
 <body>
-
 
     <div class="form-card">
 
-
-        <!-- الصليب -->
-
-        <div class="logo-container">
-
-            <div class="church-logo">
-
-                <i class="fas fa-cross"></i>
-
-            </div>
-
+        <div class="drag-handle">
+            <span></span>
         </div>
 
+        <div class="card-body">
 
-        <!-- العنوان -->
-
-        <h2>
-            إنشاء حساب اللاعب
-        </h2>
-
-
-        <div class="subtitle">
-            بوابة تسجيل بيانات اللاعبين
-        </div>
-
-
-        <div id="error-msg"></div>
-
-
-        <!-- =========================
-             الخطوة الأولى
-        ========================= -->
-
-        <div
-            id="step-1"
-            class="step-section active">
-
-
-            <div class="notebook-note">
-
-                <h4>
-                    ملاحظة هامة
-                </h4>
-
-                <p>
-                    يرجى كتابة اسم المستخدم وكلمة المرور لتسجيل الدخول بالبرنامج لاحقاً
-                </p>
-
+            <div class="logo-container">
+                <div class="church-logo">
+                    <i class="fas fa-cross"></i>
+                </div>
             </div>
 
+            <h2>تسجيل الدخول</h2>
+            <div class="subtitle">بوابة تسجيل دخول اللاعبين</div>
 
-            <div class="input-group">
+            <div id="error-msg"></div>
 
-                <label>
-                    اسم المستخدم (Username)
-                </label>
-
-                <input
-                    type="text"
-                    id="username"
-                    required>
-
-            </div>
-
-
-            <div class="input-group">
-
-                <label>
-                    كلمة المرور (Password)
-                </label>
-
-                <input
-                    type="password"
-                    id="password"
-                    required>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="btn-action"
-                id="btnNext"
-                onclick="nextStep()">
-
-                التالي ➔
-
-            </button>
-
-
-        </div>
-
-
-        <!-- =========================
-             الخطوة الثانية
-        ========================= -->
-
-        <div
-            id="step-2"
-            class="step-section">
-
-
-            <div id="error-msg-2"></div>
-
-
-            <form
-                onsubmit="handleRegister(event)">
-
+            <form onsubmit="handleLogin(event)">
 
                 <div class="input-group">
-
-                    <label>
-                        رقم المستخدم
-                    </label>
-
-                    <input
-                        type="text"
-                        id="userId"
-                        required>
-
+                    <label>اسم المستخدم (Username)</label>
+                    <div class="field-wrap">
+                        <input type="text" id="username" required placeholder="اكتب اسم المستخدم هنا...">
+                        <i class="fas fa-user field-icon"></i>
+                    </div>
                 </div>
-
 
                 <div class="input-group">
-
-                    <label>
-                        تاريخ الميلاد
-                    </label>
-
-                    <input
-                        type="date"
-                        id="birthdate"
-                        required>
-
+                    <label>كلمة المرور (Password)</label>
+                    <div class="field-wrap">
+                        <input type="password" id="password" required placeholder="اكتب كلمة المرور هنا...">
+                        <i class="fas fa-lock field-icon"></i>
+                        <i class="fas fa-eye field-toggle" id="togglePasswordIcon" onclick="togglePassword()"></i>
+                    </div>
                 </div>
 
-
-                <div class="input-group">
-
-                    <label>
-                        رقم الأب
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="fatherPhone"
-                        required>
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label>
-                        رقم الأم
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="motherPhone"
-                        required>
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label>
-                        العنوان
-                    </label>
-
-                    <input
-                        type="text"
-                        id="address"
-                        required>
-
-                </div>
-
-
-                <!-- المرحلة -->
-
-                <div class="input-group">
-
-                    <label>
-                        المرحلة الدراسية
-                    </label>
-
-                    <select
-                        id="stage"
-                        required
-                        onchange="updateGrades()">
-
-                        <option
-                            value=""
-                            disabled
-                            selected>
-
-                            اختر المرحلة الدراسية
-
-                        </option>
-
-                        <option value="ابتدائي">
-                            ابتدائي
-                        </option>
-
-                        <option value="إعدادي">
-                            إعدادي
-                        </option>
-
-                        <option value="ثانوي">
-                            ثانوي
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- الصف -->
-
-                <div class="input-group">
-
-                    <label>
-                        الصف الدراسي
-                    </label>
-
-                    <select
-                        id="grade"
-                        required>
-
-                        <option
-                            value=""
-                            disabled
-                            selected>
-
-                            اختر المرحلة أولاً
-
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- حفظ -->
-
-                <button
-                    type="submit"
-                    class="btn-action"
-                    id="submitBtn">
-
-                    حفظ البيانات
-
-                </button>
-
-
-                <!-- رجوع -->
-
-                <button
-                    type="button"
-                    class="btn-action btn-secondary"
-                    onclick="prevStep()">
-
-                    ⬅ رجوع للخلف
-
-                </button>
-
+                <button type="submit" class="btn-action" id="loginBtn">دخول</button>
 
             </form>
 
+            <div class="bottom-note">
+                ليس لديك حساب؟ <a href="sign-cc.html">إنشاء حساب جديد</a>
+            </div>
 
         </div>
 
-
     </div>
 
-
 </body>
-
 </html>
