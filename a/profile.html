@@ -77,7 +77,7 @@
         /* ===== المحتوى ===== */
         .main-content{
             flex:1;
-            padding:18px 16px 40px;
+            padding:18px 16px 100px; /* مسافة كافية لعدم تداخل المحتوى مع شريط التنقل السفلي */
             max-width:620px;
             width:100%;
             margin:0 auto;
@@ -220,50 +220,73 @@
             font-weight:600;
         }
 
-        /* ===== زر الرجوع الأنيق ===== */
-        .back-btn-container {
-            margin-top: 25px;
-            text-align: center;
+        /* ===== شريط التنقل السفلي ===== */
+        nav.bottom-nav{
+            position:fixed;
+            bottom:0; right:0; left:0;
+            background:var(--wine-900);
+            border-top:1px solid rgba(230,200,120,0.25);
+            display:flex;
+            justify-content:space-around;
+            padding:10px 4px calc(10px + env(safe-area-inset-bottom));
+            box-shadow:0 -8px 20px rgba(0,0,0,0.25);
+            overflow-x:auto;
+            z-index:10;
         }
 
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: linear-gradient(135deg, var(--wine-800), var(--wine-900));
-            color: #fbeed4;
-            text-decoration: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: 700;
-            border: 2px solid var(--gold);
-            box-shadow: 0 6px 18px rgba(74,14,22,0.25);
-            transition: all 0.3s ease;
+        nav.bottom-nav a, nav.bottom-nav button{
+            background:none;
+            border:none;
+            color:#c9b7a8;
+            text-decoration:none;
+            font-size:10px;
+            font-family:'Cairo', sans-serif;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:4px;
+            transition:all .25s ease;
+            cursor:pointer;
+            padding:4px 6px;
+            flex-shrink:0;
         }
 
-        .back-btn:hover {
-            background: linear-gradient(135deg, var(--wine-700), var(--wine-800));
-            color: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(74,14,22,0.35);
+        nav.bottom-nav a i, nav.bottom-nav button i{ font-size:17px; }
+
+        nav.bottom-nav a:hover,
+        nav.bottom-nav a.active{
+            color:var(--gold-light);
+            transform:translateY(-2px);
         }
 
-        .back-btn i {
-            font-size: 16px;
-            color: var(--gold);
+        nav.bottom-nav .logout-link{
+            color:#e88a84;
+        }
+
+        nav.bottom-nav .logout-link:hover{
+            color:#ff6b6b;
+            transform:translateY(-2px);
         }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // جلب وعرض البيانات من الـ LocalStorage
-            const username = localStorage.getItem('username') || 'غير محدد';
-            const fullName = localStorage.getItem('fullName') || 'خادم الرب';
-            const servantTitle = localStorage.getItem('servantTitle') || '';
-            const servantStage = localStorage.getItem('servantStage') || 'غير محددة';
-            const servantNumber = localStorage.getItem('servantNumber') || 'غير متوفر';
+            // استخراج بيانات المستخدم من كائن currentUser أو adminData المخزن في LocalStorage (مع دعم المفاتيح المنفصلة كبديل)
+            let userData = null;
+            try {
+                const storedUser = localStorage.getItem('currentUser') || localStorage.getItem('adminData');
+                if (storedUser) {
+                    userData = JSON.parse(storedUser);
+                }
+            } catch (e) {
+                console.error("Error parsing user data:", e);
+            }
+
+            const username = (userData && (userData.username || userData.user)) || localStorage.getItem('username') || 'غير محدد';
+            const fullName = (userData && (userData.fullName || userData.name)) || localStorage.getItem('fullName') || 'خادم الرب';
+            const servantTitle = (userData && (userData.servantTitle || userData.title)) || localStorage.getItem('servantTitle') || '';
+            const servantStage = (userData && (userData.servantStage || userData.stage)) || localStorage.getItem('servantStage') || 'غير محددة';
+            const servantNumber = (userData && (userData.servantNumber || userData.number || userData.id)) || localStorage.getItem('servantNumber') || 'غير متوفر';
 
             const usernameEl = document.getElementById('val-username');
             const fullnameEl = document.getElementById('val-fullname');
@@ -296,6 +319,17 @@
                             localStorage.setItem('profileImage', base64Image); // حفظ الصورة
                         };
                         reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // زر تسجيل الخروج في الشريط السفلي
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
+                        localStorage.clear();
+                        window.location.href = 'index.html';
                     }
                 });
             }
@@ -353,15 +387,39 @@
             </div>
         </div>
 
-        <!-- زر الرجوع الأنيق -->
-        <div class="back-btn-container">
-            <a href="home.html" class="back-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>العودة إلى الرئيسية</span>
-            </a>
-        </div>
-
     </div>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="bottom-nav">
+        <a href="home.html">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a class="active" href="profile.html">
+            <i class="fas fa-user-circle"></i>
+            <span>البروفايل</span>
+        </a>
+        <a href="gifts.html">
+            <i class="fas fa-gift"></i>
+            <span>الهدايا</span>
+        </a>
+        <a href="control.html">
+            <i class="fas fa-cogs"></i>
+            <span>الإدارة</span>
+        </a>
+        <a href="cart.html">
+            <i class="fas fa-shopping-cart"></i>
+            <span>السلة</span>
+        </a>
+        <a href="../notifications/index.html">
+            <i class="fas fa-bell"></i>
+            <span>الإشعارات</span>
+        </a>
+        <button id="logoutBtn" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>خروج</span>
+        </button>
+    </nav>
 
 </body>
 </html>
