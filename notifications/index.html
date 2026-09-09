@@ -113,6 +113,29 @@
             color: #b3261e;
         }
 
+        /* شريط يوضح صف الخادم الحالي (مسحوب من البروفايل) */
+        .grade-banner {
+            width: 100%;
+            max-width: 600px;
+            background: #fff8e6;
+            border: 1px solid #f0d789;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #7c1b28;
+            font-weight: bold;
+        }
+
+        .grade-banner.grade-missing {
+            background: #fdeceb;
+            border-color: #f3b3ae;
+            color: #b3261e;
+        }
+
         .control-panel {
             width: 100%;
             max-width: 600px;
@@ -146,6 +169,11 @@
             cursor: pointer;
             font-family: 'Cairo', sans-serif;
             font-size: 14px;
+        }
+
+        .control-panel button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .list {
@@ -377,6 +405,12 @@
         لوحة الإعلانات والطلبات - St. Mina
     </div>
 
+    <!-- شريط يوضح صف الخادم الحالي المسحوب من البروفايل (servantGrade) -->
+    <div id="gradeBanner" class="grade-banner">
+        <i class="fas fa-graduation-cap"></i>
+        <span id="gradeBannerText">جاري تحديد صفك...</span>
+    </div>
+
     <div id="notificationStatus" class="notification-status">
         <i class="fas fa-spinner fa-spin"></i>
         جاري فحص الإشعارات...
@@ -386,7 +420,7 @@
 
         <h3 style="margin: 0 0 5px 0; font-size: 14px; color: #333;">
             <i class="fas fa-bullhorn"></i>
-            نشر إعلان أو قداس جديد للجميع
+            نشر إعلان أو قداس جديد لصفك فقط
         </h3>
 
         <input
@@ -405,7 +439,7 @@
 
         <button id="sendAnnouncementBtn">
             <i class="fas fa-paper-plane"></i>
-            نشر الإعلان
+            نشر الإعلان لصفي
         </button>
 
     </div>
@@ -473,6 +507,34 @@
 
 
         /* =========================
+           صف الخادم الحالي (من البروفايل)
+           نفس المفتاح المستخدم في profile.html: servantGrade
+        ========================= */
+
+        const myGrade =
+            (localStorage.getItem("servantGrade") || "").trim();
+
+        const gradeBanner =
+            document.getElementById("gradeBanner");
+
+        const gradeBannerText =
+            document.getElementById("gradeBannerText");
+
+        if (myGrade) {
+
+            gradeBannerText.innerText =
+                `صفك الحالي: ${myGrade} — سيتم نشر إعلاناتك وعرض طلبات هذا الصف فقط`;
+
+        } else {
+
+            gradeBanner.classList.add("grade-missing");
+
+            gradeBannerText.innerText =
+                "لم يتم العثور على صفك في البروفايل، برجاء تحديث بياناتك أولاً";
+        }
+
+
+        /* =========================
            ELEMENTS
         ========================= */
 
@@ -496,6 +558,14 @@
 
         const sendAnnouncementBtn =
             document.getElementById("sendAnnouncementBtn");
+
+
+        /* لو مفيش صف محدد، نمنع النشر لحد ما يحدث بياناته */
+
+        if (!myGrade) {
+
+            sendAnnouncementBtn.disabled = true;
+        }
 
 
         /* =========================
@@ -600,12 +670,22 @@
 
 
         /* =========================
-           ANNOUNCEMENT
+           ANNOUNCEMENT (مقيّد بصف الخادم الحالي)
         ========================= */
 
         sendAnnouncementBtn.addEventListener(
             "click",
             async () => {
+
+                if (!myGrade) {
+
+                    alert(
+                        "لا يمكن النشر: صفك غير معروف من البروفايل."
+                    );
+
+                    return;
+                }
+
 
                 const title =
                     document
@@ -647,6 +727,13 @@
 
                             imageUrl: imageUrl,
 
+                            /*
+                             * تقييد الإعلان على صف الخادم الحالي فقط
+                             * بحيث يظهر فقط عند من كان في نفس الصف
+                             */
+
+                            targetGrade: myGrade,
+
                             timestamp: serverTimestamp(),
 
                             isRead: false
@@ -654,7 +741,9 @@
                     );
 
 
-                    alert("تم نشر الإعلان بنجاح!");
+                    alert(
+                        `تم نشر الإعلان بنجاح لصف "${myGrade}" فقط!`
+                    );
 
                 } catch (e) {
 
@@ -815,6 +904,73 @@
 
 
             return null;
+        }
+
+
+        /*
+         * كاش بسيط لصفوف المستخدمين
+         * لتقليل عدد القراءات من Firestore
+         * أثناء فلترة القائمة كل مرة يتغير فيها السناب شوت
+         */
+
+        const userGradeCache = new Map();
+
+
+        async function getUserGrade(username) {
+
+            if (!username) {
+                return null;
+            }
+
+
+            const usernameClean =
+                String(username)
+                    .trim()
+                    .toLowerCase();
+
+
+            if (userGradeCache.has(usernameClean)) {
+
+                return userGradeCache.get(usernameClean);
+            }
+
+
+            const userDoc =
+                await findUserByUsername(username);
+
+
+            let grade = null;
+
+
+            if (userDoc) {
+
+                const data =
+                    userDoc.data();
+
+                /*
+                 * ملاحظة: بنفترض إن حقل الصف في Firestore
+                 * اسمه "servantGrade" نفس اسمه في localStorage
+                 * (صفحة profile.html). لو الحقل في قاعدة البيانات
+                 * اسمه مختلف، غيّر الاسم هنا.
+                 */
+
+                grade =
+                    data.servantGrade ||
+                    data.grade ||
+                    null;
+
+                if (grade) {
+
+                    grade =
+                        String(grade).trim();
+                }
+            }
+
+
+            userGradeCache.set(usernameClean, grade);
+
+
+            return grade;
         }
 
 
@@ -1200,12 +1356,12 @@
 
 
         /* =====================================================
-           عرض الطلبات
+           عرض الطلبات (مقيّد بصف الخادم الحالي فقط)
            ===================================================== */
 
         onSnapshot(
             q,
-            (snapshot) => {
+            async (snapshot) => {
 
                 container.innerHTML = "";
 
@@ -1225,341 +1381,403 @@
 
                 let isFirst = true;
 
-
-                snapshot.forEach(
-                    (docSnap) => {
-
-                        const item =
-                            docSnap.data();
-
-                        const docId =
-                            docSnap.id;
+                let renderedAny = false;
 
 
-                        const card =
-                            document.createElement("div");
+                /*
+                 * بنستخدم for...of (وليس forEach) لأننا
+                 * محتاجين نستخدم await جوه اللوب لجلب
+                 * صف كل مخدوم صاحب الطلب
+                 */
+
+                for (const docSnap of snapshot.docs) {
+
+                    const item =
+                        docSnap.data();
+
+                    const docId =
+                        docSnap.id;
 
 
-                        card.className =
-                            `card ${
-                                item.isRead
-                                    ? ""
-                                    : "unread"
-                            }`;
+                    /*
+                     * معرفة هل الإشعار طلب هدية
+                     */
+
+                    const isGift =
+                        item.type === "gift_order" ||
+                        (
+                            item.giftName &&
+                            item.username &&
+                            item.pointsSpent
+                        ) ||
+                        (
+                            item.message &&
+                            item.message.includes("بشراء")
+                        );
 
 
-                        /*
-                         * معرفة هل الإشعار طلب هدية
-                         */
+                    /* =====================================
+                       فلترة الصف: نعرض بس اللي يخص صفي
+                       ===================================== */
 
-                        const isGift =
-                            item.type === "gift_order" ||
-                            (
-                                item.giftName &&
-                                item.username &&
-                                item.pointsSpent
-                            ) ||
-                            (
-                                item.message &&
-                                item.message.includes("بشراء")
-                            );
+                    if (myGrade) {
 
+                        if (item.type === "announcement") {
 
-                        let actionsHTML = "";
+                            /*
+                             * إعلان: يظهر فقط لو نفس الصف المستهدف
+                             */
 
+                            if (item.targetGrade !== myGrade) {
 
-                        /* =========================
-                           طلب جديد
-                        ========================= */
-
-                        if (isGift) {
-
-                            if (
-                                !item.status ||
-                                item.status === "pending"
-                            ) {
-
-                                actionsHTML = `
-
-                                    <div class="order-actions">
-
-                                        <button
-                                            class="accept-btn"
-                                            onclick="acceptOrder('${docId}')">
-
-                                            <i class="fas fa-check"></i>
-
-                                            قبول الطلب
-
-                                        </button>
-
-
-                                        <button
-                                            class="reject-btn"
-                                            onclick="rejectOrder(
-                                                '${docId}',
-                                                '${escapeHtmlAttribute(item.username || "")}',
-                                                '${escapeHtmlAttribute(item.giftName || "")}',
-                                                ${Number(item.pointsSpent || 0)},
-                                                '${escapeHtmlAttribute(item.giftId || "")}'
-                                            )">
-
-                                            <i class="fas fa-times"></i>
-
-                                            رفض وإرجاع الهدية
-
-                                        </button>
-
-                                    </div>
-                                `;
-
+                                continue;
                             }
 
+                        } else if (isGift) {
 
-                            /* =========================
-                               مقبول
-                            ========================= */
+                            /*
+                             * طلب هدية: نجيب صف المخدوم صاحب الطلب
+                             * ونعرضه بس لو نفس صفي
+                             */
 
-                            else if (
-                                item.status ===
-                                "accepted"
-                            ) {
-
-                                actionsHTML = `
-
-                                    <p style="
-                                        font-weight:bold;
-                                        color:#137333;
-                                        margin-top:5px;
-                                        font-size:13px;
-                                    ">
-
-                                        حالة الطلب:
-                                        مقبول
-                                        (في انتظار التسليم ⏳)
-
-                                    </p>
+                            const orderGrade =
+                                await getUserGrade(
+                                    item.username
+                                );
 
 
-                                    <button
-                                        class="deliver-btn"
-                                        onclick="deliverOrder('${docId}')">
+                            if (orderGrade !== myGrade) {
 
-                                        <i class="fas fa-gift"></i>
-
-                                        تأكيد تسليم الهدية للمخدوم
-
-                                    </button>
-                                `;
-                            }
-
-
-                            /* =========================
-                               تم التسليم
-                            ========================= */
-
-                            else if (
-                                item.status ===
-                                "delivered"
-                            ) {
-
-                                actionsHTML = `
-
-                                    <p style="
-                                        font-weight:bold;
-                                        color:#1a73e8;
-                                        margin-top:5px;
-                                        font-size:13px;
-                                    ">
-
-                                        حالة الطلب:
-                                        تم تسليم الهدية بنجاح للمخدوم ✅
-
-                                    </p>
-                                `;
-                            }
-
-
-                            /* =========================
-                               مرفوض
-                            ========================= */
-
-                            else if (
-                                item.status ===
-                                "rejected"
-                            ) {
-
-                                actionsHTML = `
-
-                                    <p style="
-                                        font-weight:bold;
-                                        color:#b3261e;
-                                        margin-top:5px;
-                                        font-size:13px;
-                                    ">
-
-                                        حالة الطلب:
-                                        تم الرفض وإرجاع الهدية والنقاط ❌
-
-                                    </p>
-                                `;
+                                continue;
                             }
                         }
 
-
                         /*
-                         * بناء الكارت
+                         * أنواع أخرى (زي gift_rejected) بتفضل
+                         * تظهر عادي لأنها موجّهة لمخدوم بعينه
+                         * وليست إعلان أو طلب عام
                          */
-
-                        const safeTitle =
-                            escapeHtml(
-                                item.title ||
-                                "تنبيه كنسي"
-                            );
+                    }
 
 
-                        const safeMessage =
-                            escapeHtml(
-                                item.message ||
-                                ""
-                            );
+                    renderedAny = true;
 
 
-                        const safeUsername =
-                            escapeHtml(
-                                item.username ||
-                                ""
-                            );
+                    const card =
+                        document.createElement("div");
 
 
-                        const safeGiftName =
-                            escapeHtml(
-                                item.giftName ||
-                                "هدية"
-                            );
+                    card.className =
+                        `card ${
+                            item.isRead
+                                ? ""
+                                : "unread"
+                        }`;
 
 
-                        const imageHTML =
-                            item.imageUrl
-
-                                ? `
-                                    <img
-                                        src="${escapeHtmlAttribute(item.imageUrl)}"
-                                        alt="notification">
-                                  `
-
-                                : `
-                                    <i
-                                        class="fas fa-gift"
-                                        style="color:#f59e0b;">
-                                    </i>
-                                  `;
+                    let actionsHTML = "";
 
 
-                        card.innerHTML = `
+                    /* =========================
+                       طلب جديد
+                    ========================= */
 
-                            <div class="card-top">
+                    if (isGift) {
 
-                                <div class="icon-container">
+                        if (
+                            !item.status ||
+                            item.status === "pending"
+                        ) {
 
-                                    ${imageHTML}
+                            actionsHTML = `
 
-                                </div>
+                                <div class="order-actions">
 
+                                    <button
+                                        class="accept-btn"
+                                        onclick="acceptOrder('${docId}')">
 
-                                <div class="details">
+                                        <i class="fas fa-check"></i>
 
-                                    <h3>
-                                        ${safeTitle}
-                                    </h3>
+                                        قبول الطلب
 
-
-                                    <p>
-                                        ${safeMessage}
-                                    </p>
+                                    </button>
 
 
-                                    ${
-                                        isGift &&
-                                        item.username
+                                    <button
+                                        class="reject-btn"
+                                        onclick="rejectOrder(
+                                            '${docId}',
+                                            '${escapeHtmlAttribute(item.username || "")}',
+                                            '${escapeHtmlAttribute(item.giftName || "")}',
+                                            ${Number(item.pointsSpent || 0)},
+                                            '${escapeHtmlAttribute(item.giftId || "")}'
+                                        )">
 
-                                            ? `
-                                                <p
-                                                    style="
-                                                        color:#888;
-                                                        font-size:11px;
-                                                        margin-top:2px;
-                                                    ">
+                                        <i class="fas fa-times"></i>
 
-                                                    المخدوم:
-                                                    ${safeUsername}
+                                        رفض وإرجاع الهدية
 
-                                                    |
-
-                                                    الهدية:
-                                                    ${safeGiftName}
-
-                                                    (
-                                                    ${Number(item.pointsSpent || 0)}
-                                                    نقطة
-                                                    )
-
-                                                </p>
-                                              `
-
-                                            : ""
-                                    }
+                                    </button>
 
                                 </div>
+                            `;
+
+                        }
+
+
+                        /* =========================
+                           مقبول
+                        ========================= */
+
+                        else if (
+                            item.status ===
+                            "accepted"
+                        ) {
+
+                            actionsHTML = `
+
+                                <p style="
+                                    font-weight:bold;
+                                    color:#137333;
+                                    margin-top:5px;
+                                    font-size:13px;
+                                ">
+
+                                    حالة الطلب:
+                                    مقبول
+                                    (في انتظار التسليم ⏳)
+
+                                </p>
+
+
+                                <button
+                                    class="deliver-btn"
+                                    onclick="deliverOrder('${docId}')">
+
+                                    <i class="fas fa-gift"></i>
+
+                                    تأكيد تسليم الهدية للمخدوم
+
+                                </button>
+                            `;
+                        }
+
+
+                        /* =========================
+                           تم التسليم
+                        ========================= */
+
+                        else if (
+                            item.status ===
+                            "delivered"
+                        ) {
+
+                            actionsHTML = `
+
+                                <p style="
+                                    font-weight:bold;
+                                    color:#1a73e8;
+                                    margin-top:5px;
+                                    font-size:13px;
+                                ">
+
+                                    حالة الطلب:
+                                    تم تسليم الهدية بنجاح للمخدوم ✅
+
+                                </p>
+                            `;
+                        }
+
+
+                        /* =========================
+                           مرفوض
+                        ========================= */
+
+                        else if (
+                            item.status ===
+                            "rejected"
+                        ) {
+
+                            actionsHTML = `
+
+                                <p style="
+                                    font-weight:bold;
+                                    color:#b3261e;
+                                    margin-top:5px;
+                                    font-size:13px;
+                                ">
+
+                                    حالة الطلب:
+                                    تم الرفض وإرجاع الهدية والنقاط ❌
+
+                                </p>
+                            `;
+                        }
+                    }
+
+
+                    /*
+                     * بناء الكارت
+                     */
+
+                    const safeTitle =
+                        escapeHtml(
+                            item.title ||
+                            "تنبيه كنسي"
+                        );
+
+
+                    const safeMessage =
+                        escapeHtml(
+                            item.message ||
+                            ""
+                        );
+
+
+                    const safeUsername =
+                        escapeHtml(
+                            item.username ||
+                            ""
+                        );
+
+
+                    const safeGiftName =
+                        escapeHtml(
+                            item.giftName ||
+                            "هدية"
+                        );
+
+
+                    const imageHTML =
+                        item.imageUrl
+
+                            ? `
+                                <img
+                                    src="${escapeHtmlAttribute(item.imageUrl)}"
+                                    alt="notification">
+                              `
+
+                            : `
+                                <i
+                                    class="fas fa-gift"
+                                    style="color:#f59e0b;">
+                                </i>
+                              `;
+
+
+                    card.innerHTML = `
+
+                        <div class="card-top">
+
+                            <div class="icon-container">
+
+                                ${imageHTML}
 
                             </div>
 
 
-                            ${actionsHTML}
+                            <div class="details">
 
-                        `;
+                                <h3>
+                                    ${safeTitle}
+                                </h3>
 
 
-                        container.appendChild(card);
+                                <p>
+                                    ${safeMessage}
+                                </p>
 
 
-                        /*
-                         * إشعار جديد
-                         */
+                                ${
+                                    isGift &&
+                                    item.username
+
+                                        ? `
+                                            <p
+                                                style="
+                                                    color:#888;
+                                                    font-size:11px;
+                                                    margin-top:2px;
+                                                ">
+
+                                                المخدوم:
+                                                ${safeUsername}
+
+                                                |
+
+                                                الهدية:
+                                                ${safeGiftName}
+
+                                                (
+                                                ${Number(item.pointsSpent || 0)}
+                                                نقطة
+                                                )
+
+                                            </p>
+                                          `
+
+                                        : ""
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        ${actionsHTML}
+
+                    `;
+
+
+                    container.appendChild(card);
+
+
+                    /*
+                     * إشعار جديد
+                     */
+
+                    if (
+                        !firstLoad &&
+                        isFirst &&
+                        !item.isRead
+                    ) {
+
+                        sound
+                            .play()
+                            .catch(() => {});
+
 
                         if (
-                            !firstLoad &&
-                            isFirst &&
-                            !item.isRead
+                            "Notification" in window &&
+                            Notification.permission ===
+                            "granted"
                         ) {
 
-                            sound
-                                .play()
-                                .catch(() => {});
-
-
-                            if (
-                                "Notification" in window &&
-                                Notification.permission ===
-                                "granted"
-                            ) {
-
-                                new Notification(
-                                    item.title ||
-                                    "تنبيه جديد",
-                                    {
-                                        body:
-                                            item.message ||
-                                            ""
-                                    }
-                                );
-                            }
+                            new Notification(
+                                item.title ||
+                                "تنبيه جديد",
+                                {
+                                    body:
+                                        item.message ||
+                                        ""
+                                }
+                            );
                         }
-
-
-                        isFirst = false;
                     }
-                );
+
+
+                    isFirst = false;
+                }
+
+
+                if (!renderedAny) {
+
+                    container.innerHTML =
+                        `<div class="no-data">
+                            لا توجد إشعارات أو طلبات خاصة بصفك حالياً
+                        </div>`;
+                }
 
 
                 firstLoad = false;
