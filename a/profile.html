@@ -1,425 +1,1827 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+    <body>
+       <!-- زر رجوع أنيق -->
+        <form action="../a/home.html" method="get">
+<a href="#" id="backButton" class="back-btn" title="رجوع">
+    <button type="submit">للرئيسيه</button>
+    <i class="fas fa-arrow-right"></i>
+    <span>رجوع</span>
+</a>
+</form>
+
+<style>
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--primary, #7c1b28), #5a121d);
+        color: var(--white, #ffffff);
+        padding: 10px 18px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(124, 27, 40, 0.25);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+
+    .back-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: linear-gradient(135deg, #5a121d, var(--primary, #7c1b28));
+        box-shadow: 0 6px 16px rgba(124, 27, 40, 0.35);
+        transform: translateY(-2px);
+    }
+
+    .back-btn:hover i {
+        transform: translateX(4px); /* حركة خفيفة للأيقونة لليمين لأن الموقع لغة عربية */
+    }
+
+    .back-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(124, 27, 40, 0.2);
+    }
+</style>
+    </body>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>البروفايل - لوحة الخادم</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>St. Mina - لوحة إعلانات الكنيسة والطلبات</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root{
-            --wine-900:#4a0e16;
-            --wine-800:#6b1420;
-            --wine-700:#7c1b28;
-            --gold:#c9a04d;
-            --gold-light:#e6c878;
-            --paper:#f6f1e9;
-            --card:#ffffff;
-            --ink:#2a2320;
-            --ink-soft:#6b625c;
-            --line:#e9dfd0;
+        * {
+            box-sizing: border-box;
         }
 
-        * { box-sizing:border-box; margin:0; padding:0; }
-
-        body{
-            background:var(--paper);
-            display:flex;
-            flex-direction:column;
-            min-height:100vh;
-            font-family:'Cairo', sans-serif;
-            color:var(--ink);
+        body {
+            background: #f4f6f8;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* ===== الهيدر ===== */
-        header.church-header{
-            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
-            padding:22px 20px 26px;
-            text-align:center;
-            position:relative;
-            box-shadow:0 8px 20px rgba(74,14,22,0.25);
+        .header {
+            background: #232f3e;
+            color: #febd69;
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
 
-        header.church-header::after{
-            content:'';
-            position:absolute;
-            bottom:0; right:0; left:0;
-            height:4px;
-            background:linear-gradient(90deg, transparent, var(--gold), transparent);
+        .notification-status {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .church-logo{
-            width:52px;
-            height:52px;
-            border-radius:50%;
-            background:var(--wine-700);
-            border:2px solid var(--gold);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            margin:0 auto 10px;
+        .status-enabled {
+            color: #137333;
         }
 
-        .church-logo i{
-            color:var(--gold-light);
-            font-size:24px;
+        .status-disabled {
+            color: #b3261e;
         }
 
-        header.church-header h2{
-            font-family:'Amiri', serif;
-            color:#fbeed4;
-            font-size:18px;
-            font-weight:700;
+        /* شريط يوضح صف الخادم الحالي (مسحوب من البروفايل) */
+        .grade-banner {
+            width: 100%;
+            max-width: 600px;
+            background: #fff8e6;
+            border: 1px solid #f0d789;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #7c1b28;
+            font-weight: bold;
         }
 
-        /* ===== المحتوى ===== */
-        .main-content{
-            flex:1;
-            padding:18px 16px 100px; /* مسافة كافية لعدم تداخل المحتوى مع شريط التنقل السفلي */
-            max-width:620px;
-            width:100%;
-            margin:0 auto;
+        .grade-banner.grade-missing {
+            background: #fdeceb;
+            border-color: #f3b3ae;
+            color: #b3261e;
         }
 
-        /* ===== الويدجت الموحد ===== */
-        .widget{
-            background:var(--card);
-            border-radius:22px;
-            border:1px solid var(--line);
-            box-shadow:0 12px 28px rgba(74,14,22,0.08);
-            margin-bottom:18px;
-            overflow:hidden;
-            position:relative;
+        .control-panel {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .widget::before{
-            content:'';
-            position:absolute;
-            top:0; right:0; left:0;
-            height:3px;
-            background:linear-gradient(90deg, var(--wine-700), var(--gold), var(--wine-700));
-            opacity:.9;
+        .control-panel input,
+        .control-panel textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            outline: none;
         }
 
-        .widget-head{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            padding:16px 18px 4px;
+        .control-panel button {
+            background: #232f3e;
+            color: #febd69;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
         }
 
-        .widget-head .icon-badge{
-            width:30px; height:30px;
-            border-radius:10px;
-            background:var(--wine-700);
-            color:var(--gold-light);
-            display:flex; align-items:center; justify-content:center;
-            font-size:13px;
-            flex-shrink:0;
+        .control-panel button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        .widget-head h3{
-            font-size:14px;
-            font-weight:700;
-            color:var(--wine-800);
+        .list {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        /* بطاقة الصورة الشخصية */
-        .avatar-widget .widget-body{
-            padding:14px 20px 22px;
-            text-align:center;
+        .card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .avatar-widget h1{
-            font-family:'Amiri', serif;
-            font-size:21px;
-            color:var(--wine-800);
-            margin-bottom:16px;
+        .card.unread {
+            border-right: 5px solid #febd69;
+            background: #fffdf5;
         }
 
-        .avatar-container{
-            position:relative;
-            width:120px;
-            height:120px;
-            margin:0 auto;
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .avatar{
-            width:100%;
-            height:100%;
-            border-radius:50%;
-            border:3px solid var(--gold);
-            object-fit:cover;
-            background:var(--paper);
-            box-shadow:0 6px 16px rgba(74,14,22,0.25);
+        .icon-container {
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .upload-label{
-            position:absolute;
-            bottom:0;
-            left:0;
-            background:linear-gradient(135deg, var(--gold-light), var(--gold));
-            color:var(--wine-900);
-            width:34px;
-            height:34px;
-            border-radius:50%;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            cursor:pointer;
-            box-shadow:0 4px 10px rgba(74,14,22,0.35);
-            transition:.3s;
-            border:2px solid var(--card);
+        .icon-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .upload-label:hover{
-            transform:scale(1.08);
+        .icon-container i {
+            color: #1a73e8;
+            font-size: 18px;
         }
 
-        #avatar-input{ display:none; }
-
-        /* بطاقة بيانات الخادم */
-        .info-widget .widget-body{
-            padding:8px 18px 20px;
+        .details {
+            flex: 1;
         }
 
-        .info-list{
-            display:flex;
-            flex-direction:column;
-            gap:10px;
+        .details h3 {
+            font-size: 15px;
+            margin: 0 0 5px 0;
+            color: #111;
         }
 
-        .info-item{
-            background:var(--paper);
-            border:1px solid var(--line);
-            border-right:4px solid var(--gold);
-            padding:12px 16px;
-            border-radius:12px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:10px;
+        .details p {
+            font-size: 13px;
+            margin: 0;
+            color: #555;
+            line-height: 1.7;
         }
 
-        .info-label{
-            color:var(--wine-700);
-            font-weight:700;
-            font-size:14px;
-            display:flex;
-            align-items:center;
-            gap:8px;
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+            flex-wrap: wrap;
         }
 
-        .info-label i{ width:16px; text-align:center; }
-
-        .info-value{
-            color:var(--ink);
-            font-size:14px;
-            font-weight:600;
+        .accept-btn {
+            flex: 1;
+            background: #137333;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
         }
 
-        /* ===== شريط التنقل السفلي ===== */
-        nav.bottom-nav{
-            position:fixed;
-            bottom:0; right:0; left:0;
-            background:var(--wine-900);
-            border-top:1px solid rgba(230,200,120,0.25);
-            display:flex;
-            justify-content:space-around;
-            padding:10px 4px calc(10px + env(safe-area-inset-bottom));
-            box-shadow:0 -8px 20px rgba(0,0,0,0.25);
-            overflow-x:auto;
-            z-index:10;
+        .reject-btn {
+            flex: 1;
+            background: #b3261e;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
         }
 
-        nav.bottom-nav a, nav.bottom-nav button{
-            background:none;
-            border:none;
-            color:#c9b7a8;
-            text-decoration:none;
-            font-size:10px;
-            font-family:'Cairo', sans-serif;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:4px;
-            transition:all .25s ease;
-            cursor:pointer;
-            padding:4px 6px;
-            flex-shrink:0;
+        .deliver-btn {
+            width: 100%;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 5px;
         }
 
-        nav.bottom-nav a i, nav.bottom-nav button i{ font-size:17px; }
-
-        nav.bottom-nav a:hover,
-        nav.bottom-nav a.active{
-            color:var(--gold-light);
-            transform:translateY(-2px);
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        nav.bottom-nav .logout-link{
-            color:#e88a84;
+        .no-data {
+            background: #fff;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            color: #777;
+            width: 100%;
+            max-width: 600px;
         }
 
-        nav.bottom-nav .logout-link:hover{
-            color:#ff6b6b;
-            transform:translateY(-2px);
+        .notification-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            padding: 20px;
+        }
+
+        .notification-box {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .notification-icon {
+            width: 80px;
+            height: 80px;
+            background: #fff4d8;
+            color: #f59e0b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 35px;
+        }
+
+        .allow-btn,
+        .later-btn {
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .allow-btn {
+            background: #232f3e;
+            color: #febd69;
+            margin-bottom: 10px;
+        }
+
+        .later-btn {
+            background: #eeeeee;
+            color: #555;
         }
     </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // استخراج بيانات المستخدم من كائن currentUser أو adminData المخزن في LocalStorage (مع دعم المفاتيح المنفصلة كبديل)
-            let userData = null;
-            try {
-                const storedUser = localStorage.getItem('currentUser') || localStorage.getItem('adminData');
-                if (storedUser) {
-                    userData = JSON.parse(storedUser);
-                }
-            } catch (e) {
-                console.error("Error parsing user data:", e);
-            }
-
-            const username = (userData && (userData.username || userData.user)) || localStorage.getItem('username') || 'غير محدد';
-            const fullName = (userData && (userData.fullName || userData.name)) || localStorage.getItem('fullName') || 'خادم الرب';
-            const servantTitle = (userData && (userData.servantTitle || userData.title)) || localStorage.getItem('servantTitle') || '';
-            const servantStage = (userData && (userData.servantStage || userData.stage)) || localStorage.getItem('servantStage') || 'غير محددة';
-            const servantNumber = (userData && (userData.servantNumber || userData.number || userData.id)) || localStorage.getItem('servantNumber') || 'غير متوفر';
-
-            const usernameEl = document.getElementById('val-username');
-            const fullnameEl = document.getElementById('val-fullname');
-            const stageEl = document.getElementById('val-stage');
-            const numberEl = document.getElementById('val-number');
-
-            if (usernameEl) usernameEl.innerText = username;
-            if (fullnameEl) fullnameEl.innerText = servantTitle ? `${servantTitle} ${fullName}` : fullName;
-            if (stageEl) stageEl.innerText = servantStage;
-            if (numberEl) numberEl.innerText = servantNumber;
-
-            // معالجة رفع وعرض الصورة الشخصية وحفظها محلياً
-            const avatarInput = document.getElementById('avatar-input');
-            const profileImage = document.getElementById('profile-image');
-
-            // تحميل الصورة المحفوظة مسبقاً إن وجدت
-            const savedImage = localStorage.getItem('profileImage');
-            if (savedImage && profileImage) {
-                profileImage.src = savedImage;
-            }
-
-            if (avatarInput && profileImage) {
-                avatarInput.addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const base64Image = e.target.result;
-                            profileImage.src = base64Image;
-                            localStorage.setItem('profileImage', base64Image); // حفظ الصورة
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-
-            // زر تسجيل الخروج في الشريط السفلي
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
-                        localStorage.clear();
-                        window.location.href = 'index.html';
-                    }
-                });
-            }
-        });
-    </script>
 </head>
+
 <body>
 
-    <header class="church-header">
-        <div class="church-logo"><i class="fas fa-cross"></i></div>
-        <h2>كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي</h2>
-    </header>
+    <audio
+        id="notifSound"
+        src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
+        preload="auto">
+    </audio>
 
-    <div class="main-content">
+    <div id="notificationOverlay" class="notification-overlay">
+        <div class="notification-box">
 
-        <!-- بطاقة الصورة الشخصية -->
-        <div class="widget avatar-widget">
-            <div class="widget-body">
-                <h1>الملف الشخصي للخادم</h1>
-                <div class="avatar-container">
-                    <img id="profile-image" class="avatar" src="https://via.placeholder.com/150/f6f1e9/7c1b28?text=صورة+الخادم" alt="صورة الخادم">
-                    <label for="avatar-input" class="upload-label" title="تغيير الصورة">
-                        <i class="fas fa-camera"></i>
-                    </label>
-                    <input type="file" id="avatar-input" accept="image/*">
-                </div>
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
             </div>
+
+            <h2>تفعيل الإشعارات 🔔</h2>
+
+            <p>
+                هل تريد السماح لموقع
+                <strong>St. Mina</strong>
+                بإرسال التنبيهات؟
+            </p>
+
+            <button id="allowNotificationsBtn" class="allow-btn">
+                السماح
+            </button>
+
+            <button id="laterNotificationsBtn" class="later-btn">
+                رفض
+            </button>
+
         </div>
+    </div>
 
-        <!-- بطاقة بيانات الخادم -->
-        <div class="widget info-widget">
-            <div class="widget-head">
-                <div class="icon-badge"><i class="fas fa-id-card"></i></div>
-                <h3>بيانات الخادم</h3>
-            </div>
-            <div class="widget-body">
-                <div class="info-list">
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-user"></i> اسم المستخدم:</span>
-                        <span id="val-username" class="info-value">جاري التحميل...</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-id-badge"></i> الاسم الكامل:</span>
-                        <span id="val-fullname" class="info-value">جاري التحميل...</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-graduation-cap"></i> المرحلة الخدمية:</span>
-                        <span id="val-stage" class="info-value">جاري التحميل...</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-hashtag"></i> رقم الخادم:</span>
-                        <span id="val-number" class="info-value">جاري التحميل...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="header">
+        <i class="fas fa-church"></i>
+        لوحة الإعلانات والطلبات - St. Mina
+    </div>
+
+    <!-- شريط يوضح صف الخادم الحالي المسحوب من البروفايل (servantGrade) -->
+    <div id="gradeBanner" class="grade-banner">
+        <i class="fas fa-graduation-cap"></i>
+        <span id="gradeBannerText">جاري تحديد صفك...</span>
+    </div>
+
+    <div id="notificationStatus" class="notification-status">
+        <i class="fas fa-spinner fa-spin"></i>
+        جاري فحص الإشعارات...
+    </div>
+
+    <div class="control-panel">
+
+        <h3 style="margin: 0 0 5px 0; font-size: 14px; color: #333;">
+            <i class="fas fa-bullhorn"></i>
+            نشر إعلان أو قداس جديد لصفك فقط
+        </h3>
+
+        <input
+            type="text"
+            id="notifTitle"
+            value="قداس إلهي غداً 🙏">
+
+        <input
+            type="text"
+            id="notifImage"
+            value="https://cdn-icons-png.flaticon.com/512/3233/3233483.png">
+
+        <textarea
+            id="notifMessage"
+            rows="2">نحيطكم علماً بأن القداس الإلهي سيبدأ غداً.</textarea>
+
+        <button id="sendAnnouncementBtn">
+            <i class="fas fa-paper-plane"></i>
+            نشر الإعلان لصفي
+        </button>
 
     </div>
 
-    <!-- شريط التنقل السفلي -->
-    <nav class="bottom-nav">
-        <a href="home.html">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
-        </a>
-        <a class="active" href="profile.html">
-            <i class="fas fa-user-circle"></i>
-            <span>البروفايل</span>
-        </a>
-        <a href="gifts.html">
-            <i class="fas fa-gift"></i>
-            <span>الهدايا</span>
-        </a>
-        <a href="control.html">
-            <i class="fas fa-cogs"></i>
-            <span>الإدارة</span>
-        </a>
-        <a href="cart.html">
-            <i class="fas fa-shopping-cart"></i>
-            <span>السلة</span>
-        </a>
-        <a href="../notifications/index.html">
-            <i class="fas fa-bell"></i>
-            <span>الإشعارات</span>
-        </a>
-        <button id="logoutBtn" class="logout-link">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>خروج</span>
-        </button>
-    </nav>
+    <div id="notificationsContainer" class="list">
+        <div class="no-data">
+            جاري التحميل...
+        </div>
+    </div>
 
+
+    <script type="module">
+
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+        import {
+            getFirestore,
+            collection,
+            query,
+            orderBy,
+            onSnapshot,
+            addDoc,
+            doc,
+            updateDoc,
+            getDocs,
+            runTransaction,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
+        /* =========================
+           FIREBASE
+        ========================= */
+
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+
+            databaseURL:
+                "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+
+            projectId: "st-mina-c01ec",
+
+            storageBucket:
+                "st-mina-c01ec.firebasestorage.app",
+
+            messagingSenderId:
+                "792349150559",
+
+            appId:
+                "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+
+            measurementId:
+                "G-XZGSBG05KR"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+
+        const db = getFirestore(app);
+
+
+        /* =========================
+           صف الخادم الحالي (من البروفايل)
+           نفس المفتاح المستخدم في profile.html: servantGrade
+        ========================= */
+
+        const myGrade =
+            (localStorage.getItem("servantGrade") || "").trim();
+
+        const gradeBanner =
+            document.getElementById("gradeBanner");
+
+        const gradeBannerText =
+            document.getElementById("gradeBannerText");
+
+        if (myGrade) {
+
+            gradeBannerText.innerText =
+                `صفك الحالي: ${myGrade} — سيتم نشر إعلاناتك وعرض طلبات هذا الصف فقط`;
+
+        } else {
+
+            gradeBanner.classList.add("grade-missing");
+
+            gradeBannerText.innerText =
+                "لم يتم العثور على صفك في البروفايل، برجاء تحديث بياناتك أولاً";
+        }
+
+
+        /* =========================
+           ELEMENTS
+        ========================= */
+
+        const overlay =
+            document.getElementById("notificationOverlay");
+
+        const allowBtn =
+            document.getElementById("allowNotificationsBtn");
+
+        const laterBtn =
+            document.getElementById("laterNotificationsBtn");
+
+        const status =
+            document.getElementById("notificationStatus");
+
+        const container =
+            document.getElementById("notificationsContainer");
+
+        const sound =
+            document.getElementById("notifSound");
+
+        const sendAnnouncementBtn =
+            document.getElementById("sendAnnouncementBtn");
+
+
+        /* لو مفيش صف محدد، نمنع النشر لحد ما يحدث بياناته */
+
+        if (!myGrade) {
+
+            sendAnnouncementBtn.disabled = true;
+        }
+
+
+        /* =========================
+           NOTIFICATIONS STATUS
+        ========================= */
+
+        function updateNotificationStatus() {
+
+            if (!("Notification" in window)) {
+
+                status.className =
+                    "notification-status status-disabled";
+
+                status.innerHTML =
+                    `<i class="fas fa-bell-slash"></i>
+                     المتصفح لا يدعم الإشعارات`;
+
+                return;
+            }
+
+
+            if (Notification.permission === "granted") {
+
+                status.className =
+                    "notification-status status-enabled";
+
+                status.innerHTML =
+                    `<i class="fas fa-bell"></i>
+                     الإشعارات مفعلة`;
+
+            } else {
+
+                status.className =
+                    "notification-status status-disabled";
+
+                status.innerHTML =
+                    `<i class="fas fa-bell-slash"></i>
+                     الإشعارات غير مفعلة`;
+            }
+        }
+
+
+        allowBtn.addEventListener(
+            "click",
+            async () => {
+
+                try {
+
+                    await Notification.requestPermission();
+
+                } catch (e) {
+
+                    console.error(e);
+                }
+
+                updateNotificationStatus();
+
+                overlay.style.display = "none";
+            }
+        );
+
+
+        laterBtn.addEventListener(
+            "click",
+            () => {
+
+                overlay.style.display = "none";
+
+            }
+        );
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                updateNotificationStatus();
+
+                if (
+                    "Notification" in window &&
+                    Notification.permission === "default"
+                ) {
+
+                    overlay.style.display = "flex";
+                }
+            }
+        );
+
+
+        /* =========================
+           QUERY
+        ========================= */
+
+        const q =
+            query(
+                collection(db, "notifications"),
+                orderBy("timestamp", "desc")
+            );
+
+
+        let firstLoad = true;
+
+
+        /* =========================
+           ANNOUNCEMENT (مقيّد بصف الخادم الحالي)
+        ========================= */
+
+        sendAnnouncementBtn.addEventListener(
+            "click",
+            async () => {
+
+                if (!myGrade) {
+
+                    alert(
+                        "لا يمكن النشر: صفك غير معروف من البروفايل."
+                    );
+
+                    return;
+                }
+
+
+                const title =
+                    document
+                        .getElementById("notifTitle")
+                        .value
+                        .trim();
+
+                const imageUrl =
+                    document
+                        .getElementById("notifImage")
+                        .value
+                        .trim();
+
+                const message =
+                    document
+                        .getElementById("notifMessage")
+                        .value
+                        .trim();
+
+
+                if (!message) {
+
+                    alert("يرجى كتابة محتوى الإعلان!");
+
+                    return;
+                }
+
+
+                try {
+
+                    await addDoc(
+                        collection(db, "notifications"),
+                        {
+                            type: "announcement",
+
+                            title: title,
+
+                            message: message,
+
+                            imageUrl: imageUrl,
+
+                            /*
+                             * تقييد الإعلان على صف الخادم الحالي فقط
+                             * بحيث يظهر فقط عند من كان في نفس الصف
+                             */
+
+                            targetGrade: myGrade,
+
+                            timestamp: serverTimestamp(),
+
+                            isRead: false
+                        }
+                    );
+
+
+                    alert(
+                        `تم نشر الإعلان بنجاح لصف "${myGrade}" فقط!`
+                    );
+
+                } catch (e) {
+
+                    console.error(e);
+
+                    alert(
+                        "حدث خطأ أثناء نشر الإعلان: " +
+                        e.message
+                    );
+                }
+            }
+        );
+
+
+        /* =====================================================
+           قبول الطلب
+           ===================================================== */
+
+        window.acceptOrder =
+            async function (docId) {
+
+                try {
+
+                    const docRef =
+                        doc(
+                            db,
+                            "notifications",
+                            docId
+                        );
+
+
+                    await updateDoc(
+                        docRef,
+                        {
+                            status: "accepted",
+
+                            isRead: true,
+
+                            acceptedAt:
+                                serverTimestamp()
+                        }
+                    );
+
+
+                    alert(
+                        "تم قبول الطلب، وهو الآن في انتظار تسليمه للمخدوم ✅"
+                    );
+
+                } catch (e) {
+
+                    console.error(e);
+
+                    alert(
+                        "حدث خطأ أثناء قبول الطلب: " +
+                        e.message
+                    );
+                }
+            };
+
+
+        /* =====================================================
+           تسليم الطلب
+           ===================================================== */
+
+        window.deliverOrder =
+            async function (docId) {
+
+                try {
+
+                    const docRef =
+                        doc(
+                            db,
+                            "notifications",
+                            docId
+                        );
+
+
+                    await updateDoc(
+                        docRef,
+                        {
+                            status: "delivered",
+
+                            isRead: true,
+
+                            deliveredAt:
+                                serverTimestamp()
+                        }
+                    );
+
+
+                    alert(
+                        "تم تسجيل تسليم الهدية للمخدوم بنجاح ✅"
+                    );
+
+                } catch (e) {
+
+                    console.error(e);
+
+                    alert(
+                        "حدث خطأ أثناء تسجيل التسليم: " +
+                        e.message
+                    );
+                }
+            };
+
+
+        /* =====================================================
+           البحث عن المستخدم
+           ===================================================== */
+
+        async function findUserByUsername(username) {
+
+            if (!username) {
+                return null;
+            }
+
+
+            const usernameClean =
+                String(username)
+                    .trim()
+                    .toLowerCase();
+
+
+            const usersSnap =
+                await getDocs(
+                    collection(db, "users")
+                );
+
+
+            for (const userDoc of usersSnap.docs) {
+
+                const data =
+                    userDoc.data();
+
+
+                const docId =
+                    String(userDoc.id)
+                        .trim()
+                        .toLowerCase();
+
+
+                const dataUsername =
+                    data.username
+                        ? String(data.username)
+                            .trim()
+                            .toLowerCase()
+                        : "";
+
+
+                if (
+                    docId === usernameClean ||
+                    dataUsername === usernameClean
+                ) {
+
+                    return userDoc;
+                }
+            }
+
+
+            return null;
+        }
+
+
+        /*
+         * كاش بسيط لصفوف المستخدمين
+         * لتقليل عدد القراءات من Firestore
+         * أثناء فلترة القائمة كل مرة يتغير فيها السناب شوت
+         */
+
+        const userGradeCache = new Map();
+
+
+        async function getUserGrade(username) {
+
+            if (!username) {
+                return null;
+            }
+
+
+            const usernameClean =
+                String(username)
+                    .trim()
+                    .toLowerCase();
+
+
+            if (userGradeCache.has(usernameClean)) {
+
+                return userGradeCache.get(usernameClean);
+            }
+
+
+            const userDoc =
+                await findUserByUsername(username);
+
+
+            let grade = null;
+
+
+            if (userDoc) {
+
+                const data =
+                    userDoc.data();
+
+                /*
+                 * ملاحظة: بنفترض إن حقل الصف في Firestore
+                 * اسمه "servantGrade" نفس اسمه في localStorage
+                 * (صفحة profile.html). لو الحقل في قاعدة البيانات
+                 * اسمه مختلف، غيّر الاسم هنا.
+                 */
+
+                grade =
+                    data.servantGrade ||
+                    data.grade ||
+                    null;
+
+                if (grade) {
+
+                    grade =
+                        String(grade).trim();
+                }
+            }
+
+
+            userGradeCache.set(usernameClean, grade);
+
+
+            return grade;
+        }
+
+
+        /* =====================================================
+           البحث عن الهدية
+           ===================================================== */
+
+        async function findGift(giftId, giftName) {
+
+            /*
+             * أول اختيار:
+             * giftId
+             */
+
+            if (giftId) {
+
+                return doc(
+                    db,
+                    "gifts",
+                    giftId
+                );
+            }
+
+
+            /*
+             * لو الطلب قديم ومفيهوش giftId
+             * نبحث بالاسم
+             */
+
+            if (!giftName) {
+                return null;
+            }
+
+
+            const giftsSnap =
+                await getDocs(
+                    collection(db, "gifts")
+                );
+
+
+            const giftNameClean =
+                String(giftName)
+                    .trim()
+                    .toLowerCase();
+
+
+            for (const giftDoc of giftsSnap.docs) {
+
+                const data =
+                    giftDoc.data();
+
+
+                if (
+                    data.name &&
+                    String(data.name)
+                        .trim()
+                        .toLowerCase() === giftNameClean
+                ) {
+
+                    return giftDoc.ref;
+                }
+            }
+
+
+            return null;
+        }
+
+
+        /* =====================================================
+           رفض الطلب
+           ===================================================== */
+
+        window.rejectOrder =
+            async function (
+                docId,
+                username,
+                giftName,
+                pointsToReturn,
+                giftId
+            ) {
+
+                if (
+                    !confirm(
+                        "هل أنت متأكد من رفض طلب الهدية؟\n\nسيتم إرجاع الهدية للمخزون وإرجاع النقاط للمخدوم."
+                    )
+                ) {
+
+                    return;
+                }
+
+
+                try {
+
+                    const orderRef =
+                        doc(
+                            db,
+                            "notifications",
+                            docId
+                        );
+
+
+                    /*
+                     * الحصول على المستخدم والهدية
+                     */
+
+                    const userDoc =
+                        await findUserByUsername(
+                            username
+                        );
+
+
+                    const giftRef =
+                        await findGift(
+                            giftId,
+                            giftName
+                        );
+
+
+                    if (!userDoc) {
+
+                        throw new Error(
+                            "لم يتم العثور على حساب المخدوم: " +
+                            username
+                        );
+                    }
+
+
+                    if (!giftRef) {
+
+                        throw new Error(
+                            "لم يتم العثور على الهدية: " +
+                            giftName
+                        );
+                    }
+
+
+                    /*
+                     * Transaction
+                     *
+                     * تمنع إرجاع الهدية والنقاط
+                     * أكثر من مرة.
+                     */
+
+                    await runTransaction(
+                        db,
+                        async (transaction) => {
+
+                            const orderSnap =
+                                await transaction.get(
+                                    orderRef
+                                );
+
+
+                            if (!orderSnap.exists()) {
+
+                                throw new Error(
+                                    "الطلب غير موجود."
+                                );
+                            }
+
+
+                            const orderData =
+                                orderSnap.data();
+
+
+                            /*
+                             * لو تم رفض الطلب من قبل
+                             */
+
+                            if (
+                                orderData.status ===
+                                "rejected" ||
+                                orderData.refundProcessed ===
+                                true
+                            ) {
+
+                                throw new Error(
+                                    "هذا الطلب تم رفضه وإرجاع الهدية والنقاط بالفعل."
+                                );
+                            }
+
+
+                            /*
+                             * لو تم قبوله أو تسليمه
+                             * لا نسمح بإرجاع المخزون
+                             */
+
+                            if (
+                                orderData.status ===
+                                "accepted" ||
+                                orderData.status ===
+                                "delivered"
+                            ) {
+
+                                throw new Error(
+                                    "لا يمكن رفض طلب تم قبوله أو تسليمه بالفعل."
+                                );
+                            }
+
+
+                            const userSnap =
+                                await transaction.get(
+                                    userDoc.ref
+                                );
+
+
+                            const giftSnap =
+                                await transaction.get(
+                                    giftRef
+                                );
+
+
+                            if (!userSnap.exists()) {
+
+                                throw new Error(
+                                    "حساب المخدوم غير موجود."
+                                );
+                            }
+
+
+                            if (!giftSnap.exists()) {
+
+                                throw new Error(
+                                    "الهدية غير موجودة."
+                                );
+                            }
+
+
+                            const userData =
+                                userSnap.data();
+
+                            const giftData =
+                                giftSnap.data();
+
+
+                            const oldPoints =
+                                Number(
+                                    userData.points || 0
+                                );
+
+
+                            const giftPoints =
+                                Number(
+                                    orderData.pointsSpent ||
+                                    pointsToReturn ||
+                                    0
+                                );
+
+
+                            const oldQuantity =
+                                Number(
+                                    giftData.quantity || 0
+                                );
+
+
+                            /*
+                             * 1️⃣ إرجاع النقاط
+                             */
+
+                            transaction.update(
+                                userDoc.ref,
+                                {
+                                    points:
+                                        oldPoints +
+                                        giftPoints
+                                }
+                            );
+
+
+                            /*
+                             * 2️⃣ إرجاع الهدية للمعرض
+                             *
+                             * مهم:
+                             * نستخدم quantity وليس stock
+                             */
+
+                            transaction.update(
+                                giftRef,
+                                {
+                                    quantity:
+                                        oldQuantity + 1
+                                }
+                            );
+
+
+                            /*
+                             * 3️⃣ تغيير حالة الطلب
+                             */
+
+                            transaction.update(
+                                orderRef,
+                                {
+                                    status: "rejected",
+
+                                    isRejected: true,
+
+                                    refundProcessed: true,
+
+                                    isRead: true,
+
+                                    rejectedAt:
+                                        serverTimestamp(),
+
+                                    pointsRefunded:
+                                        giftPoints,
+
+                                    inventoryReturned:
+                                        true
+                                }
+                            );
+                        }
+                    );
+
+
+                    /*
+                     * بعد نجاح الـ Transaction
+                     * نرسل إشعار للمخدوم
+                     */
+
+                    await addDoc(
+                        collection(db, "notifications"),
+                        {
+                            type: "gift_rejected",
+
+                            title:
+                                "تم رفض طلب الهدية ❌",
+
+                            message:
+                                `تم رفض طلبك للهدية "${giftName || "الهدية"}". وتم إرجاع الهدية للمعرض وإرجاع ${pointsToReturn || 0} نقطة إلى حسابك ⭐.`,
+
+                            username:
+                                username,
+
+                            giftName:
+                                giftName || "",
+
+                            giftId:
+                                giftId || "",
+
+                            pointsSpent:
+                                Number(pointsToReturn || 0),
+
+                            pointsRefunded:
+                                Number(pointsToReturn || 0),
+
+                            timestamp:
+                                serverTimestamp(),
+
+                            isRead:
+                                false
+                        }
+                    );
+
+
+                    /*
+                     * صوت للمخدوم/الصفحة الحالية
+                     */
+
+                    sound.play().catch(() => {});
+
+
+                    alert(
+                        "تم رفض الطلب بنجاح ✅\n\n" +
+                        "🎁 تم إرجاع الهدية للمعرض\n" +
+                        "⭐ تم إرجاع النقاط للمخدوم"
+                    );
+
+
+                } catch (e) {
+
+                    console.error(
+                        "Reject Error:",
+                        e
+                    );
+
+
+                    alert(
+                        "حدث خطأ أثناء رفض الطلب:\n\n" +
+                        e.message
+                    );
+                }
+            };
+
+
+        /* =====================================================
+           عرض الطلبات (مقيّد بصف الخادم الحالي فقط)
+           ===================================================== */
+
+        onSnapshot(
+            q,
+            async (snapshot) => {
+
+                container.innerHTML = "";
+
+
+                if (snapshot.empty) {
+
+                    container.innerHTML =
+                        `<div class="no-data">
+                            لا توجد إشعارات حالياً
+                        </div>`;
+
+                    firstLoad = false;
+
+                    return;
+                }
+
+
+                let isFirst = true;
+
+                let renderedAny = false;
+
+
+                /*
+                 * بنستخدم for...of (وليس forEach) لأننا
+                 * محتاجين نستخدم await جوه اللوب لجلب
+                 * صف كل مخدوم صاحب الطلب
+                 */
+
+                for (const docSnap of snapshot.docs) {
+
+                    const item =
+                        docSnap.data();
+
+                    const docId =
+                        docSnap.id;
+
+
+                    /*
+                     * معرفة هل الإشعار طلب هدية
+                     */
+
+                    const isGift =
+                        item.type === "gift_order" ||
+                        (
+                            item.giftName &&
+                            item.username &&
+                            item.pointsSpent
+                        ) ||
+                        (
+                            item.message &&
+                            item.message.includes("بشراء")
+                        );
+
+
+                    /* =====================================
+                       فلترة الصف: نعرض بس اللي يخص صفي
+                       ===================================== */
+
+                    if (myGrade) {
+
+                        if (item.type === "announcement") {
+
+                            /*
+                             * إعلان: يظهر فقط لو نفس الصف المستهدف
+                             */
+
+                            if (item.targetGrade !== myGrade) {
+
+                                continue;
+                            }
+
+                        } else if (isGift) {
+
+                            /*
+                             * طلب هدية: نجيب صف المخدوم صاحب الطلب
+                             * ونعرضه بس لو نفس صفي
+                             */
+
+                            const orderGrade =
+                                await getUserGrade(
+                                    item.username
+                                );
+
+
+                            if (orderGrade !== myGrade) {
+
+                                continue;
+                            }
+                        }
+
+                        /*
+                         * أنواع أخرى (زي gift_rejected) بتفضل
+                         * تظهر عادي لأنها موجّهة لمخدوم بعينه
+                         * وليست إعلان أو طلب عام
+                         */
+                    }
+
+
+                    renderedAny = true;
+
+
+                    const card =
+                        document.createElement("div");
+
+
+                    card.className =
+                        `card ${
+                            item.isRead
+                                ? ""
+                                : "unread"
+                        }`;
+
+
+                    let actionsHTML = "";
+
+
+                    /* =========================
+                       طلب جديد
+                    ========================= */
+
+                    if (isGift) {
+
+                        if (
+                            !item.status ||
+                            item.status === "pending"
+                        ) {
+
+                            actionsHTML = `
+
+                                <div class="order-actions">
+
+                                    <button
+                                        class="accept-btn"
+                                        onclick="acceptOrder('${docId}')">
+
+                                        <i class="fas fa-check"></i>
+
+                                        قبول الطلب
+
+                                    </button>
+
+
+                                    <button
+                                        class="reject-btn"
+                                        onclick="rejectOrder(
+                                            '${docId}',
+                                            '${escapeHtmlAttribute(item.username || "")}',
+                                            '${escapeHtmlAttribute(item.giftName || "")}',
+                                            ${Number(item.pointsSpent || 0)},
+                                            '${escapeHtmlAttribute(item.giftId || "")}'
+                                        )">
+
+                                        <i class="fas fa-times"></i>
+
+                                        رفض وإرجاع الهدية
+
+                                    </button>
+
+                                </div>
+                            `;
+
+                        }
+
+
+                        /* =========================
+                           مقبول
+                        ========================= */
+
+                        else if (
+                            item.status ===
+                            "accepted"
+                        ) {
+
+                            actionsHTML = `
+
+                                <p style="
+                                    font-weight:bold;
+                                    color:#137333;
+                                    margin-top:5px;
+                                    font-size:13px;
+                                ">
+
+                                    حالة الطلب:
+                                    مقبول
+                                    (في انتظار التسليم ⏳)
+
+                                </p>
+
+
+                                <button
+                                    class="deliver-btn"
+                                    onclick="deliverOrder('${docId}')">
+
+                                    <i class="fas fa-gift"></i>
+
+                                    تأكيد تسليم الهدية للمخدوم
+
+                                </button>
+                            `;
+                        }
+
+
+                        /* =========================
+                           تم التسليم
+                        ========================= */
+
+                        else if (
+                            item.status ===
+                            "delivered"
+                        ) {
+
+                            actionsHTML = `
+
+                                <p style="
+                                    font-weight:bold;
+                                    color:#1a73e8;
+                                    margin-top:5px;
+                                    font-size:13px;
+                                ">
+
+                                    حالة الطلب:
+                                    تم تسليم الهدية بنجاح للمخدوم ✅
+
+                                </p>
+                            `;
+                        }
+
+
+                        /* =========================
+                           مرفوض
+                        ========================= */
+
+                        else if (
+                            item.status ===
+                            "rejected"
+                        ) {
+
+                            actionsHTML = `
+
+                                <p style="
+                                    font-weight:bold;
+                                    color:#b3261e;
+                                    margin-top:5px;
+                                    font-size:13px;
+                                ">
+
+                                    حالة الطلب:
+                                    تم الرفض وإرجاع الهدية والنقاط ❌
+
+                                </p>
+                            `;
+                        }
+                    }
+
+
+                    /*
+                     * بناء الكارت
+                     */
+
+                    const safeTitle =
+                        escapeHtml(
+                            item.title ||
+                            "تنبيه كنسي"
+                        );
+
+
+                    const safeMessage =
+                        escapeHtml(
+                            item.message ||
+                            ""
+                        );
+
+
+                    const safeUsername =
+                        escapeHtml(
+                            item.username ||
+                            ""
+                        );
+
+
+                    const safeGiftName =
+                        escapeHtml(
+                            item.giftName ||
+                            "هدية"
+                        );
+
+
+                    const imageHTML =
+                        item.imageUrl
+
+                            ? `
+                                <img
+                                    src="${escapeHtmlAttribute(item.imageUrl)}"
+                                    alt="notification">
+                              `
+
+                            : `
+                                <i
+                                    class="fas fa-gift"
+                                    style="color:#f59e0b;">
+                                </i>
+                              `;
+
+
+                    card.innerHTML = `
+
+                        <div class="card-top">
+
+                            <div class="icon-container">
+
+                                ${imageHTML}
+
+                            </div>
+
+
+                            <div class="details">
+
+                                <h3>
+                                    ${safeTitle}
+                                </h3>
+
+
+                                <p>
+                                    ${safeMessage}
+                                </p>
+
+
+                                ${
+                                    isGift &&
+                                    item.username
+
+                                        ? `
+                                            <p
+                                                style="
+                                                    color:#888;
+                                                    font-size:11px;
+                                                    margin-top:2px;
+                                                ">
+
+                                                المخدوم:
+                                                ${safeUsername}
+
+                                                |
+
+                                                الهدية:
+                                                ${safeGiftName}
+
+                                                (
+                                                ${Number(item.pointsSpent || 0)}
+                                                نقطة
+                                                )
+
+                                            </p>
+                                          `
+
+                                        : ""
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        ${actionsHTML}
+
+                    `;
+
+
+                    container.appendChild(card);
+
+
+                    /*
+                     * إشعار جديد
+                     */
+
+                    if (
+                        !firstLoad &&
+                        isFirst &&
+                        !item.isRead
+                    ) {
+
+                        sound
+                            .play()
+                            .catch(() => {});
+
+
+                        if (
+                            "Notification" in window &&
+                            Notification.permission ===
+                            "granted"
+                        ) {
+
+                            new Notification(
+                                item.title ||
+                                "تنبيه جديد",
+                                {
+                                    body:
+                                        item.message ||
+                                        ""
+                                }
+                            );
+                        }
+                    }
+
+
+                    isFirst = false;
+                }
+
+
+                if (!renderedAny) {
+
+                    container.innerHTML =
+                        `<div class="no-data">
+                            لا توجد إشعارات أو طلبات خاصة بصفك حالياً
+                        </div>`;
+                }
+
+
+                firstLoad = false;
+            },
+
+            (error) => {
+
+                console.error(error);
+
+                container.innerHTML =
+                    `<div class="no-data">
+                        حدث خطأ أثناء تحميل الطلبات
+                    </div>`;
+            }
+        );
+
+
+        /* =====================================================
+           حماية النصوص داخل HTML
+           ===================================================== */
+
+        function escapeHtml(text) {
+
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        function escapeHtmlAttribute(text) {
+
+            return String(text)
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'")
+                .replace(/"/g, "&quot;")
+                .replace(/\n/g, " ");
+        }
+ 
+    </script>
+     <form action="../u/home.html" method="post">
+     </form>
 </body>
+
 </html>
