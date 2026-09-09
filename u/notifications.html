@@ -92,6 +92,29 @@
             color: #b3261e;
         }
 
+        /* شريط يوضح صف المخدوم الحالي (مسحوب من users/{username}.grade) */
+        .grade-banner {
+            width: 100%;
+            max-width: 600px;
+            background: #fff8e6;
+            border: 1px solid #f0d789;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: #7c1b28;
+            font-weight: bold;
+        }
+
+        .grade-banner.grade-missing {
+            background: #fdeceb;
+            border-color: #f3b3ae;
+            color: #b3261e;
+        }
+
         .list {
             width: 100%;
             max-width: 600px;
@@ -285,6 +308,12 @@
         </a>
     </div>
 
+    <!-- شريط يوضح صف المخدوم الحالي (مسحوب من users/{username}.grade) -->
+    <div id="gradeBanner" class="grade-banner">
+        <i class="fas fa-graduation-cap"></i>
+        <span id="gradeBannerText">جاري تحديد صفك...</span>
+    </div>
+
     <div id="notificationStatus" class="notification-status">
         <i class="fas fa-spinner fa-spin"></i>
         جاري فحص الإشعارات...
@@ -296,7 +325,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
@@ -319,7 +348,13 @@
         const container = document.getElementById("notificationsContainer");
         const sound = document.getElementById("notifSound");
 
+        const gradeBanner = document.getElementById("gradeBanner");
+        const gradeBannerText = document.getElementById("gradeBannerText");
+
         const loggedInUsername = localStorage.getItem('currentUser') || localStorage.getItem('username') || "tony1";
+
+        // صف المخدوم الحالي، هيتم تحديده من Firestore (users/{username}.grade)
+        let myGrade = null;
 
         function updateNotificationStatus() {
             if (!("Notification" in window)) {
@@ -357,77 +392,170 @@
             }
         });
 
-        // استعلام الإشعارات الخاصة بالمخدوم أو الإعلانات العامة
-        const q = query(
-            collection(db, "notifications"),
-            orderBy("timestamp", "desc")
-        );
+        /*
+         * جلب صف المخدوم الحالي من Firestore.
+         * زي صفحة البروفايل، بيانات المخدوم محفوظة في:
+         * users/{username} وفيها حقل "grade" (الصف الدراسي).
+         */
+        async function loadMyGrade() {
 
-        onSnapshot(q, (snapshot) => {
-            container.innerHTML = "";
-            let count = 0;
+            let userData = null;
 
-            snapshot.forEach((docSnap) => {
-                const item = docSnap.data();
-                const docId = docSnap.id;
+            try {
 
-                // عرض الإشعارات التي تخص هذا المستخدم فقط أو الإعلانات العامة للجميع
-                const isForUser = (item.username && item.username.trim().toLowerCase() === loggedInUsername.trim().toLowerCase());
-                const isAnnouncement = item.type === "announcement" || !item.username;
+                // أولاً: نجرب نجيب الدوكيومنت مباشرة باستخدام اسم المستخدم كـ ID
+                const directRef = doc(db, "users", loggedInUsername);
+                const directSnap = await getDoc(directRef);
 
-                if (!isForUser && !isAnnouncement) {
-                    return;
+                if (directSnap.exists()) {
+
+                    userData = directSnap.data();
+
+                } else {
+
+                    // لو مفيش دوكيومنت بنفس الاسم كـ ID، نبحث في الكولكشن كلها
+                    const usersSnap = await getDocs(collection(db, "users"));
+                    const usernameClean = loggedInUsername.trim().toLowerCase();
+
+                    for (const userDoc of usersSnap.docs) {
+
+                        const data = userDoc.data();
+                        const docIdClean = String(userDoc.id).trim().toLowerCase();
+                        const dataUsernameClean = data.username
+                            ? String(data.username).trim().toLowerCase()
+                            : "";
+
+                        if (docIdClean === usernameClean || dataUsernameClean === usernameClean) {
+                            userData = data;
+                            break;
+                        }
+                    }
                 }
 
-                count++;
-                const card = document.createElement("div");
-                card.className = `card ${item.isRead ? "" : "unread"}و`;
+            } catch (e) {
 
-                let iconHTML = `<i class="fas fa-bell"></i>`;
-                let defaultImg = "https://cdn-icons-png.flaticon.com/512/3233/3233483.png";
+                console.error("خطأ في جلب صف المخدوم:", e);
+            }
 
-                if (item.imageUrl) {
-                    defaultImg = item.imageUrl;
-                } else if (item.giftName) {
-                    defaultImg = "https://cdn-icons-png.flaticon.com/512/4213/4213958.png";
-                }
+            if (userData && userData.grade) {
 
-                let statusBadge = "";
-                if (item.status === "accepted") {
-                    statusBadge = `<div class="badge-status badge-accepted">حالة الطلب: تم قبول الطلب (في انتظار التسليم ⏳)</div>`;
-                } else if (item.status === "delivered") {
-                    statusBadge = `<div class="badge-status badge-delivered">حالة الطلب: تم تسليم الهدية بنجاح ✅</div>`;
-                } else if (item.status === "rejected") {
-                    statusBadge = `<div class="badge-status badge-rejected">حالة الطلب: تم رفض الطلب وإرجاع النقاط ❌</div>`;
-                } else if (isForUser && item.giftName) {
-                    statusBadge = `<div class="badge-status badge-pending">حالة الطلب: قيد المراجعة 🕒</div>`;
-                }
+                myGrade = String(userData.grade).trim();
+            }
 
-                card.innerHTML = `
-                    <div class="card-top">
-                        <div class="icon-container">
-                            <img src="${defaultImg}" alt="icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3233/3233483.png'">
+            gradeBanner.style.display = "flex";
+
+            if (myGrade) {
+
+                gradeBannerText.innerText =
+                    `صفك الحالي: ${myGrade} — بتشوف إعلانات صفك فقط`;
+
+            } else {
+
+                gradeBanner.classList.add("grade-missing");
+
+                gradeBannerText.innerText =
+                    "لم يتم العثور على صفك الدراسي في بياناتك، تأكد من تحديث بياناتك من صفحة البروفايل";
+            }
+        }
+
+        /*
+         * نبدأ الاستماع للإشعارات بعد ما نعرف صف المخدوم،
+         * عشان الفلترة تبقى صحيحة من أول لحظة تحميل
+         */
+        (async () => {
+
+            await loadMyGrade();
+
+            const q = query(
+                collection(db, "notifications"),
+                orderBy("timestamp", "desc")
+            );
+
+            onSnapshot(q, (snapshot) => {
+                container.innerHTML = "";
+                let count = 0;
+
+                snapshot.forEach((docSnap) => {
+                    const item = docSnap.data();
+                    const docId = docSnap.id;
+
+                    // إشعار شخصي (طلب هدية / رد على طلب) خاص بيّ
+                    const isForUser = (item.username && item.username.trim().toLowerCase() === loggedInUsername.trim().toLowerCase());
+
+                    // إعلان عام (زي الإعلانات اللي بتنشرها لوحة الإدارة)
+                    const isGeneralAnnouncement = item.type === "announcement" || (!item.username && !item.type);
+
+                    let showAnnouncement = false;
+
+                    if (isGeneralAnnouncement) {
+
+                        if (myGrade) {
+
+                            // نعرض الإعلان فقط لو موجّه لصفي بالتحديد
+                            showAnnouncement = (item.targetGrade === myGrade);
+
+                        } else {
+
+                            // لو صفي غير معروف، نعرض بس الإعلانات العامة اللي مش موجّهة لصف معين
+                            showAnnouncement = !item.targetGrade;
+                        }
+                    }
+
+                    if (!isForUser && !showAnnouncement) {
+                        return;
+                    }
+
+                    count++;
+                    const card = document.createElement("div");
+                    card.className = `card ${item.isRead ? "" : "unread"}`;
+
+                    let iconHTML = `<i class="fas fa-bell"></i>`;
+                    let defaultImg = "https://cdn-icons-png.flaticon.com/512/3233/3233483.png";
+
+                    if (item.imageUrl) {
+                        defaultImg = item.imageUrl;
+                    } else if (item.giftName) {
+                        defaultImg = "https://cdn-icons-png.flaticon.com/512/4213/4213958.png";
+                    }
+
+                    let statusBadge = "";
+                    if (item.status === "accepted") {
+                        statusBadge = `<div class="badge-status badge-accepted">حالة الطلب: تم قبول الطلب (في انتظار التسليم ⏳)</div>`;
+                    } else if (item.status === "delivered") {
+                        statusBadge = `<div class="badge-status badge-delivered">حالة الطلب: تم تسليم الهدية بنجاح ✅</div>`;
+                    } else if (item.status === "rejected") {
+                        statusBadge = `<div class="badge-status badge-rejected">حالة الطلب: تم رفض الطلب وإرجاع النقاط ❌</div>`;
+                    } else if (isForUser && item.giftName) {
+                        statusBadge = `<div class="badge-status badge-pending">حالة الطلب: قيد المراجعة 🕒</div>`;
+                    }
+
+                    card.innerHTML = `
+                        <div class="card-top">
+                            <div class="icon-container">
+                                <img src="${defaultImg}" alt="icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3233/3233483.png'">
+                            </div>
+                            <div class="details">
+                                <h3>${item.title || "إشعار جديد"}</h3>
+                                <p>${item.message || ""}</p>
+                                ${statusBadge}
+                            </div>
                         </div>
-                        <div class="details">
-                            <h3>${item.title || "إشعار جديد"}</h3>
-                            <p>${item.message || ""}</p>
-                            ${statusBadge}
-                        </div>
-                    </div>
-                `;
+                    `;
 
-                // تحديد الإشعار كمقروء عند تحميله
-                if (!item.isRead) {
-                    updateDoc(doc(db, "notifications", docId), { isRead: true }).catch(() => {});
+                    // تحديد الإشعار كمقروء عند تحميله
+                    if (!item.isRead) {
+                        updateDoc(doc(db, "notifications", docId), { isRead: true }).catch(() => {});
+                    }
+
+                    container.appendChild(card);
+                });
+
+                if (count === 0) {
+                    container.innerHTML = `<div class="no-data">لا توجد إشعارات أو طلبات خاصة بصفك حالياً</div>`;
                 }
-
-                container.appendChild(card);
             });
 
-            if (count === 0) {
-                container.innerHTML = `<div class="no-data">لا توجد إشعارات أو طلبات حالياً</div>`;
-            }
-        });
+        })();
     </script>
 </body>
 </html>
