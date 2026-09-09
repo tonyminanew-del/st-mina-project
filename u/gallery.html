@@ -366,7 +366,7 @@
 
         .image-modal img {
             max-width: 90%;
-            max-height: 80vh;
+            max-height: 65vh;
             border-radius: 12px;
             box-shadow: 0 5px 25px rgba(0,0,0,0.5);
             background: white;
@@ -387,6 +387,15 @@
             color: white;
             margin-top: 15px;
             font-size: 18px;
+        }
+
+        .image-modal .modal-details {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            color: #e6a3ac;
+            font-size: 14px;
+            font-weight: 700;
         }
 
         @media (max-width: 768px) {
@@ -445,6 +454,7 @@
         <button class="close-modal" onclick="closeModal()">&times;</button>
         <img id="modalImg" src="" alt="صورة مكبرة">
         <h3 id="modalTitle"></h3>
+        <div class="modal-details" id="modalDetails"></div>
     </div>
 
     <script type="module">
@@ -465,13 +475,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.openModal = function(imgSrc, imgTitle) {
+        // فتح نافذة تكبير الصورة، مع عرض الكمية والنقاط لو متوفرين
+        window.openModal = function(imgSrc, imgTitle, qty, points) {
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImg');
             const modalTitle = document.getElementById('modalTitle');
+            const modalDetails = document.getElementById('modalDetails');
+
             if (modal && modalImg) {
                 modalImg.src = imgSrc;
                 modalTitle.innerText = imgTitle;
+
+                if (modalDetails) {
+                    if (qty !== undefined && points !== undefined) {
+                        modalDetails.innerHTML = `
+                            <span><i class="fas fa-boxes"></i> المتبقي: ${qty}</span>
+                            <span><i class="fas fa-star"></i> النقاط: ${points}</span>
+                        `;
+                    } else {
+                        modalDetails.innerHTML = '';
+                    }
+                }
+
                 modal.style.display = 'flex';
             }
         };
@@ -622,17 +647,22 @@
                         const card = document.createElement('div');
                         card.className = 'amazon-card';
                         
-                        const imgSrc = (gift.image && gift.image.startsWith('http')) 
-                            ? gift.image 
+                        /*
+                         * ملاحظة: صورة الهدية اللي بيرفعها الخادم بتُحفظ كـ Base64
+                         * (data:image/...;base64,...) وليست رابط http، فكان لازم
+                         * نستخدمها زي ما هي بدل ما نشترط إنها تبدأ بـ http
+                         */
+                        const imgSrc = gift.image
+                            ? gift.image
                             : 'https://cdn-icons-png.flaticon.com/512/4213/4213958.png';
 
                         let buttonDisabledClass = isUserBanned ? 'disabled' : '';
                         let buttonText = isUserBanned ? '🚫 الحساب محظور' : 'الشراء';
 
                         card.innerHTML = `
-                            <div class="amz-img-col" onclick="openModal('${imgSrc}', '${gift.name}')">
+                            <div class="amz-img-col" onclick="openModal('${imgSrc}', '${gift.name}', ${giftQuantity}, ${Number(gift.points) || 0})">
                                 <img src="${imgSrc}" alt="${gift.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4213/4213958.png'">
-                                <span class="zoom-badge"><i class="fas fa-search-plus"></i> انقر للتكبير</span>
+                                <span class="zoom-badge"><i class="fas fa-search-plus"></i> انقر لعرض التفاصيل</span>
                             </div>
 
                             <div class="amz-info-col">
