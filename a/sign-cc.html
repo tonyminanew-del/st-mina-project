@@ -17,7 +17,6 @@
         }
 
         body {
-            /* خلفية مستوحاة من شاشة التطبيق العنابية الداكنة والفخمة */
             background: linear-gradient(135deg, #791319 0%, #4a0a0f 100%);
             display: flex;
             justify-content: center;
@@ -45,7 +44,6 @@
             margin-bottom: 25px;
         }
 
-        /* تصميم أيقونة الصليب العادي بشكل فخم داخل دائرة عنابية */
         .cross-icon-box {
             width: 75px;
             height: 75px;
@@ -155,7 +153,6 @@
             border: 1px solid #f5c6cb;
         }
 
-        /* شاشة التحميل المطابقة لتصميم التطبيق */
         .loading-overlay {
             position: absolute;
             top: 0;
@@ -185,7 +182,6 @@
             margin-bottom: 20px;
         }
 
-        /* النقاط المتحركة للتحميل */
         .dots-loader {
             display: flex;
             gap: 8px;
@@ -217,7 +213,6 @@
         }
     </style>
 
-    <!-- سكربت Firebase Firestore وحفظ الـ LocalStorage -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -234,14 +229,32 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        const stageGrades = {
+            'ابتدائي': ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'],
+            'إعدادي': ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'],
+            'ثانوي': ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي']
+        };
+
+        function fillGradeOptions(stage) {
+            const gradeSelect = document.getElementById('servant-grade');
+            const grades = stageGrades[stage] || [];
+            gradeSelect.innerHTML = grades.map(g => `<option value="${g}">${g}</option>`).join('');
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const step1Btn = document.getElementById('step1-btn');
             const step2Btn = document.getElementById('step2-btn');
             const errorMsg = document.getElementById('error-msg');
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
+            const stageSelect = document.getElementById('servant-stage');
 
-            // الخطوة الأولى: التحقق من اسم المستخدم والباسورد
+            fillGradeOptions(stageSelect.value);
+
+            stageSelect.addEventListener('change', () => {
+                fillGradeOptions(stageSelect.value);
+            });
+
             step1Btn.addEventListener('click', async () => {
                 const username = document.getElementById('admin-username').value.trim();
                 const password = document.getElementById('admin-password').value.trim();
@@ -285,7 +298,6 @@
                 }
             });
 
-            // الخطوة الثانية: حفظ البيانات في فيربيز + تخزينها محلياً في localStorage والانتقال للـ home
             step2Btn.addEventListener('click', async () => {
                 const username = document.getElementById('admin-username').value.trim();
                 const password = document.getElementById('admin-password').value.trim();
@@ -293,6 +305,7 @@
                 const servantNum = document.getElementById('servant-number').value.trim();
                 const servantTitle = document.getElementById('servant-title').value; 
                 const servantStage = document.getElementById('servant-stage').value; 
+                const servantGrade = document.getElementById('servant-grade').value;
 
                 if (!fullName || !servantNum) {
                     alert("يرجى ملء جميع الحقول المطلوبة!");
@@ -311,18 +324,18 @@
                         servantNumber: servantNum,
                         servantTitle: servantTitle,
                         servantStage: servantStage,
+                        servantGrade: servantGrade,
                         createdAt: new Date().toISOString()
                     });
 
-                    // تخزين البيانات في الـ LocalStorage ليتم جلبها في الصفحة الرئيسية (home.html)
                     localStorage.setItem('username', username);
                     localStorage.setItem('fullName', fullName);
                     localStorage.setItem('servantTitle', servantTitle);
                     localStorage.setItem('servantStage', servantStage);
+                    localStorage.setItem('servantGrade', servantGrade);
                     localStorage.setItem('servantNumber', servantNum);
 
                     setTimeout(() => {
-                    
                         window.location.href = 'home.html';
                     }, 1000);
 
@@ -339,7 +352,6 @@
 <body>
 
     <div class="card">
-        <!-- شاشة التحميل التفاعلية بتصميم التطبيق -->
         <div id="loading-overlay" class="loading-overlay">
             <i class="fas fa-cross"></i>
             <p id="loading-text">جاري التحميل...</p>
@@ -400,6 +412,12 @@
                     <option value="ابتدائي">ابتدائي</option>
                     <option value="إعدادي">إعدادي</option>
                     <option value="ثانوي">ثانوي</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="servant-grade">الصف الدراسي الذي يخدمه:</label>
+                <select id="servant-grade">
                 </select>
             </div>
 
