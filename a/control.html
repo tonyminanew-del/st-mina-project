@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المخدومين - لوحة الخادم</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>مخدومين صفّي - لوحة الخادم</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- ربط مكتبات فايربيس -->
@@ -40,9 +40,12 @@
                 sidebar.classList.add('active');
                 overlay.classList.add('active');
             }
-
             function closeSidebar() {
                 sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+            function closeServantModal() {
+                servantModal.classList.remove('active');
                 overlay.classList.remove('active');
             }
 
@@ -50,11 +53,6 @@
             if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
             if (overlay) overlay.addEventListener('click', () => { closeSidebar(); closeServantModal(); });
             if (closeModalBtn) closeModalBtn.addEventListener('click', closeServantModal);
-
-            function closeServantModal() {
-                servantModal.classList.remove('active');
-                overlay.classList.remove('active');
-            }
 
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
@@ -65,81 +63,93 @@
                 });
             }
 
-            // جلب وتنسيق المرحلة
-            let rawStage = localStorage.getItem('servantStage') || localStorage.getItem('stage') || localStorage.getItem('servantGrade') || localStorage.getItem('userStage') || 'إعدادي';
-            
-            function formatStageName(stage) {
-                if (stage.includes("ابتدائي") || stage.includes("ابتدايي")) return "المرحلة الابتدائية";
-                if (stage.includes("إعدادي") || stage.includes("اعدادي")) return "المرحلة الإعدادية";
-                if (stage.includes("ثانوي")) return "المرحلة الثانوية";
-                return stage;
-            }
+            // صف الخادم نفسه (نفس المفتاح المحفوظ وقت التسجيل)
+            const myGrade = (localStorage.getItem('servantGrade') || '').trim();
+            const gradeBadge = document.getElementById('currentServantGradeBadge');
+            const rosterTitle = document.getElementById('rosterTitle');
 
-            const formattedStage = formatStageName(rawStage.trim());
-            document.getElementById('currentServantGradeBadge').innerText = formattedStage;
+            if (myGrade) {
+                gradeBadge.innerText = myGrade;
+                rosterTitle.innerText = `مخدومين ${myGrade}`;
+            } else {
+                gradeBadge.innerText = 'غير محدد';
+                rosterTitle.innerText = 'مخدومين صفّي';
+            }
 
             const servantsListContainer = document.getElementById('servantsListContainer');
             const searchInput = document.getElementById('searchInput');
+            const countPill = document.getElementById('countPill');
 
-            let allServants = [];
+            let myServants = [];
 
             async function fetchServants() {
-                servantsListContainer.innerHTML = `<div class="loading-box"><i class="fas fa-spinner fa-spin"></i> جاري تحميل قائمة المخدومين...</div>`;
-                try {
-                    const querySnapshot = await getDocs(collection(db, "users"));
-                    allServants = [];
+                servantsListContainer.innerHTML = `<div class="state-box"><i class="fas fa-spinner fa-spin"></i><p>جاري تحميل قائمة المخدومين...</p></div>`;
 
-                    querySnapshot.forEach((docSnap) => {
-                        allServants.push({
-                            id: docSnap.id,
-                            ...docSnap.data()
-                        });
-                    });
-
-                    renderNamesList(allServants);
-                } catch (error) {
-                    console.error("خطأ في جلب البيانات:", error);
-                    servantsListContainer.innerHTML = `<div class="loading-box" style="color: #ff4757;">تعذر تحميل البيانات، تأكد من الاتصال.</div>`;
-                }
-            }
-
-            // عرض قائمة الأسماء فقط
-            function renderNamesList(dataList) {
-                servantsListContainer.innerHTML = '';
-                if (dataList.length === 0) {
-                    servantsListContainer.innerHTML = `<div class="loading-box">لا يوجد مخدومين مسجلين حالياً.</div>`;
+                if (!myGrade) {
+                    servantsListContainer.innerHTML = `<div class="state-box"><i class="fas fa-triangle-exclamation"></i><p>لم يتم تحديد صفّك بعد. يرجى إكمال بيانات ملفك الشخصي.</p></div>`;
+                    countPill.innerText = '0';
                     return;
                 }
 
-                dataList.forEach((person) => {
+                try {
+                    const querySnapshot = await getDocs(collection(db, "users"));
+                    const all = [];
+                    querySnapshot.forEach((docSnap) => {
+                        all.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+
+                    // نعرض فقط مخدومي نفس الصف الخاص بالخادم
+                    myServants = all.filter((person) => {
+                        const grade = (person.grade || person.stage || '').trim();
+                        return grade === myGrade;
+                    });
+
+                    renderRoster(myServants);
+                } catch (error) {
+                    console.error("خطأ في جلب البيانات:", error);
+                    servantsListContainer.innerHTML = `<div class="state-box"><i class="fas fa-plug-circle-xmark"></i><p>تعذر تحميل البيانات، تأكد من الاتصال.</p></div>`;
+                }
+            }
+
+            function initials(name) {
+                const parts = name.trim().split(/\s+/).filter(Boolean);
+                if (parts.length === 0) return '؟';
+                return parts[0].charAt(0);
+            }
+
+            function renderRoster(dataList) {
+                servantsListContainer.innerHTML = '';
+                countPill.innerText = dataList.length;
+
+                if (dataList.length === 0) {
+                    servantsListContainer.innerHTML = `<div class="state-box"><i class="fas fa-users-slash"></i><p>لا يوجد مخدومون مسجلون في صفّك حالياً.</p></div>`;
+                    return;
+                }
+
+                dataList.forEach((person, index) => {
                     const name = person.name || person.fullName || person.username || 'بدون اسم';
-                    const grade = person.grade || person.stage || 'غير محدد';
                     const points = person.points || 0;
                     const isBanned = person.banned || false;
 
-                    const card = document.createElement('div');
-                    card.className = `servant-name-card ${isBanned ? 'banned-card' : ''}`;
-                    card.innerHTML = `
-                        <div class="card-info">
-                            <i class="fas fa-user-circle"></i>
-                            <div>
-                                <h3>${name}</h3>
-                                <span>${grade} | ${points} نقطة ${isBanned ? ' | (محظور)' : ''}</span>
+                    const row = document.createElement('div');
+                    row.className = `roster-row ${isBanned ? 'is-banned' : ''}`;
+                    row.innerHTML = `
+                        <span class="roll-no">${index + 1}</span>
+                        <span class="roster-avatar">${initials(name)}</span>
+                        <div class="roster-main">
+                            <h3>${name}</h3>
+                            <div class="roster-meta">
+                                <span class="meta-points"><i class="fas fa-star"></i> ${points} نقطة</span>
+                                ${isBanned ? '<span class="meta-banned"><i class="fas fa-ban"></i> محظور</span>' : ''}
                             </div>
                         </div>
-                        <button class="btn-open-control">إدارة وتحكم <i class="fas fa-arrow-left"></i></button>
+                        <i class="fas fa-chevron-left roster-arrow"></i>
                     `;
-
-                    // عند النقر على كارت المخدوم، تفتح نافذة التحكم والبيانات الخاصة به
-                    card.addEventListener('click', () => {
-                        openServantDetails(person);
-                    });
-
-                    servantsListContainer.appendChild(card);
+                    row.addEventListener('click', () => openServantDetails(person));
+                    servantsListContainer.appendChild(row);
                 });
             }
 
-            // فتح نافذة الجدول والبيانات للمخدوم المحدد
             function openServantDetails(person) {
                 const modalContent = document.getElementById('modalServantContent');
                 const name = person.name || person.fullName || person.username || 'بدون اسم';
@@ -149,51 +159,40 @@
 
                 modalContent.innerHTML = `
                     <div class="servant-profile-header">
-                        <h2><i class="fas fa-user-shield"></i> ${name}</h2>
-                        <span class="grade-pill">${grade}</span>
+                        <div>
+                            <h2>${name}</h2>
+                            <span class="grade-pill">${grade}</span>
+                        </div>
                     </div>
 
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                               <tr>
-                                    <th>النقاط الحالية</th>
-                                    <th>تعديل النقاط</th>
-                                    <th>حالة الحظر</th>
-                               </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span id="points-${person.id}" class="points-badge">${points} نقطة</span></td>
-                                    <td>
-                                        <div class="points-controls">
-                                            <button class="btn-action minus" onclick="updatePoints('${person.id}', -5)">-5</button>
-                                            <button class="btn-action minus" onclick="updatePoints('${person.id}', -1)">-1</button>
-                                            <input type="number" id="custom-points-${person.id}" class="custom-input" placeholder="رقم">
-                                            <button class="btn-action plus" onclick="updatePoints('${person.id}', 1)">+1</button>
-                                            <button class="btn-action plus" onclick="updatePoints('${person.id}', 5)">+5</button>
-                                            <button class="btn-action save" onclick="saveCustomPoints('${person.id}')"><i class="fas fa-check"></i></button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button class="btn-ban ${isBanned ? 'unban' : 'ban'}" onclick="toggleBan('${person.id}', ${isBanned})">
-                                            ${isBanned ? '<i class="fas fa-unlock"></i> إلغاء الحظر' : '<i class="fas fa-lock"></i> حظر'}
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="points-panel">
+                        <div class="points-current">
+                            <span class="label">النقاط الحالية</span>
+                            <span id="points-${person.id}" class="points-value">${points}</span>
+                        </div>
+                        <div class="points-controls">
+                            <button class="btn-action minus" onclick="updatePoints('${person.id}', -5)">-5</button>
+                            <button class="btn-action minus" onclick="updatePoints('${person.id}', -1)">-1</button>
+                            <input type="number" id="custom-points-${person.id}" class="custom-input" placeholder="رقم">
+                            <button class="btn-action save" onclick="saveCustomPoints('${person.id}')"><i class="fas fa-check"></i></button>
+                            <button class="btn-action plus" onclick="updatePoints('${person.id}', 1)">+1</button>
+                            <button class="btn-action plus" onclick="updatePoints('${person.id}', 5)">+5</button>
+                        </div>
                     </div>
+
+                    <button class="btn-ban ${isBanned ? 'unban' : 'ban'}" onclick="toggleBan('${person.id}', ${isBanned})">
+                        ${isBanned ? '<i class="fas fa-unlock"></i> إلغاء الحظر' : '<i class="fas fa-lock"></i> حظر المخدوم'}
+                    </button>
 
                     <div class="personal-details-box">
-                        <h3><i class="fas fa-id-card"></i> البيانات الشخصية الكاملة</h3>
+                        <h3><i class="fas fa-id-card"></i> البيانات الشخصية</h3>
                         <div class="details-grid">
-                            <div class="detail-item"><strong>رقم الهاتف:</strong> <span>${person.userId || person.phone || 'غير متوفر'}</span></div>
-                            <div class="detail-item"><strong>هاتف الأب:</strong> <span>${person.fatherPhone || 'غير متوفر'}</span></div>
-                            <div class="detail-item"><strong>هاتف الأم:</strong> <span>${person.motherPhone || 'غير متوفر'}</span></div>
-                            <div class="detail-item"><strong>العنوان:</strong> <span>${person.address || 'غير متوفر'}</span></div>
-                            <div class="detail-item"><strong>تاريخ الميلاد:</strong> <span>${person.birthdate || 'غير متوفر'}</span></div>
-                            <div class="detail-item"><strong>تاريخ التسجيل:</strong> <span>${person.createdAt || 'غير متوفر'}</span></div>
+                            <div class="detail-item"><strong>رقم الهاتف</strong><span>${person.userId || person.phone || 'غير متوفر'}</span></div>
+                            <div class="detail-item"><strong>هاتف الأب</strong><span>${person.fatherPhone || 'غير متوفر'}</span></div>
+                            <div class="detail-item"><strong>هاتف الأم</strong><span>${person.motherPhone || 'غير متوفر'}</span></div>
+                            <div class="detail-item"><strong>العنوان</strong><span>${person.address || 'غير متوفر'}</span></div>
+                            <div class="detail-item"><strong>تاريخ الميلاد</strong><span>${person.birthdate || 'غير متوفر'}</span></div>
+                            <div class="detail-item"><strong>تاريخ التسجيل</strong><span>${person.createdAt || 'غير متوفر'}</span></div>
                         </div>
                     </div>
                 `;
@@ -204,15 +203,15 @@
 
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
-                const filtered = allServants.filter(p => {
+                const filtered = myServants.filter(p => {
                     const name = (p.name || p.fullName || p.username || '').toLowerCase();
                     return name.includes(term);
                 });
-                renderNamesList(filtered);
+                renderRoster(filtered);
             });
 
             window.updatePoints = async function(docId, amount) {
-                const person = allServants.find(p => p.id === docId);
+                const person = myServants.find(p => p.id === docId);
                 if (!person) return;
 
                 let currentPoints = Number(person.points || 0);
@@ -222,10 +221,9 @@
                 try {
                     const docRef = doc(db, "users", docId);
                     await updateDoc(docRef, { points: newPoints });
-
                     person.points = newPoints;
                     const badge = document.getElementById(`points-${docId}`);
-                    if(badge) badge.innerText = `${newPoints} نقطة`;
+                    if (badge) badge.innerText = newPoints;
                 } catch (error) {
                     console.error("خطأ في تحديث النقاط:", error);
                     alert("تعذر تحديث النقاط.");
@@ -241,18 +239,16 @@
                     return;
                 }
 
-                const person = allServants.find(p => p.id === docId);
+                const person = myServants.find(p => p.id === docId);
                 if (!person) return;
 
                 try {
                     const docRef = doc(db, "users", docId);
                     await updateDoc(docRef, { points: val });
-
                     person.points = val;
                     const badge = document.getElementById(`points-${docId}`);
-                    if(badge) badge.innerText = `${val} نقطة`;
+                    if (badge) badge.innerText = val;
                     inputEl.value = '';
-                    alert("تم حفظ النقاط بنجاح!");
                 } catch (error) {
                     console.error("خطأ في حفظ النقاط:", error);
                     alert("تعذر الحفظ.");
@@ -265,16 +261,15 @@
 
                 if (!confirm(`هل أنت متأكد من رغبتك في ${actionText} هذا المخدوم؟`)) return;
 
-                const person = allServants.find(p => p.id === docId);
+                const person = myServants.find(p => p.id === docId);
                 if (!person) return;
 
                 try {
                     const docRef = doc(db, "users", docId);
                     await updateDoc(docRef, { banned: newStatus });
-
                     person.banned = newStatus;
-                    openServantDetails(person); // تحديث النافذة المفتوحة
-                    renderNamesList(allServants); // تحديث القائمة الخلفية
+                    openServantDetails(person);
+                    renderRoster(myServants);
                 } catch (error) {
                     console.error("خطأ في الحظر:", error);
                     alert("حدث خطأ أثناء التنفيذ.");
@@ -286,106 +281,456 @@
     </script>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: linear-gradient(135deg, #050811 0%, #000000 100%);
-            min-height: 100vh;
-            font-family: 'Reem Kufi', 'Cairo', sans-serif;
-            color: #f3e5ab;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        :root{
+            --wine-900:#4a0e16;
+            --wine-800:#6b1420;
+            --wine-700:#7c1b28;
+            --gold:#c9a04d;
+            --gold-light:#e6c878;
+            --paper:#f6f1e9;
+            --card:#ffffff;
+            --ink:#2a2320;
+            --ink-soft:#6b625c;
+            --line:#e9dfd0;
+            --green:#2f8f52;
+            --green-dark:#1f6b3c;
+            --red:#b3392f;
         }
-        .navbar { width: 100%; padding: 20px 35px; display: flex; justify-content: space-between; align-items: center; }
-        .menu-btn { background: rgba(10, 15, 30, 0.9); border: 2px solid #d4af37; color: #d4af37; font-size: 24px; padding: 10px 15px; border-radius: 12px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
-        .menu-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 15px #d4af37; }
-        .servant-badge { background: rgba(10, 15, 30, 0.9); border: 1px solid #00d2ff; padding: 10px 20px; border-radius: 12px; font-size: 16px; color: #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
-        
-        .sidebar { position: fixed; top: 0; right: -320px; width: 320px; height: 100%; background: rgba(7, 11, 20, 0.98); border-left: 2px solid #d4af37; transition: right 0.35s ease; z-index: 9999; padding: 30px 20px; display: flex; flex-direction: column; backdrop-filter: blur(10px); }
-        .sidebar.active { right: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px; margin-bottom: 25px; }
-        .sidebar-header h3 { color: #d4af37; }
-        .close-btn { background: none; border: none; color: #ff4757; font-size: 24px; cursor: pointer; }
-        .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
-        .sidebar-links a, .logout-link { display: flex; align-items: center; gap: 15px; padding: 14px 18px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 210, 255, 0.2); border-radius: 14px; color: #f3e5ab; text-decoration: none; font-size: 18px; transition: 0.3s; cursor: pointer; }
-        .sidebar-links a:hover { background: #00d2ff; color: #000; border-color: #00d2ff; transform: translateX(-5px); box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
-        .logout-link { border-color: rgba(255, 107, 107, 0.4); color: #ff8b8b; margin-top: auto; }
-        .logout-link:hover { background: #ff6b6b; color: #fff; box-shadow: 0 0 15px rgba(255, 107, 107, 0.4); }
-        
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; z-index: 998; backdrop-filter: blur(5px); }
-        .overlay.active { display: block; }
 
-        .main-content { text-align: center; margin-top: 10px; padding: 20px; max-width: 900px; width: 100%; }
-        h1 { color: #d4af37; font-size: 34px; margin-bottom: 25px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+        * { box-sizing:border-box; margin:0; padding:0; }
 
-        .search-box { margin-bottom: 25px; text-align: center; }
-        .search-input { width: 100%; max-width: 500px; background: rgba(10, 15, 30, 0.9); border: 2px solid #00d2ff; color: #fff; padding: 14px 20px; border-radius: 14px; font-size: 16px; font-family: 'Reem Kufi', 'Cairo', sans-serif; box-shadow: 0 0 15px rgba(0, 210, 255, 0.15); transition: 0.3s; }
-        .search-input:focus { outline: none; border-color: #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        body{
+            background:var(--paper);
+            min-height:100vh;
+            font-family:'Cairo', sans-serif;
+            color:var(--ink);
+            display:flex;
+            flex-direction:column;
+        }
 
-        /* قائمة أسماء المخدومين */
-        .servants-list { display: flex; flex-direction: column; gap: 15px; width: 100%; }
-        .servant-name-card { background: rgba(10, 15, 30, 0.9); border: 2px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 18px 25px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        .servant-name-card:hover { border-color: #00d2ff; transform: translateY(-3px); box-shadow: 0 0 20px rgba(0, 210, 255, 0.25); background: rgba(15, 23, 42, 0.95); }
-        .servant-name-card.banned-card { border-color: #ff4757; opacity: 0.85; }
-        
-        .card-info { display: flex; align-items: center; gap: 18px; text-align: right; }
-        .card-info i { font-size: 32px; color: #00d2ff; }
-        .card-info h3 { color: #f3e5ab; font-size: 20px; margin-bottom: 3px; }
-        .card-info span { color: #8a99ad; font-size: 14px; }
-        
-        .btn-open-control { background: rgba(0, 210, 255, 0.1); border: 1px solid #00d2ff; color: #00d2ff; padding: 8px 16px; border-radius: 10px; font-family: 'Reem Kufi', sans-serif; font-weight: bold; font-size: 14px; transition: 0.2s; pointer-events: none; }
-        .servant-name-card:hover .btn-open-control { background: #00d2ff; color: #000; box-shadow: 0 0 10px #00d2ff; }
+        /* ===== الهيدر ===== */
+        header.church-header{
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding:18px 20px 34px;
+            position:relative;
+            box-shadow:0 8px 20px rgba(74,14,22,0.25);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
 
-        .loading-box { text-align: center; color: #00d2ff; padding: 40px; font-size: 18px; }
+        header.church-header::after{
+            content:'';
+            position:absolute;
+            bottom:0; right:0; left:0;
+            height:4px;
+            background:linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
 
-        /* نافذة إدارة المخدوم المنبثقة (Modal) */
-        .servant-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 92%; max-width: 800px; max-height: 90vh; overflow-y: auto; background: rgba(7, 11, 20, 0.99); border: 2px solid #d4af37; border-radius: 22px; padding: 30px; z-index: 10000; opacity: 0; pointer-events: none; transition: 0.3s ease; box-shadow: 0 0 60px rgba(212, 175, 55, 0.25); }
-        .servant-modal.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-        
-        .modal-header-custom { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px; margin-bottom: 20px; }
-        .modal-close { background: none; border: none; color: #ff4757; font-size: 24px; cursor: pointer; }
-        
-        .servant-profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .servant-profile-header h2 { color: #00d2ff; font-size: 26px; }
-        .grade-pill { background: rgba(0, 210, 255, 0.1); border: 1px solid #00d2ff; color: #00d2ff; padding: 6px 15px; border-radius: 10px; font-size: 16px; }
+        .menu-btn{
+            background:rgba(255,255,255,0.08);
+            border:1.5px solid rgba(230,200,120,0.4);
+            color:var(--gold-light);
+            width:42px; height:42px;
+            border-radius:14px;
+            font-size:17px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            transition:.25s;
+        }
+        .menu-btn:hover{
+            background:rgba(230,200,120,0.15);
+            border-color:var(--gold);
+        }
 
-        .table-container { background: rgba(10, 15, 30, 0.95); border: 2px solid #d4af37; border-radius: 16px; overflow-x: auto; margin-bottom: 25px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.1); }
-        table { width: 100%; border-collapse: collapse; text-align: right; white-space: nowrap; }
-        th, td { padding: 14px 18px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
-        th { background: rgba(212, 175, 55, 0.15); color: #d4af37; font-size: 16px; }
-        td { color: #f3e5ab; font-size: 15px; }
+        header.church-header h2{
+            font-family:'Amiri', serif;
+            color:#fbeed4;
+            font-size:16px;
+            font-weight:700;
+        }
 
-        .points-badge { background: #020617; border: 1px solid #d4af37; padding: 6px 14px; border-radius: 10px; color: #d4af37; font-weight: bold; }
-        .points-controls { display: flex; align-items: center; gap: 6px; }
-        
-        .btn-action { background: #020617; border: 1px solid #00d2ff; color: #00d2ff; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 14px; }
-        .btn-action.plus:hover { background: #00d2ff; color: #000; box-shadow: 0 0 10px #00d2ff; }
-        .btn-action.minus:hover { background: #ff4757; color: #fff; border-color: #ff4757; box-shadow: 0 0 10px #ff4757; }
-        .btn-action.save { background: #d4af37; color: #000; border-color: #d4af37; }
-        .btn-action.save:hover { background: #fff; }
+        /* بطاقة الصف تحت الهيدر مباشرة */
+        .grade-strip{
+            margin:-20px 16px 0;
+            background:var(--card);
+            border-radius:20px;
+            box-shadow:0 12px 28px rgba(74,14,22,0.14);
+            border:1px solid var(--line);
+            padding:16px 20px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:14px;
+            position:relative;
+            max-width:588px;
+            width:calc(100% - 32px);
+            margin-left:auto;
+            margin-right:auto;
+        }
 
-        .custom-input { background: #020617; border: 1px solid rgba(212, 175, 55, 0.5); color: #f3e5ab; padding: 6px; border-radius: 8px; width: 60px; text-align: center; font-family: 'Reem Kufi', sans-serif; }
-        .custom-input:focus { outline: none; border-color: #d4af37; }
+        .grade-strip .grade-info{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
 
-        .btn-ban { padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: bold; border: none; font-family: 'Reem Kufi', sans-serif; transition: 0.2s; }
-        .btn-ban.ban { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; }
-        .btn-ban.ban:hover { background: #ff4757; color: #fff; box-shadow: 0 0 12px #ff4757; }
-        .btn-ban.unban { background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid #2ecc71; }
-        .btn-ban.unban:hover { background: #2ecc71; color: #fff; box-shadow: 0 0 12px #2ecc71; }
+        .grade-icon{
+            width:44px; height:44px;
+            border-radius:14px;
+            background:var(--wine-700);
+            color:var(--gold-light);
+            display:flex; align-items:center; justify-content:center;
+            font-size:18px;
+            flex-shrink:0;
+        }
 
-        .personal-details-box { background: rgba(10, 15, 30, 0.8); border: 1px solid rgba(0, 210, 255, 0.3); border-radius: 16px; padding: 20px; }
-        .personal-details-box h3 { color: #00d2ff; font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid rgba(0, 210, 255, 0.2); padding-bottom: 8px; }
-        .details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-        .detail-item { background: rgba(2, 6, 23, 0.8); padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.15); font-size: 15px; display: flex; justify-content: space-between; }
-        .detail-item strong { color: #d4af37; }
-        .detail-item span { color: #fff; }
+        .grade-info .grade-label{
+            font-size:12px;
+            color:var(--ink-soft);
+            font-weight:600;
+        }
+
+        .grade-info .grade-name{
+            font-family:'Amiri', serif;
+            font-size:19px;
+            color:var(--wine-800);
+            font-weight:700;
+        }
+
+        .count-pill{
+            background:var(--paper);
+            border:1px solid var(--line);
+            color:var(--wine-700);
+            padding:7px 14px;
+            border-radius:14px;
+            font-size:13px;
+            font-weight:700;
+            white-space:nowrap;
+        }
+
+        /* ===== المحتوى ===== */
+        .main-content{
+            flex:1;
+            padding:22px 16px 40px;
+            max-width:620px;
+            width:100%;
+            margin:0 auto;
+        }
+
+        .main-content h1{
+            font-family:'Amiri', serif;
+            font-size:22px;
+            color:var(--wine-800);
+            margin-bottom:16px;
+        }
+
+        .search-box{ margin-bottom:18px; }
+        .search-input{
+            width:100%;
+            background:var(--card);
+            border:1px solid var(--line);
+            color:var(--ink);
+            padding:13px 18px;
+            border-radius:14px;
+            font-size:15px;
+            font-family:'Cairo', sans-serif;
+            box-shadow:0 6px 16px rgba(74,14,22,0.06);
+            transition:.25s;
+        }
+        .search-input:focus{
+            outline:none;
+            border-color:var(--gold);
+            box-shadow:0 0 0 3px rgba(201,160,77,0.15);
+        }
+
+        /* ===== قائمة المخدومين (سجل صف) ===== */
+        .servants-list{ display:flex; flex-direction:column; gap:10px; }
+
+        .roster-row{
+            background:var(--card);
+            border:1px solid var(--line);
+            border-radius:16px;
+            padding:12px 16px;
+            display:flex;
+            align-items:center;
+            gap:14px;
+            cursor:pointer;
+            transition:.2s;
+        }
+        .roster-row:hover{
+            border-color:var(--gold);
+            transform:translateY(-2px);
+            box-shadow:0 8px 18px rgba(74,14,22,0.1);
+        }
+        .roster-row.is-banned{ border-color:rgba(179,57,47,0.4); background:#fdf5f4; }
+
+        .roll-no{
+            font-family:'Amiri', serif;
+            font-size:14px;
+            color:var(--ink-soft);
+            width:20px;
+            text-align:center;
+            flex-shrink:0;
+        }
+
+        .roster-avatar{
+            width:42px; height:42px;
+            border-radius:50%;
+            background:linear-gradient(135deg, var(--gold-light), var(--gold));
+            color:var(--wine-900);
+            font-family:'Amiri', serif;
+            font-weight:700;
+            font-size:17px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-shrink:0;
+        }
+
+        .roster-main{ flex:1; min-width:0; text-align:right; }
+        .roster-main h3{
+            font-size:15px;
+            font-weight:700;
+            color:var(--ink);
+            margin-bottom:3px;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+        .roster-meta{ display:flex; gap:10px; font-size:12px; color:var(--ink-soft); }
+        .roster-meta i{ margin-left:3px; }
+        .meta-points i{ color:var(--gold); }
+        .meta-banned{ color:var(--red); font-weight:700; }
+        .meta-banned i{ color:var(--red); }
+
+        .roster-arrow{ color:var(--line); font-size:13px; flex-shrink:0; }
+        .roster-row:hover .roster-arrow{ color:var(--gold); }
+
+        .state-box{
+            text-align:center;
+            color:var(--ink-soft);
+            padding:50px 20px;
+            font-size:14px;
+        }
+        .state-box i{
+            font-size:26px;
+            color:var(--gold);
+            margin-bottom:12px;
+            display:block;
+        }
+
+        /* ===== القائمة الجانبية ===== */
+        .sidebar{
+            position:fixed; top:0; right:-300px; width:290px; height:100%;
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            transition:right .35s ease;
+            z-index:9999;
+            padding:26px 20px;
+            display:flex;
+            flex-direction:column;
+            box-shadow:-10px 0 30px rgba(0,0,0,0.3);
+        }
+        .sidebar.active{ right:0; }
+        .sidebar-header{
+            display:flex; justify-content:space-between; align-items:center;
+            border-bottom:1px solid rgba(230,200,120,0.25);
+            padding-bottom:16px; margin-bottom:20px;
+        }
+        .sidebar-header h3{ font-family:'Amiri', serif; color:#fbeed4; font-size:18px; }
+        .close-btn{ background:none; border:none; color:var(--gold-light); font-size:20px; cursor:pointer; }
+        .sidebar-links{ list-style:none; display:flex; flex-direction:column; gap:8px; flex-grow:1; }
+        .sidebar-links a, .logout-link{
+            display:flex; align-items:center; gap:12px;
+            padding:12px 14px;
+            background:rgba(255,255,255,0.05);
+            border:1px solid rgba(230,200,120,0.15);
+            border-radius:12px;
+            color:#f3e5d3;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:600;
+            transition:.2s;
+            cursor:pointer;
+            width:100%;
+        }
+        .sidebar-links a:hover{
+            background:var(--gold);
+            color:var(--wine-900);
+            border-color:var(--gold);
+        }
+        .logout-link{ border-color:rgba(179,57,47,0.4); color:#f0aca6; margin-top:auto; }
+        .logout-link:hover{ background:var(--red); color:#fff; }
+
+        .overlay{
+            position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(20,8,10,0.6);
+            display:none; z-index:998;
+            backdrop-filter:blur(3px);
+        }
+        .overlay.active{ display:block; }
+
+        /* ===== نافذة إدارة المخدوم ===== */
+        .servant-modal{
+            position:fixed; top:50%; left:50%;
+            transform:translate(-50%, -50%) scale(0.95);
+            width:92%; max-width:520px; max-height:88vh; overflow-y:auto;
+            background:var(--card);
+            border-radius:24px;
+            padding:0;
+            z-index:10000;
+            opacity:0; pointer-events:none;
+            transition:.25s ease;
+            box-shadow:0 30px 60px rgba(0,0,0,0.35);
+        }
+        .servant-modal.active{ opacity:1; pointer-events:auto; transform:translate(-50%, -50%) scale(1); }
+
+        .modal-header-custom{
+            display:flex; justify-content:space-between; align-items:center;
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding:18px 22px;
+            position:sticky; top:0;
+        }
+        .modal-header-custom h2{ font-family:'Amiri', serif; color:#fbeed4; font-size:17px; }
+        .modal-close{ background:none; border:none; color:var(--gold-light); font-size:20px; cursor:pointer; }
+
+        #modalServantContent{ padding:22px; }
+
+        .servant-profile-header{ margin-bottom:18px; }
+        .servant-profile-header h2{
+            font-family:'Amiri', serif;
+            color:var(--wine-800);
+            font-size:21px;
+            margin-bottom:6px;
+        }
+        .grade-pill{
+            display:inline-block;
+            background:var(--paper);
+            border:1px solid var(--line);
+            color:var(--wine-700);
+            padding:5px 14px;
+            border-radius:14px;
+            font-size:12px;
+            font-weight:700;
+        }
+
+        .points-panel{
+            background:var(--paper);
+            border:1px solid var(--line);
+            border-radius:16px;
+            padding:16px;
+            margin-bottom:14px;
+        }
+        .points-current{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:14px;
+        }
+        .points-current .label{ font-size:13px; color:var(--ink-soft); font-weight:600; }
+        .points-current .points-value{
+            font-family:'Amiri', serif;
+            font-size:26px;
+            color:var(--wine-800);
+            font-weight:700;
+        }
+        .points-controls{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+
+        .btn-action{
+            background:#fff;
+            border:1px solid var(--line);
+            color:var(--wine-700);
+            padding:8px 12px;
+            border-radius:10px;
+            cursor:pointer;
+            font-weight:700;
+            font-size:13px;
+            font-family:'Cairo', sans-serif;
+            transition:.2s;
+        }
+        .btn-action.plus:hover{ background:var(--green); color:#fff; border-color:var(--green); }
+        .btn-action.minus:hover{ background:var(--red); color:#fff; border-color:var(--red); }
+        .btn-action.save{ background:var(--gold); color:var(--wine-900); border-color:var(--gold); }
+        .btn-action.save:hover{ background:var(--gold-light); }
+
+        .custom-input{
+            background:#fff;
+            border:1px solid var(--line);
+            color:var(--ink);
+            padding:8px;
+            border-radius:10px;
+            width:56px;
+            text-align:center;
+            font-family:'Cairo', sans-serif;
+        }
+        .custom-input:focus{ outline:none; border-color:var(--gold); }
+
+        .btn-ban{
+            width:100%;
+            padding:12px;
+            border-radius:14px;
+            cursor:pointer;
+            font-weight:700;
+            font-size:14px;
+            border:1px solid;
+            font-family:'Cairo', sans-serif;
+            transition:.2s;
+            margin-bottom:18px;
+        }
+        .btn-ban.ban{ background:#fdf2f1; color:var(--red); border-color:rgba(179,57,47,0.4); }
+        .btn-ban.ban:hover{ background:var(--red); color:#fff; }
+        .btn-ban.unban{ background:#f0f8f3; color:var(--green-dark); border-color:rgba(47,143,82,0.4); }
+        .btn-ban.unban:hover{ background:var(--green); color:#fff; }
+
+        .personal-details-box{
+            background:var(--paper);
+            border:1px solid var(--line);
+            border-radius:16px;
+            padding:16px;
+        }
+        .personal-details-box h3{
+            font-size:13px;
+            color:var(--wine-800);
+            margin-bottom:12px;
+            font-weight:700;
+        }
+        .details-grid{ display:flex; flex-direction:column; gap:8px; }
+        .detail-item{
+            background:#fff;
+            border:1px solid var(--line);
+            border-radius:10px;
+            padding:9px 12px;
+            display:flex;
+            justify-content:space-between;
+            font-size:13px;
+        }
+        .detail-item strong{ color:var(--wine-700); font-weight:700; }
+        .detail-item span{ color:var(--ink); }
+
+        @media (max-width:420px){
+            .grade-strip{ padding:14px 16px; }
+            .grade-info .grade-name{ font-size:16px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
+    <header class="church-header">
         <button id="menuBtn" class="menu-btn"><i class="fas fa-bars"></i></button>
-        <div class="servant-badge"><i class="fas fa-user-shield"></i> مرحلتك: <span id="currentServantGradeBadge">جاري التحميل...</span></div>
+        <h2>كنيسة الشهيد استفانوس ومارمينا</h2>
+    </header>
+
+    <div class="grade-strip">
+        <div class="grade-info">
+            <div class="grade-icon"><i class="fas fa-book-open"></i></div>
+            <div>
+                <div class="grade-label">صفّك الدراسي</div>
+                <div class="grade-name" id="currentServantGradeBadge">جاري التحميل...</div>
+            </div>
+        </div>
+        <span class="count-pill"><span id="countPill">0</span> مخدوم</span>
     </div>
 
     <div id="sidebar" class="sidebar">
@@ -397,36 +742,31 @@
             <li><a href="home.html"><i class="fas fa-home"></i>الرئيسية</a></li>
             <li><a href="profile.html"><i class="fas fa-user-circle"></i>البروفايل</a></li>
             <li><a href="gifts.html"><i class="fas fa-gift"></i>معرض الهدايا</a></li>
-            <li><a href="control.html"><i class="fas fa-cogs"></i>الإدارة</a></li>
+            <li><a href="admin_dashboard.html"><i class="fas fa-cogs"></i>الإدارة</a></li>
             <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>السلة</a></li>
-            <li><a href="notifications/notifications.html"><i class="fas fa-bell"></i>الإشعارات</a></li>
+            <li><a href="notifications.html"><i class="fas fa-bell"></i>الإشعارات</a></li>
             <li><button id="logoutBtn" class="logout-link"><i class="fas fa-sign-out-alt"></i>تسجيل خروج</button></li>
         </ul>
     </div>
 
     <div id="overlay" class="overlay"></div>
 
-    <!-- نافذة إدارة المخدوم والجدول الخاص به -->
     <div id="servantModal" class="servant-modal">
         <div class="modal-header-custom">
             <h2><i class="fas fa-sliders-h"></i> لوحة تحكم المخدوم</h2>
             <button id="closeModalBtn" class="modal-close"><i class="fas fa-times"></i></button>
         </div>
-        <div id="modalServantContent">
-            <!-- سيتم حقن جدول التحكم والبيانات هنا عند النقر -->
-        </div>
+        <div id="modalServantContent"></div>
     </div>
 
     <div class="main-content">
-        <h1>إدارة المخدومين</h1>
+        <h1 id="rosterTitle">مخدومين صفّي</h1>
 
         <div class="search-box">
             <input type="text" id="searchInput" class="search-input" placeholder="🔍 ابحث عن مخدوم بالاسم...">
         </div>
 
-        <div id="servantsListContainer" class="servants-list">
-            <!-- تظهر قائمة أسماء المخدومين هنا -->
-        </div>
+        <div id="servantsListContainer" class="servants-list"></div>
     </div>
 
 </body>
