@@ -139,9 +139,39 @@
             margin-bottom:4px;
         }
 
-        .welcome-widget .sub{
-            color:var(--ink-soft);
-            font-size:13px;
+        /* تنسيق ألوان اللقب والاسم */
+        .welcome-title {
+            color: var(--gold);
+        }
+
+        .welcome-name {
+            color: var(--wine-800);
+        }
+
+        /* بطاقة تفاصيل الخدمة (المرحلة والصف) */
+        .info-widget .widget-body {
+            padding: 14px 20px 18px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-item .label {
+            font-size: 12px;
+            color: var(--ink-soft);
+            font-weight: 600;
+        }
+
+        .info-item .value {
+            font-size: 15px;
+            color: var(--wine-800);
+            font-weight: 700;
         }
 
         /* آية اليوم */
@@ -184,7 +214,7 @@
             z-index:10;
         }
 
-        nav.bottom-nav a, nav.bottom-nav button{
+        nav.bottom-nav a{
             background:none;
             border:none;
             color:#c9b7a8;
@@ -201,57 +231,35 @@
             flex-shrink:0;
         }
 
-        nav.bottom-nav a i, nav.bottom-nav button i{ font-size:17px; }
+        nav.bottom-nav a i{ font-size:17px; }
 
         nav.bottom-nav a:hover,
         nav.bottom-nav a.active{
             color:var(--gold-light);
             transform:translateY(-2px);
         }
-
-        nav.bottom-nav .logout-link{
-            color:#e88a84;
-        }
-
-        nav.bottom-nav .logout-link:hover{
-            color:#ff6b6b;
-            transform:translateY(-2px);
-        }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const logoutBtn = document.getElementById('logoutBtn');
             const welcomeMsg = document.getElementById('welcome-msg');
+            const stageDisplay = document.getElementById('stage-display');
+            const gradeDisplay = document.getElementById('grade-display');
 
-            // محاولة جلب بيانات المستخدم من الكائن المخزن في LocalStorage (currentUser أو adminData)
-            let userData = null;
-            try {
-                const storedUser = localStorage.getItem('currentUser') || localStorage.getItem('adminData');
-                if (storedUser) {
-                    userData = JSON.parse(storedUser);
-                }
-            } catch (e) {
-                console.error("Error parsing user data:", e);
-            }
+            // جلب بيانات المشرف مباشرة من localStorage
+            const servantTitle = localStorage.getItem('servantTitle') || '';
+            const fullName = localStorage.getItem('fullName') || 'خادم الرب';
+            const servantStage = localStorage.getItem('servantStage') || 'غير محدد';
+            const servantGrade = localStorage.getItem('servantGrade') || 'غير محدد';
 
-            // استخراج اللقب والاسم الكامل من الكائن أو من المفاتيح المباشرة كخطوة احتياطية
-            const servantTitle = (userData && (userData.servantTitle || userData.title)) || localStorage.getItem('servantTitle') || '';
-            const fullName = (userData && (userData.fullName || userData.name || userData.username)) || localStorage.getItem('fullName') || 'خادم الرب';
-
+            // عرض الترحيب مع وضع كل جزء داخل عنصر خاص لتمييزه بلون مستقل
             if (welcomeMsg) {
-                welcomeMsg.innerText = `أهلاً بك يا ${servantTitle} ${fullName}`.trim();
+                welcomeMsg.innerHTML = `أهلاً بك يا <span class="welcome-title">${servantTitle}</span> <span class="welcome-name">${fullName}</span>`;
             }
 
-            // زر تسجيل الخروج
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
-                        localStorage.clear();
-                        window.location.href = '../index.html';
-                    }
-                });
-            }
+            // عرض المرحلة والصف الدراسي في البطاقة المخصصة
+            if (stageDisplay) stageDisplay.innerText = servantStage;
+            if (gradeDisplay) gradeDisplay.innerText = servantGrade;
         });
     </script>
 </head>
@@ -267,7 +275,25 @@
         <!-- بطاقة الترحيب -->
         <div class="widget welcome-widget">
             <div class="widget-body">
-                <h1 id="welcome-msg">أهلاً بك يا خادم الرب</h1>
+                <h1 id="welcome-msg">أهلاً بك يا <span class="welcome-title">خادم</span> <span class="welcome-name">الرب</span></h1>
+            </div>
+        </div>
+
+        <!-- بطاقة تفاصيل الخدمة (المرحلة والصف) -->
+        <div class="widget info-widget">
+            <div class="widget-head">
+                <div class="icon-badge"><i class="fas fa-church"></i></div>
+                <h3>بيانات الخدمة</h3>
+            </div>
+            <div class="widget-body">
+                <div class="info-item">
+                    <span class="label">المرحلة</span>
+                    <span id="stage-display" class="value">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">الصف الدراسي</span>
+                    <span id="grade-display" class="value">-</span>
+                </div>
             </div>
         </div>
 
@@ -311,10 +337,6 @@
             <i class="fas fa-bell"></i>
             <span>الإشعارات</span>
         </a>
-        <button id="logoutBtn" class="logout-link">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>خروج</span>
-        </button>
     </nav>
 
 </body>
