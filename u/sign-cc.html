@@ -5,13 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>بوابة تسجيل حساب اللاعبين</title>
 
-    <!-- الخطوط -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
 
     <style>
 
@@ -22,6 +25,7 @@
         }
 
         :root {
+
             --navy-deep: #041a36;
             --navy-mid: #062348;
             --navy-edge: #000b18;
@@ -40,6 +44,7 @@
         }
 
         body {
+
             min-height: 100vh;
 
             background:
@@ -51,6 +56,7 @@
                 );
 
             display: flex;
+
             justify-content: center;
             align-items: center;
 
@@ -59,11 +65,8 @@
             font-family: 'Tajawal', sans-serif;
         }
 
-        /* =========================
-           الكارت
-        ========================= */
-
         .form-card {
+
             width: 100%;
             max-width: 440px;
 
@@ -79,38 +82,49 @@
             overflow: hidden;
         }
 
-        /* مقبض علوي يوحي بشاشة منزلقة */
         .drag-handle {
+
             width: 100%;
 
             display: flex;
+
             justify-content: center;
 
             padding-top: 12px;
             padding-bottom: 4px;
 
-            background: linear-gradient(180deg, #fbeef0 0%, #ffffff 60%);
+            background:
+                linear-gradient(
+                    180deg,
+                    #fbeef0 0%,
+                    #ffffff 60%
+                );
         }
 
         .drag-handle span {
+
             width: 44px;
             height: 4px;
+
             border-radius: 4px;
+
             background: #e3c9cd;
         }
 
         .card-body {
-            padding: 10px 30px 32px;
+
+            padding:
+                10px
+                30px
+                32px;
         }
 
-        /* =========================
-           اللوجو / الصليب
-        ========================= */
-
         .logo-container {
+
             width: 100%;
 
             display: flex;
+
             justify-content: center;
             align-items: center;
 
@@ -119,14 +133,21 @@
         }
 
         .church-logo {
+
             width: 74px;
             height: 74px;
 
             border-radius: 50%;
 
-            background: linear-gradient(150deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
+            background:
+                linear-gradient(
+                    150deg,
+                    var(--maroon-light) 0%,
+                    var(--maroon-dark) 100%
+                );
 
             display: flex;
+
             justify-content: center;
             align-items: center;
 
@@ -138,11 +159,8 @@
                 0 10px 22px rgba(125, 20, 36, 0.35);
         }
 
-        /* =========================
-           العنوان
-        ========================= */
-
         h2 {
+
             text-align: center;
 
             color: var(--ink);
@@ -159,6 +177,7 @@
         }
 
         .subtitle {
+
             text-align: center;
 
             color: var(--muted);
@@ -167,10 +186,6 @@
 
             margin-bottom: 20px;
         }
-
-        /* =========================
-           رسالة الخطأ
-        ========================= */
 
         #error-msg,
         #error-msg-2 {
@@ -187,10 +202,6 @@
 
             min-height: 20px;
         }
-
-        /* =========================
-           الملاحظة
-        ========================= */
 
         .notebook-note {
 
@@ -214,8 +225,11 @@
         }
 
         .notebook-note i {
+
             color: #4a9bc9;
+
             margin-top: 3px;
+
             font-size: 14px;
         }
 
@@ -241,10 +255,6 @@
             font-weight: 500;
         }
 
-        /* =========================
-           مجموعات الإدخال
-        ========================= */
-
         .input-group {
 
             margin-bottom: 14px;
@@ -267,33 +277,40 @@
             text-align: right;
         }
 
-        /* =========================
-           الحقول
-        ========================= */
-
         .field-wrap {
+
             position: relative;
         }
 
         .field-wrap i.field-icon {
+
             position: absolute;
+
             top: 50%;
+
             right: 16px;
+
             transform: translateY(-50%);
 
             color: #b9afa8;
+
             font-size: 15px;
 
             pointer-events: none;
         }
 
         .field-wrap i.field-toggle {
+
             position: absolute;
+
             top: 50%;
+
             left: 16px;
+
             transform: translateY(-50%);
 
             color: #b9afa8;
+
             font-size: 15px;
 
             cursor: pointer;
@@ -304,11 +321,17 @@
 
             width: 100%;
 
-            padding: 13px 42px 13px 15px;
+            padding:
+                13px
+                42px
+                13px
+                15px;
 
             background: #faf8f7;
 
-            border: 1.5px solid var(--field-border);
+            border:
+                1.5px solid
+                var(--field-border);
 
             border-radius: 13px;
 
@@ -323,11 +346,8 @@
             transition: all 0.25s ease;
         }
 
-        select {
-            padding: 13px 42px 13px 15px;
-        }
-
         input::placeholder {
+
             color: #b9afa8;
         }
 
@@ -339,17 +359,14 @@
             background: #ffffff;
 
             box-shadow:
-                0 0 0 3px rgba(125, 20, 36, 0.10);
+                0 0 0 3px
+                rgba(125, 20, 36, 0.10);
         }
 
-        /* حقل كلمة المرور له أيقونة يسار للعين، فنزيح الحشو */
         #password {
+
             padding-left: 42px;
         }
-
-        /* =========================
-           Select
-        ========================= */
 
         select {
 
@@ -364,10 +381,6 @@
 
             color: var(--ink);
         }
-
-        /* =========================
-           الأزرار
-        ========================= */
 
         .btn-action {
 
@@ -401,7 +414,8 @@
             transition: all 0.25s ease;
 
             box-shadow:
-                0 10px 22px rgba(125, 20, 36, 0.35);
+                0 10px 22px
+                rgba(125, 20, 36, 0.35);
         }
 
         .btn-action:hover {
@@ -409,7 +423,8 @@
             transform: translateY(-1px);
 
             box-shadow:
-                0 12px 26px rgba(125, 20, 36, 0.45);
+                0 12px 26px
+                rgba(125, 20, 36, 0.45);
         }
 
         .btn-action:active {
@@ -417,7 +432,8 @@
             transform: translateY(1px);
 
             box-shadow:
-                0 5px 12px rgba(125, 20, 36, 0.25);
+                0 5px 12px
+                rgba(125, 20, 36, 0.25);
         }
 
         .btn-action:disabled {
@@ -429,10 +445,6 @@
             transform: none;
         }
 
-        /* =========================
-           زر الرجوع
-        ========================= */
-
         .btn-secondary {
 
             background: transparent;
@@ -441,7 +453,9 @@
 
             box-shadow: none;
 
-            border: 1.5px solid #f0d9dd;
+            border:
+                1.5px solid
+                #f0d9dd;
         }
 
         .btn-secondary:hover {
@@ -450,10 +464,6 @@
 
             box-shadow: none;
         }
-
-        /* =========================
-           إخفاء الخطوات
-        ========================= */
 
         .step-section {
 
@@ -465,15 +475,14 @@
             display: block;
         }
 
-        /* =========================
-           Responsive
-        ========================= */
-
         @media (max-width: 500px) {
 
             .card-body {
 
-                padding: 8px 20px 26px;
+                padding:
+                    8px
+                    20px
+                    26px;
             }
 
             h2 {
@@ -493,15 +502,17 @@
     </style>
 
 
-    <!-- =========================
-         Firebase
-    ========================= -->
+    <!-- =========================================
+         FIREBASE
+    ========================================== -->
 
     <script type="module">
 
         import {
             initializeApp
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        } from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
 
         import {
             getFirestore,
@@ -510,455 +521,1047 @@
             where,
             getDocs,
             setDoc,
-            doc
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+            doc,
+            getDoc
+        } from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+
+        /* =========================================
+           Firebase Config
+        ========================================= */
 
         const firebaseConfig = {
 
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            apiKey:
+                "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
 
-            authDomain: "st-mina-c01ec.firebaseapp.com",
+            authDomain:
+                "st-mina-c01ec.firebaseapp.com",
 
-            projectId: "st-mina-c01ec",
+            projectId:
+                "st-mina-c01ec",
 
-            storageBucket: "st-mina-c01ec.firebasestorage.app",
+            storageBucket:
+                "st-mina-c01ec.firebasestorage.app",
 
-            messagingSenderId: "792349150559",
+            messagingSenderId:
+                "792349150559",
 
-            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea"
+            appId:
+                "1:792349150559:web:8a86bbf57c2c7e351f3aea"
         };
 
 
-        const app = initializeApp(firebaseConfig);
+        const app =
+            initializeApp(firebaseConfig);
 
-        const db = getFirestore(app);
+
+        const db =
+            getFirestore(app);
 
 
-        /* =========================
+        /* =========================================
+           المراحل والصفوف
+           
+           مهم:
+           القيم هنا هي نفس القيم الموجودة
+           في صفحة البروفايل والـ Admin
+        ========================================= */
+
+        const stageGrades = {
+
+            "ابتدائي": [
+
+                "الأول الابتدائي",
+
+                "الثاني الابتدائي",
+
+                "الثالث الابتدائي",
+
+                "الرابع الابتدائي",
+
+                "الخامس الابتدائي",
+
+                "السادس الابتدائي"
+
+            ],
+
+            "إعدادي": [
+
+                "الأول الإعدادي",
+
+                "الثاني الإعدادي",
+
+                "الثالث الإعدادي"
+
+            ],
+
+            "ثانوي": [
+
+                "الأول الثانوي",
+
+                "الثاني الثانوي",
+
+                "الثالث الثانوي"
+
+            ]
+
+        };
+
+
+        /* =========================================
+           تنظيف النص
+        ========================================= */
+
+        function normalizeText(value) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+
+                return "";
+
+            }
+
+            return String(value)
+
+                .replace(/\u200f/g, "")
+
+                .replace(/\u200e/g, "")
+
+                .replace(/\u00a0/g, " ")
+
+                .trim();
+
+        }
+
+
+        /* =========================================
+           توحيد الصف
+        ========================================= */
+
+        function normalizeGrade(grade) {
+
+            const value =
+                normalizeText(grade);
+
+
+            /*
+             * دعم البيانات القديمة
+             *
+             * لو عندك:
+             * الصف الثاني الإعدادي
+             *
+             * نحولها إلى:
+             * الثاني الإعدادي
+             */
+
+            const oldToNew = {
+
+                "الصف الأول الإعدادي":
+                    "الأول الإعدادي",
+
+                "الصف الثاني الإعدادي":
+                    "الثاني الإعدادي",
+
+                "الصف الثالث الإعدادي":
+                    "الثالث الإعدادي",
+
+                "الصف الأول الثانوي":
+                    "الأول الثانوي",
+
+                "الصف الثاني الثانوي":
+                    "الثاني الثانوي",
+
+                "الصف الثالث الثانوي":
+                    "الثالث الثانوي"
+
+            };
+
+
+            return (
+                oldToNew[value] ||
+                value
+            );
+
+        }
+
+
+        /* =========================================
            تحديث الصفوف
-        ========================= */
+        ========================================= */
 
-        window.updateGrades = function () {
+        window.updateGrades = function (
+            selectedGrade = ""
+        ) {
 
             const stageSelect =
-                document.getElementById('stage');
+                document.getElementById(
+                    "stage"
+                );
+
 
             const gradeSelect =
-                document.getElementById('grade');
+                document.getElementById(
+                    "grade"
+                );
+
+
+            if (
+                !stageSelect ||
+                !gradeSelect
+            ) {
+
+                return;
+
+            }
+
 
             const selectedStage =
-                stageSelect.value;
+                normalizeText(
+                    stageSelect.value
+                );
+
+
+            const cleanSelectedGrade =
+                normalizeGrade(
+                    selectedGrade
+                );
 
 
             gradeSelect.innerHTML =
-                '<option value="" disabled selected>اختر الصف الدراسي</option>';
+                `
+                    <option
+                        value=""
+                        disabled
+                        selected
+                    >
+                        اختر الصف الدراسي
+                    </option>
+                `;
 
 
-            let gradesOptions = [];
+            const grades =
+                stageGrades[
+                    selectedStage
+                ] || [];
 
 
-            if (selectedStage === "ابتدائي") {
+            grades.forEach(
+                grade => {
 
-                gradesOptions = [
-
-                    "الأول الابتدائي",
-
-                    "الثاني الابتدائي",
-
-                    "الثالث الابتدائي",
-
-                    "الرابع الابتدائي",
-
-                    "الخامس الابتدائي",
-
-                    "السادس الابتدائي"
-                ];
-            }
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
 
 
-            else if (selectedStage === "إعدادي") {
-
-                gradesOptions = [
-
-                    "الصف الأول الإعدادي",
-
-                    "الصف الثاني الإعدادي",
-
-                    "الصف الثالث الإعدادي"
-                ];
-            }
+                    option.value =
+                        grade;
 
 
-            else if (selectedStage === "ثانوي") {
-
-                gradesOptions = [
-
-                    "الصف الأول الثانوي",
-
-                    "الصف الثاني الثانوي",
-
-                    "الصف الثالث الثانوي"
-                ];
-            }
+                    option.textContent =
+                        grade;
 
 
-            gradesOptions.forEach(grade => {
+                    if (
+                        grade ===
+                        cleanSelectedGrade
+                    ) {
 
-                const opt =
-                    document.createElement('option');
+                        option.selected =
+                            true;
 
-                opt.value = grade;
+                    }
 
-                opt.textContent = grade;
 
-                gradeSelect.appendChild(opt);
+                    gradeSelect.appendChild(
+                        option
+                    );
 
-            });
+                }
+            );
 
         };
 
 
-        /* =========================
-           الانتقال للخطوة الثانية
-        ========================= */
+        /* =========================================
+           الخطوة الأولى
+        ========================================= */
 
-        window.nextStep = async function () {
+        window.nextStep =
+            async function () {
 
-            const username =
-                document
-                    .getElementById('username')
-                    .value
-                    .trim();
-
-
-            const password =
-                document
-                    .getElementById('password')
-                    .value
-                    .trim();
-
-
-            const errorMsg =
-                document.getElementById('error-msg');
-
-
-            const btn1 =
-                document.getElementById('btnNext');
-
-
-            errorMsg.innerText = "";
-
-
-            if (!username || !password) {
-
-                errorMsg.innerText =
-                    "يرجى إدخال اسم المستخدم وكلمة المرور أولاً!";
-
-                return;
-            }
-
-
-            btn1.innerText =
-                "جاري الفحص...";
-
-            btn1.disabled = true;
-
-
-            try {
-
-                const usersRef =
-                    collection(db, "users");
-
-
-                const qUsername =
-                    query(
-                        usersRef,
-                        where(
-                            "username",
-                            "==",
-                            username
-                        )
+                const username =
+                    normalizeText(
+                        document.getElementById(
+                            "username"
+                        ).value
                     );
 
 
-                const usernameSnapshot =
-                    await getDocs(qUsername);
+                const password =
+                    document.getElementById(
+                        "password"
+                    ).value.trim();
 
 
-                if (!usernameSnapshot.empty) {
+                const errorMsg =
+                    document.getElementById(
+                        "error-msg"
+                    );
+
+
+                const btn =
+                    document.getElementById(
+                        "btnNext"
+                    );
+
+
+                errorMsg.innerText =
+                    "";
+
+
+                if (
+                    !username ||
+                    !password
+                ) {
 
                     errorMsg.innerText =
-                        "اسم المستخدم هذا مستخدم من قبل، اختر اسماً آخر.";
-
-                    btn1.innerText =
-                        "التالي ➔";
-
-                    btn1.disabled = false;
+                        "يرجى إدخال اسم المستخدم وكلمة المرور أولاً!";
 
                     return;
+
                 }
 
 
+                btn.innerText =
+                    "جاري الفحص...";
+
+
+                btn.disabled =
+                    true;
+
+
+                try {
+
+                    /*
+                     * بما أن الـ Document ID
+                     * هو username
+                     *
+                     * نعمل فحص مباشر أيضاً.
+                     */
+
+                    const directRef =
+                        doc(
+                            db,
+                            "users",
+                            username
+                        );
+
+
+                    const directSnap =
+                        await getDoc(
+                            directRef
+                        );
+
+
+                    if (
+                        directSnap.exists()
+                    ) {
+
+                        errorMsg.innerText =
+                            "اسم المستخدم هذا مستخدم من قبل، اختر اسماً آخر.";
+
+                        btn.innerText =
+                            "التالي ➔";
+
+                        btn.disabled =
+                            false;
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * فحص إضافي لأي Document
+                     * username فيه نفس القيمة.
+                     */
+
+                    const usersRef =
+                        collection(
+                            db,
+                            "users"
+                        );
+
+
+                    const qUsername =
+                        query(
+                            usersRef,
+                            where(
+                                "username",
+                                "==",
+                                username
+                            )
+                        );
+
+
+                    const usernameSnapshot =
+                        await getDocs(
+                            qUsername
+                        );
+
+
+                    if (
+                        !usernameSnapshot.empty
+                    ) {
+
+                        errorMsg.innerText =
+                            "اسم المستخدم هذا مستخدم من قبل، اختر اسماً آخر.";
+
+                        btn.innerText =
+                            "التالي ➔";
+
+                        btn.disabled =
+                            false;
+
+                        return;
+
+                    }
+
+
+                    document
+                        .getElementById(
+                            "step-1"
+                        )
+                        .classList
+                        .remove("active");
+
+
+                    document
+                        .getElementById(
+                            "step-2"
+                        )
+                        .classList
+                        .add("active");
+
+
+                    btn.innerText =
+                        "التالي ➔";
+
+
+                    btn.disabled =
+                        false;
+
+                } catch (error) {
+
+                    console.error(
+                        "خطأ أثناء فحص المستخدم:",
+                        error
+                    );
+
+
+                    errorMsg.innerText =
+                        "حدث خطأ في الاتصال بقاعدة البيانات.";
+
+
+                    btn.innerText =
+                        "التالي ➔";
+
+
+                    btn.disabled =
+                        false;
+
+                }
+
+            };
+
+
+        /* =========================================
+           رجوع
+        ========================================= */
+
+        window.prevStep =
+            function () {
+
                 document
-                    .getElementById('step-1')
+                    .getElementById(
+                        "step-2"
+                    )
                     .classList
-                    .remove('active');
+                    .remove("active");
 
 
                 document
-                    .getElementById('step-2')
+                    .getElementById(
+                        "step-1"
+                    )
                     .classList
-                    .add('active');
+                    .add("active");
+
+            };
 
 
-                btn1.innerText =
-                    "التالي ➔";
+        /* =========================================
+           إظهار كلمة المرور
+        ========================================= */
 
-                btn1.disabled = false;
+        window.togglePassword =
+            function () {
 
-            }
+                const passwordInput =
+                    document.getElementById(
+                        "password"
+                    );
 
-            catch (error) {
 
-                console.error(error);
+                const icon =
+                    document.getElementById(
+                        "togglePasswordIcon"
+                    );
+
+
+                if (
+                    passwordInput.type ===
+                    "password"
+                ) {
+
+                    passwordInput.type =
+                        "text";
+
+
+                    icon.classList.remove(
+                        "fa-eye"
+                    );
+
+
+                    icon.classList.add(
+                        "fa-eye-slash"
+                    );
+
+                } else {
+
+                    passwordInput.type =
+                        "password";
+
+
+                    icon.classList.remove(
+                        "fa-eye-slash"
+                    );
+
+
+                    icon.classList.add(
+                        "fa-eye"
+                    );
+
+                }
+
+            };
+
+
+        /* =========================================
+           إنشاء الحساب
+        ========================================= */
+
+        window.handleRegister =
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const username =
+                    normalizeText(
+                        document.getElementById(
+                            "username"
+                        ).value
+                    );
+
+
+                const password =
+                    document.getElementById(
+                        "password"
+                    ).value.trim();
+
+
+                const userId =
+                    normalizeText(
+                        document.getElementById(
+                            "userId"
+                        ).value
+                    );
+
+
+                const birthdate =
+                    document.getElementById(
+                        "birthdate"
+                    ).value;
+
+
+                const fatherPhone =
+                    document.getElementById(
+                        "fatherPhone"
+                    ).value.trim();
+
+
+                const motherPhone =
+                    document.getElementById(
+                        "motherPhone"
+                    ).value.trim();
+
+
+                const address =
+                    document.getElementById(
+                        "address"
+                    ).value.trim();
+
+
+                const stage =
+                    normalizeText(
+                        document.getElementById(
+                            "stage"
+                        ).value
+                    );
+
+
+                /*
+                 * نقرأ الصف من الـ select
+                 * بعد توحيد القيمة
+                 */
+
+                const grade =
+                    normalizeGrade(
+                        document.getElementById(
+                            "grade"
+                        ).value
+                    );
+
+
+                const errorMsg =
+                    document.getElementById(
+                        "error-msg-2"
+                    );
+
+
+                const submitBtn =
+                    document.getElementById(
+                        "submitBtn"
+                    );
+
 
                 errorMsg.innerText =
-                    "حدث خطأ في الاتصال بقاعدة البيانات.";
-
-                btn1.innerText =
-                    "التالي ➔";
-
-                btn1.disabled = false;
-            }
-
-        };
+                    "";
 
 
-        /* =========================
-           الرجوع للخطوة الأولى
-        ========================= */
+                /* =================================
+                   التحقق
+                ================================= */
 
-        window.prevStep = function () {
+                if (!username) {
 
-            document
-                .getElementById('step-2')
-                .classList
-                .remove('active');
+                    errorMsg.innerText =
+                        "اسم المستخدم غير صحيح.";
 
+                    return;
 
-            document
-                .getElementById('step-1')
-                .classList
-                .add('active');
-
-        };
+                }
 
 
-        /* =========================
-           إظهار / إخفاء كلمة المرور
-        ========================= */
+                if (!password) {
 
-        window.togglePassword = function () {
+                    errorMsg.innerText =
+                        "يرجى إدخال كلمة المرور.";
 
-            const passwordInput =
-                document.getElementById('password');
+                    return;
 
-            const toggleIcon =
-                document.getElementById('togglePasswordIcon');
-
-            if (passwordInput.type === 'password') {
-
-                passwordInput.type = 'text';
-
-                toggleIcon.classList.remove('fa-eye');
-
-                toggleIcon.classList.add('fa-eye-slash');
-
-            } else {
-
-                passwordInput.type = 'password';
-
-                toggleIcon.classList.remove('fa-eye-slash');
-
-                toggleIcon.classList.add('fa-eye');
-            }
-
-        };
+                }
 
 
-        /* =========================
-           حفظ الحساب
-        ========================= */
+                if (!stage) {
 
-        window.handleRegister = async function (event) {
+                    errorMsg.innerText =
+                        "يرجى اختيار المرحلة الدراسية.";
 
-            event.preventDefault();
+                    return;
 
-
-            const username =
-                document
-                    .getElementById('username')
-                    .value
-                    .trim();
+                }
 
 
-            const password =
-                document
-                    .getElementById('password')
-                    .value
-                    .trim();
+                if (
+                    !stageGrades[stage]
+                ) {
+
+                    errorMsg.innerText =
+                        "المرحلة الدراسية غير صحيحة.";
+
+                    return;
+
+                }
 
 
-            const userId =
-                document
-                    .getElementById('userId')
-                    .value
-                    .trim();
+                if (!grade) {
+
+                    errorMsg.innerText =
+                        "يرجى اختيار الصف الدراسي.";
+
+                    return;
+
+                }
 
 
-            const birthdate =
-                document
-                    .getElementById('birthdate')
-                    .value;
+                /*
+                 * التأكد أن الصف تابع للمرحلة
+                 */
+
+                if (
+                    !stageGrades[stage]
+                        .includes(grade)
+                ) {
+
+                    errorMsg.innerText =
+                        "الصف الدراسي لا يتوافق مع المرحلة.";
+
+                    return;
+
+                }
 
 
-            const fatherPhone =
-                document
-                    .getElementById('fatherPhone')
-                    .value
-                    .trim();
+                submitBtn.innerText =
+                    "جاري حفظ البيانات...";
 
 
-            const motherPhone =
-                document
-                    .getElementById('motherPhone')
-                    .value
-                    .trim();
+                submitBtn.disabled =
+                    true;
 
 
-            const address =
-                document
-                    .getElementById('address')
-                    .value
-                    .trim();
+                try {
+
+                    /* =================================
+                       Document ID
+                       
+                       مهم جداً:
+                       username = Document ID
+                    ================================= */
+
+                    const userDocRef =
+                        doc(
+                            db,
+                            "users",
+                            username
+                        );
 
 
-            const stage =
-                document
-                    .getElementById('stage')
-                    .value;
+                    /*
+                     * فحص أخير قبل الكتابة
+                     */
+
+                    const existingDoc =
+                        await getDoc(
+                            userDocRef
+                        );
 
 
-            const grade =
-                document
-                    .getElementById('grade')
-                    .value;
+                    if (
+                        existingDoc.exists()
+                    ) {
+
+                        throw new Error(
+                            "اسم المستخدم مستخدم بالفعل."
+                        );
+
+                    }
 
 
-            const errorMsg =
-                document.getElementById('error-msg-2');
+                    /* =================================
+                       البيانات
+                    ================================= */
+
+                    const userData = {
+
+                        username:
+                            username,
+
+                        password:
+                            password,
+
+                        userId:
+                            userId,
+
+                        birthdate:
+                            birthdate,
+
+                        fatherPhone:
+                            fatherPhone,
+
+                        motherPhone:
+                            motherPhone,
+
+                        address:
+                            address,
+
+                        stage:
+                            stage,
+
+                        /*
+                         * الصف الموحد
+                         */
+                        grade:
+                            grade,
+
+                        points:
+                            0,
+
+                        isBlocked:
+                            false,
+
+                        createdAt:
+                            new Date().toISOString()
+
+                    };
 
 
-            const submitBtn =
-                document.getElementById('submitBtn');
+                    console.log(
+                        "================================"
+                    );
+
+                    console.log(
+                        "📤 إنشاء المستخدم"
+                    );
+
+                    console.log(
+                        "Collection:",
+                        "users"
+                    );
+
+                    console.log(
+                        "Document ID:",
+                        username
+                    );
+
+                    console.log(
+                        "Username:",
+                        username
+                    );
+
+                    console.log(
+                        "Stage:",
+                        stage
+                    );
+
+                    console.log(
+                        "Grade:",
+                        grade
+                    );
+
+                    console.log(
+                        "================================"
+                    );
 
 
-            errorMsg.innerText = "";
+                    /* =================================
+                       الحفظ
+                    ================================= */
+
+                    await setDoc(
+                        userDocRef,
+                        userData
+                    );
 
 
-            if (!stage || !grade) {
+                    /* =================================
+                       قراءة البيانات مرة أخرى
+                    ================================= */
 
-                errorMsg.innerText =
-                    "يرجى اختيار المرحلة والصف الدراسي!";
-
-                return;
-            }
-
-
-            submitBtn.innerText =
-                "جاري حفظ البيانات...";
-
-            submitBtn.disabled = true;
+                    const savedSnap =
+                        await getDoc(
+                            userDocRef
+                        );
 
 
-            try {
+                    if (
+                        !savedSnap.exists()
+                    ) {
 
-                const userDocRef =
-                    doc(
-                        db,
-                        "users",
+                        throw new Error(
+                            "تمت محاولة الحفظ ولكن لم يتم العثور على المستخدم."
+                        );
+
+                    }
+
+
+                    const savedData =
+                        savedSnap.data();
+
+
+                    console.log(
+                        "================================"
+                    );
+
+                    console.log(
+                        "✅ تم إنشاء المستخدم في Firebase"
+                    );
+
+                    console.log(
+                        "Document ID:",
+                        savedSnap.id
+                    );
+
+                    console.log(
+                        "Stage:",
+                        savedData.stage
+                    );
+
+                    console.log(
+                        "Grade:",
+                        savedData.grade
+                    );
+
+                    console.log(
+                        "================================"
+                    );
+
+
+                    /*
+                     * تأكيد المرحلة
+                     */
+
+                    if (
+                        normalizeText(
+                            savedData.stage
+                        ) !==
+                        stage
+                    ) {
+
+                        throw new Error(
+                            "المرحلة لم يتم حفظها بشكل صحيح."
+                        );
+
+                    }
+
+
+                    /*
+                     * تأكيد الصف
+                     */
+
+                    if (
+                        normalizeGrade(
+                            savedData.grade
+                        ) !==
+                        grade
+                    ) {
+
+                        throw new Error(
+                            "الصف لم يتم حفظه بشكل صحيح."
+                        );
+
+                    }
+
+
+                    /* =================================
+                       LocalStorage
+                    ================================= */
+
+                    /*
+                     * أهم 3 قيم للنظام كله
+                     */
+
+                    localStorage.setItem(
+                        "userDocId",
+                        savedSnap.id
+                    );
+
+
+                    localStorage.setItem(
+                        "currentUser",
                         username
                     );
 
 
-                await setDoc(
-                    userDocRef,
-                    {
-
-                        username: username,
-
-                        password: password,
-
-                        userId: userId,
-
-                        birthdate: birthdate,
-
-                        fatherPhone: fatherPhone,
-
-                        motherPhone: motherPhone,
-
-                        address: address,
-
-                        stage: stage,
-
-                        grade: grade,
-
-                        points: 0,
-
-                        createdAt:
-                            new Date().toISOString()
-                    }
-                );
+                    localStorage.setItem(
+                        "username",
+                        username
+                    );
 
 
-                localStorage.setItem(
-                    'userDocId',
-                    username
-                );
+                    localStorage.setItem(
+                        "userStage",
+                        stage
+                    );
 
 
-                localStorage.setItem(
-                    'currentUser',
-                    username
-                );
+                    localStorage.setItem(
+                        "stage",
+                        stage
+                    );
 
 
-                localStorage.setItem(
-                    'username',
-                    username
-                );
+                    localStorage.setItem(
+                        "servantStage",
+                        stage
+                    );
 
 
-                window.location.href =
-                    "home.html";
+                    localStorage.setItem(
+                        "userGrade",
+                        grade
+                    );
 
-            }
 
-            catch (error) {
+                    localStorage.setItem(
+                        "grade",
+                        grade
+                    );
 
-                console.error(error);
 
-                errorMsg.innerText =
-                    "حدث خطأ أثناء الحفظ.";
+                    localStorage.setItem(
+                        "servantGrade",
+                        grade
+                    );
 
-                submitBtn.innerText =
-                    "حفظ البيانات";
 
-                submitBtn.disabled = false;
-            }
+                    /*
+                     * نحتفظ بالـ userId أيضاً
+                     */
 
-        };
+                    localStorage.setItem(
+                        "userId",
+                        userId
+                    );
+
+
+                    /* =================================
+                       الانتقال
+                    ================================= */
+
+                    window.location.href =
+                        "home.html";
+
+
+                } catch (error) {
+
+                    console.error(
+                        "❌ خطأ أثناء إنشاء الحساب:",
+                        error
+                    );
+
+
+                    errorMsg.innerText =
+                        error.message ||
+                        "حدث خطأ أثناء حفظ البيانات.";
+
+
+                    submitBtn.innerText =
+                        "حفظ البيانات";
+
+
+                    submitBtn.disabled =
+                        false;
+
+                }
+
+            };
 
     </script>
 
@@ -967,16 +1570,15 @@
 
 <body>
 
-
     <div class="form-card">
 
         <div class="drag-handle">
             <span></span>
         </div>
 
+
         <div class="card-body">
 
-            <!-- الصليب -->
 
             <div class="logo-container">
 
@@ -989,11 +1591,9 @@
             </div>
 
 
-            <!-- العنوان -->
-
             <h2>
-                 مستخدم إنشاء حساب 
-             </h2>
+                إنشاء حساب مستخدم
+            </h2>
 
 
             <div class="subtitle">
@@ -1004,20 +1604,21 @@
             <div id="error-msg"></div>
 
 
-            <!-- =========================
+            <!-- =================================
                  الخطوة الأولى
-            ========================= -->
+            ================================= -->
 
             <div
                 id="step-1"
-                class="step-section active">
-
+                class="step-section active"
+            >
 
                 <div class="notebook-note">
 
                     <i class="fas fa-circle-info"></i>
 
                     <div>
+
                         <h4>
                             ملاحظة هامة
                         </h4>
@@ -1025,6 +1626,7 @@
                         <p>
                             يرجى كتابة اسم المستخدم وكلمة المرور لتسجيل الدخول بالبرنامج لاحقاً
                         </p>
+
                     </div>
 
                 </div>
@@ -1042,9 +1644,12 @@
                             type="text"
                             id="username"
                             placeholder="اكتب اسم المستخدم"
-                            required>
+                            required
+                        >
 
-                        <i class="fas fa-user field-icon"></i>
+                        <i
+                            class="fas fa-user field-icon"
+                        ></i>
 
                     </div>
 
@@ -1063,14 +1668,19 @@
                             type="password"
                             id="password"
                             placeholder="ادخل كلمة المرور"
-                            required>
+                            required
+                        >
 
-                        <i class="fas fa-lock field-icon"></i>
+                        <i
+                            class="fas fa-lock field-icon"
+                        ></i>
+
 
                         <i
                             class="fas fa-eye field-toggle"
                             id="togglePasswordIcon"
-                            onclick="togglePassword()"></i>
+                            onclick="togglePassword()"
+                        ></i>
 
                     </div>
 
@@ -1081,30 +1691,29 @@
                     type="button"
                     class="btn-action"
                     id="btnNext"
-                    onclick="nextStep()">
-
+                    onclick="nextStep()"
+                >
                     التالي ➔
-
                 </button>
-
 
             </div>
 
 
-            <!-- =========================
+            <!-- =================================
                  الخطوة الثانية
-            ========================= -->
+            ================================= -->
 
             <div
                 id="step-2"
-                class="step-section">
-
+                class="step-section"
+            >
 
                 <div id="error-msg-2"></div>
 
 
                 <form
-                    onsubmit="handleRegister(event)">
+                    onsubmit="handleRegister(event)"
+                >
 
 
                     <div class="input-group">
@@ -1119,9 +1728,12 @@
                                 type="text"
                                 id="userId"
                                 placeholder="رقم المستخدم"
-                                required>
+                                required
+                            >
 
-                            <i class="fas fa-id-card field-icon"></i>
+                            <i
+                                class="fas fa-id-card field-icon"
+                            ></i>
 
                         </div>
 
@@ -1139,9 +1751,12 @@
                             <input
                                 type="date"
                                 id="birthdate"
-                                required>
+                                required
+                            >
 
-                            <i class="fas fa-calendar-days field-icon"></i>
+                            <i
+                                class="fas fa-calendar-days field-icon"
+                            ></i>
 
                         </div>
 
@@ -1160,9 +1775,12 @@
                                 type="tel"
                                 id="fatherPhone"
                                 placeholder="01xxxxxxxxx"
-                                required>
+                                required
+                            >
 
-                            <i class="fas fa-phone field-icon"></i>
+                            <i
+                                class="fas fa-phone field-icon"
+                            ></i>
 
                         </div>
 
@@ -1181,9 +1799,12 @@
                                 type="tel"
                                 id="motherPhone"
                                 placeholder="01xxxxxxxxx"
-                                required>
+                                required
+                            >
 
-                            <i class="fas fa-phone field-icon"></i>
+                            <i
+                                class="fas fa-phone field-icon"
+                            ></i>
 
                         </div>
 
@@ -1202,9 +1823,12 @@
                                 type="text"
                                 id="address"
                                 placeholder="العنوان بالتفصيل"
-                                required>
+                                required
+                            >
 
-                            <i class="fas fa-location-dot field-icon"></i>
+                            <i
+                                class="fas fa-location-dot field-icon"
+                            ></i>
 
                         </div>
 
@@ -1222,15 +1846,15 @@
                         <select
                             id="stage"
                             required
-                            onchange="updateGrades()">
+                            onchange="updateGrades()"
+                        >
 
                             <option
                                 value=""
                                 disabled
-                                selected>
-
+                                selected
+                            >
                                 اختر المرحلة الدراسية
-
                             </option>
 
                             <option value="ابتدائي">
@@ -1260,15 +1884,15 @@
 
                         <select
                             id="grade"
-                            required>
+                            required
+                        >
 
                             <option
                                 value=""
                                 disabled
-                                selected>
-
+                                selected
+                            >
                                 اختر المرحلة أولاً
-
                             </option>
 
                         </select>
@@ -1281,10 +1905,9 @@
                     <button
                         type="submit"
                         class="btn-action"
-                        id="submitBtn">
-
+                        id="submitBtn"
+                    >
                         حفظ البيانات
-
                     </button>
 
 
@@ -1293,23 +1916,19 @@
                     <button
                         type="button"
                         class="btn-action btn-secondary"
-                        onclick="prevStep()">
-
+                        onclick="prevStep()"
+                    >
                         ⬅ رجوع للخلف
-
                     </button>
 
 
                 </form>
 
-
             </div>
 
         </div>
 
-
     </div>
-
 
 </body>
 
