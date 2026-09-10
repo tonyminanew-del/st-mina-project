@@ -297,7 +297,7 @@
 
             padding: 32px;
 
-            box-shadow: 0 30px 75px rgba(0, 0, 0, .35);
+            box-shadow: 0 30px 75px rgba(0, 0, .35);
 
             position: relative;
             overflow: hidden;
@@ -1358,7 +1358,7 @@
             <i class="fas fa-graduation-cap"></i>
 
             <span>
-                صفّك:
+                خدمتك:
             </span>
 
             <strong id="currentServantGradeBadge">
@@ -1379,11 +1379,11 @@
             </div>
 
             <h1 id="rosterTitle">
-                إدارة مخدومي صفّي
+                إدارة مخدومي خدمتك
             </h1>
 
             <p>
-                متابعة وإدارة مخدومي صفك بسهولة
+                متابعة وإدارة مخدومي نفس المرحلة والصف بسهولة
             </p>
 
         </header>
@@ -1395,8 +1395,8 @@
 
                 <i class="fas fa-school"></i>
 
-                <span>
-                    المخدومون الموجودون في صفك فقط
+                <span id="classInfoText">
+                    المخدومون الموجودون في نفس المرحلة والصف فقط
                 </span>
 
             </div>
@@ -1564,10 +1564,15 @@
         const rosterTitle =
             document.getElementById("rosterTitle");
 
+        const classInfoText =
+            document.getElementById("classInfoText");
+
 
         /* =====================================================
            STATE
         ===================================================== */
+
+        let myStage = "";
 
         let myGrade = "";
 
@@ -1815,15 +1820,6 @@
 
         /* =====================================================
            FIND CURRENT USER
-           
-           IMPORTANT:
-           هنا لا نعتمد على Document ID فقط.
-           نقرأ users مرة واحدة ونبحث في:
-           
-           1 - Document ID
-           2 - usernameLower
-           3 - username
-           4 - userId
         ===================================================== */
 
         async function findCurrentUser() {
@@ -2007,58 +2003,126 @@
 
 
         /* =====================================================
-           FETCH MY GRADE
+           FETCH MY STAGE + GRADE
+           
+           نفس بيانات home.html:
+           
+           servantStage
+           servantGrade
+           
+           من localStorage أولاً
+           
+           ثم fallback إلى Firestore
         ===================================================== */
 
-        async function fetchMyGrade() {
-
-            const user =
-                await findCurrentUser();
-
-
-            const userData =
-                user.data;
-
+        async function fetchMyServiceData() {
 
             /*
-             * الأولوية:
-             *
-             * grade
-             * servantGrade
-             * class
-             * ثم localStorage
+             * أولاً نأخذ نفس البيانات التي يستخدمها home.html
              */
 
-            myGrade =
+            myStage =
                 normalizeText(
-                    userData.grade
+                    localStorage.getItem(
+                        "servantStage"
+                    )
                 );
 
 
-            if (!myGrade) {
+            myGrade =
+                normalizeText(
+                    localStorage.getItem(
+                        "servantGrade"
+                    )
+                );
 
-                myGrade =
-                    normalizeText(
-                        userData.servantGrade
-                    );
+
+            console.log(
+                "💾 Home Stage:",
+                myStage
+            );
+
+
+            console.log(
+                "💾 Home Grade:",
+                myGrade
+            );
+
+
+            /*
+             * لو المرحلة أو الصف ناقص،
+             * نرجع إلى Firebase
+             */
+
+            if (
+                !myStage ||
+                !myGrade
+            ) {
+
+                const user =
+                    await findCurrentUser();
+
+
+                const userData =
+                    user.data;
+
+
+                if (!myStage) {
+
+                    myStage =
+                        normalizeText(
+                            userData.stage
+                        );
+
+
+                    if (!myStage) {
+
+                        myStage =
+                            normalizeText(
+                                userData.servantStage
+                            );
+                    }
+                }
+
+
+                if (!myGrade) {
+
+                    myGrade =
+                        normalizeText(
+                            userData.grade
+                        );
+
+
+                    if (!myGrade) {
+
+                        myGrade =
+                            normalizeText(
+                                userData.servantGrade
+                            );
+                    }
+
+
+                    if (!myGrade) {
+
+                        myGrade =
+                            normalizeText(
+                                userData.class
+                            );
+                    }
+                }
             }
 
 
-            if (!myGrade) {
+            /*
+             * محاولة أخيرة من localStorage
+             */
 
-                myGrade =
-                    normalizeText(
-                        userData.class
-                    );
-            }
+            if (!myStage) {
 
-
-            if (!myGrade) {
-
-                myGrade =
+                myStage =
                     normalizeText(
                         localStorage.getItem(
-                            "servantGrade"
+                            "stage"
                         )
                     );
             }
@@ -2075,12 +2139,35 @@
             }
 
 
+            /*
+             * التحقق من وجود المرحلة والصف
+             */
+
+            if (!myStage) {
+
+                throw new Error(
+                    "تم العثور على حسابك، لكن المرحلة غير محفوظة."
+                );
+            }
+
+
             if (!myGrade) {
 
                 throw new Error(
-                    "تم العثور على حسابك، لكن الصف الدراسي غير محفوظ في Firebase."
+                    "تم العثور على حسابك، لكن الصف الدراسي غير محفوظ."
                 );
             }
+
+
+            /*
+             * نحفظ القيم حتى تظل متوافقة
+             * مع home.html وباقي الصفحات
+             */
+
+            localStorage.setItem(
+                "servantStage",
+                myStage
+            );
 
 
             localStorage.setItem(
@@ -2090,21 +2177,41 @@
 
 
             localStorage.setItem(
+                "stage",
+                myStage
+            );
+
+
+            localStorage.setItem(
                 "grade",
                 myGrade
             );
 
 
+            /*
+             * عرض المرحلة + الصف
+             */
+
             gradeBadge.innerText =
-                myGrade;
+                `${myStage} - ${myGrade}`;
 
 
             rosterTitle.innerHTML =
-                `إدارة مخدومي <span>${escapeHtml(myGrade)}</span>`;
+                `إدارة مخدومي <span>${escapeHtml(myStage)} - ${escapeHtml(myGrade)}</span>`;
+
+
+            classInfoText.innerText =
+                `المخدومون الموجودون في ${myStage} - ${myGrade} فقط`;
 
 
             console.log(
-                "🎓 صف الخادم:",
+                "🏫 المرحلة:",
+                myStage
+            );
+
+
+            console.log(
+                "🎓 الصف:",
                 myGrade
             );
 
@@ -2166,6 +2273,9 @@
 
         /* =====================================================
            FETCH SERVANTS
+           
+           مهم جداً:
+           الفلترة أصبحت بالمرحلة + الصف
         ===================================================== */
 
         async function fetchServants() {
@@ -2176,7 +2286,7 @@
 
                     <i class="fas fa-spinner fa-spin"></i>
 
-                    جاري تحميل مخدومي صفك...
+                    جاري تحميل مخدومي المرحلة والصف...
 
                 </div>
 
@@ -2187,15 +2297,15 @@
 
                 /*
                  * أولاً:
-                 * نحدد الخادم الحالي وصفه
+                 * نجيب المرحلة والصف من نفس home.html
                  */
 
-                await fetchMyGrade();
+                await fetchMyServiceData();
 
 
                 /*
                  * ثانياً:
-                 * نجيب users
+                 * نجيب كل المستخدمين
                  */
 
                 await fetchAllUsers();
@@ -2203,12 +2313,28 @@
 
                 /*
                  * ثالثاً:
-                 * فلترة نفس الصف
+                 * فلترة المرحلة + الصف
                  */
 
                 myServants =
                     allUsers.filter(
                         (person) => {
+
+                            /*
+                             * مرحلة المخدوم
+                             */
+
+                            const personStage =
+                                normalizeText(
+                                    person.stage ||
+                                    person.servantStage ||
+                                    ""
+                                );
+
+
+                            /*
+                             * صف المخدوم
+                             */
 
                             const personGrade =
                                 normalizeText(
@@ -2219,21 +2345,58 @@
                                 );
 
 
-                            return (
+                            /*
+                             * لازم المرحلة والصف
+                             * يكونوا متطابقين مع الخادم
+                             */
+
+                            const sameStage =
+                                normalizeKey(
+                                    personStage
+                                ) ===
+                                normalizeKey(
+                                    myStage
+                                );
+
+
+                            const sameGrade =
                                 normalizeKey(
                                     personGrade
                                 ) ===
                                 normalizeKey(
                                     myGrade
-                                )
+                                );
+
+
+                            console.log(
+                                "🔎 فحص المخدوم:",
+                                {
+                                    name:
+                                        person.fullName ||
+                                        person.name ||
+                                        person.username,
+
+                                    personStage,
+
+                                    personGrade,
+
+                                    sameStage,
+
+                                    sameGrade
+                                }
+                            );
+
+
+                            return (
+                                sameStage &&
+                                sameGrade
                             );
                         }
                     );
 
 
                 /*
-                 * لو مش عايز الخادم نفسه يظهر
-                 * في قائمة مخدوميه، نستبعده
+                 * نستبعد الخادم نفسه
                  */
 
                 myServants =
@@ -2245,13 +2408,19 @@
 
 
                 console.log(
+                    "🏫 المرحلة المطلوبة:",
+                    myStage
+                );
+
+
+                console.log(
                     "🎓 الصف المطلوب:",
                     myGrade
                 );
 
 
                 console.log(
-                    "👥 مخدومو الصف:",
+                    "👥 مخدومو نفس المرحلة والصف:",
                     myServants
                 );
 
@@ -2364,7 +2533,7 @@
 
                         <i class="fas fa-users-slash"></i>
 
-                        لا يوجد مخدومون في صفك حالياً.
+                        لا يوجد مخدومون في نفس المرحلة والصف حالياً.
 
                     </div>
 
@@ -2384,10 +2553,16 @@
                         "بدون اسم";
 
 
+                    const stage =
+                        person.stage ||
+                        person.servantStage ||
+                        "غير محدد";
+
+
                     const grade =
                         person.grade ||
                         person.servantGrade ||
-                        person.stage ||
+                        person.class ||
                         "غير محدد";
 
 
@@ -2434,7 +2609,9 @@
 
                                 <span>
 
-                                    ${escapeHtml(grade)}
+                                    ${escapeHtml(stage)}
+
+                                    • ${escapeHtml(grade)}
 
                                     • ${points} نقطة
 
@@ -2501,10 +2678,16 @@
                 "بدون اسم";
 
 
+            const stage =
+                person.stage ||
+                person.servantStage ||
+                "غير محدد";
+
+
             const grade =
                 person.grade ||
                 person.servantGrade ||
-                person.stage ||
+                person.class ||
                 "غير محدد";
 
 
@@ -2558,6 +2741,10 @@
                     <span class="grade-pill">
 
                         <i class="fas fa-graduation-cap"></i>
+
+                        ${escapeHtml(stage)}
+
+                        -
 
                         ${escapeHtml(grade)}
 
@@ -2817,10 +3004,7 @@
                             </strong>
 
                             <span>
-                                ${escapeHtml(
-                                    person.stage ||
-                                    "غير محدد"
-                                )}
+                                ${escapeHtml(stage)}
                             </span>
 
                         </div>
@@ -2833,11 +3017,7 @@
                             </strong>
 
                             <span>
-                                ${escapeHtml(
-                                    person.grade ||
-                                    person.servantGrade ||
-                                    "غير محدد"
-                                )}
+                                ${escapeHtml(grade)}
                             </span>
 
                         </div>
@@ -2900,10 +3080,6 @@
 
             try {
 
-                /*
-                 * Firebase Timestamp
-                 */
-
                 if (
                     typeof value === "object" &&
                     typeof value.toDate === "function"
@@ -2916,10 +3092,6 @@
                         );
                 }
 
-
-                /*
-                 * Firestore Timestamp-like
-                 */
 
                 if (
                     typeof value === "object" &&
@@ -3071,18 +3243,10 @@
                         newPoints;
 
 
-                    /*
-                     * تحديث القائمة
-                     */
-
                     renderNamesList(
                         getCurrentDisplayedList()
                     );
 
-
-                    /*
-                     * تحديث المودال
-                     */
 
                     openServantDetails(
                         person
@@ -3291,11 +3455,6 @@
                         );
 
 
-                    /*
-                     * نحفظ الاثنين حتى تكون
-                     * الصفحات القديمة والجديدة متوافقة
-                     */
-
                     await updateDoc(
                         docRef,
                         {
@@ -3418,6 +3577,22 @@
 
         console.log(
             "🚀 control.html بدأ التشغيل"
+        );
+
+
+        console.log(
+            "💾 localStorage.servantStage =",
+            localStorage.getItem(
+                "servantStage"
+            )
+        );
+
+
+        console.log(
+            "💾 localStorage.servantGrade =",
+            localStorage.getItem(
+                "servantGrade"
+            )
         );
 
 
