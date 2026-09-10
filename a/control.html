@@ -1694,6 +1694,7 @@
         function normalizeText(value) {
 
             return String(value ?? "")
+                .replace(/[\u0000-\u001F\u007F\u00A0\u200B-\u200D\u2060\uFEFF\u202A-\u202E]/g, " ")
                 .trim()
                 .replace(/\s+/g, " ");
         }
@@ -1740,83 +1741,60 @@
            LOGIN IDENTIFIER
         ===================================================== */
 
-        function getLoginIdentifier() {
+        function getLoginIdentifiers() {
 
-            const urlParams =
-                new URLSearchParams(
-                    window.location.search
-                );
+            const values = [
+                new URLSearchParams(window.location.search).get("user"),
+                localStorage.getItem("userDocId"),
+                localStorage.getItem("currentUsername"),
+                localStorage.getItem("username"),
+                localStorage.getItem("currentUserId"),
+                localStorage.getItem("userId"),
+                localStorage.getItem("phone"),
+                localStorage.getItem("mobile")
+            ];
 
+            const storedCurrentUser =
+                localStorage.getItem("currentUser");
 
-            const urlUser =
-                normalizeKey(
-                    urlParams.get("user")
-                );
+            if (storedCurrentUser) {
+                try {
+                    const parsed =
+                        JSON.parse(storedCurrentUser);
 
+                    if (parsed && typeof parsed === "object") {
+                        values.push(
+                            parsed.id,
+                            parsed.docId,
+                            parsed.userId,
+                            parsed.username,
+                            parsed.userName,
+                            parsed.email,
+                            parsed.phone,
+                            parsed.mobile
+                        );
+                    } else {
+                        values.push(parsed);
+                    }
+                } catch {
+                    values.push(storedCurrentUser);
+                }
+            }
 
-            const userDocId =
-                normalizeKey(
-                    localStorage.getItem(
-                        "userDocId"
-                    )
-                );
-
-
-            const currentUsername =
-                normalizeKey(
-                    localStorage.getItem(
-                        "currentUsername"
-                    )
-                );
-
-
-            const username =
-                normalizeKey(
-                    localStorage.getItem(
-                        "username"
-                    )
-                );
-
-
-            const identifier =
-                urlUser ||
-                userDocId ||
-                currentUsername ||
-                username ||
-                "";
-
-
-            console.log(
-                "👤 Login Identifier:",
-                identifier
-            );
-
-
-            console.log(
-                "🗂 userDocId:",
-                localStorage.getItem(
-                    "userDocId"
+            const identifiers = [
+                ...new Set(
+                    values
+                        .map(normalizeKey)
+                        .filter(Boolean)
                 )
-            );
-
-
-            console.log(
-                "👤 currentUsername:",
-                localStorage.getItem(
-                    "currentUsername"
-                )
-            );
-
+            ];
 
             console.log(
-                "👤 username:",
-                localStorage.getItem(
-                    "username"
-                )
+                "👤 معرّفات تسجيل الدخول:",
+                identifiers
             );
 
-
-            return identifier;
+            return identifiers;
         }
 
 
@@ -1835,11 +1813,10 @@
 
         async function findCurrentUser() {
 
-            const identifier =
-                getLoginIdentifier();
+            const identifiers =
+                getLoginIdentifiers();
 
-
-            if (!identifier) {
+            if (identifiers.length === 0) {
 
                 throw new Error(
                     "لم يتم العثور على بيانات تسجيل الدخول في localStorage."
@@ -1847,13 +1824,9 @@
             }
 
 
-            const normalizedIdentifier =
-                normalizeKey(identifier);
-
-
             console.log(
-                "🔎 البحث عن الحساب:",
-                normalizedIdentifier
+                "🔎 البحث عن الحسابات باستخدام:",
+                identifiers
             );
 
 
@@ -1940,6 +1913,21 @@
                             data.fullName
                         );
 
+                    const name =
+                        normalizeKey(
+                            data.name
+                        );
+
+                    const phone =
+                        normalizeKey(
+                            data.phone
+                        );
+
+                    const mobile =
+                        normalizeKey(
+                            data.mobile
+                        );
+
 
                     console.log(
                         "🔍 فحص:",
@@ -1947,46 +1935,36 @@
                             docId,
                             usernameLower,
                             username,
-                            userId
+                            userName,
+                            userId,
+                            email,
+                            fullName,
+                            name,
+                            phone,
+                            mobile
                         }
                     );
 
+                    const documentValues = [
+                        docId,
+                        usernameLower,
+                        username,
+                        userName,
+                        userId,
+                        email,
+                        fullName,
+                        name,
+                        phone,
+                        mobile
+                    ].filter(Boolean);
 
                     if (
-
-                        docId ===
-                        normalizedIdentifier
-
-                        ||
-
-                        usernameLower ===
-                        normalizedIdentifier
-
-                        ||
-
-                        username ===
-                        normalizedIdentifier
-
-                        ||
-
-                        userName ===
-                        normalizedIdentifier
-
-                        ||
-
-                        userId ===
-                        normalizedIdentifier
-
-                        ||
-
-                        email ===
-                        normalizedIdentifier
-
-                        ||
-
-                        fullName ===
-                        normalizedIdentifier
-
+                        identifiers.some(
+                            (identifier) =>
+                                documentValues.includes(
+                                    identifier
+                                )
+                        )
                     ) {
 
                         foundUser = {
@@ -2007,12 +1985,12 @@
 
                 console.error(
                     "❌ لم يتم العثور على الحساب:",
-                    identifier
+                    identifiers
                 );
 
 
                 throw new Error(
-                    `لم يتم العثور على حساب المستخدم: ${identifier}`
+                    `لم يتم العثور على حساب يطابق: ${identifiers.join(", ")}`
                 );
             }
 
