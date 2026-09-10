@@ -1468,6 +1468,13 @@
 
     <script type="module">
 
+        if (window.location.protocol === "file:") {
+            console.warn(
+                "افتح المشروع من localhost وليس بالنقر المزدوج على الملف. Firebase يحتاج إلى HTTP/HTTPS."
+            );
+        }
+
+
         /* =====================================================
            FIREBASE IMPORTS
         ===================================================== */
@@ -1910,9 +1917,27 @@
                         );
 
 
+                    const userName =
+                        normalizeKey(
+                            data.userName
+                        );
+
+
                     const userId =
                         normalizeKey(
                             data.userId
+                        );
+
+
+                    const email =
+                        normalizeKey(
+                            data.email
+                        );
+
+
+                    const fullName =
+                        normalizeKey(
+                            data.fullName
                         );
 
 
@@ -1944,7 +1969,22 @@
 
                         ||
 
+                        userName ===
+                        normalizedIdentifier
+
+                        ||
+
                         userId ===
+                        normalizedIdentifier
+
+                        ||
+
+                        email ===
+                        normalizedIdentifier
+
+                        ||
+
+                        fullName ===
                         normalizedIdentifier
 
                     ) {
@@ -1983,6 +2023,28 @@
 
             currentUserData =
                 foundUser.data;
+
+            localStorage.setItem(
+                "userDocId",
+                currentUserDocId
+            );
+
+            const canonicalUsername =
+                currentUserData.username ||
+                currentUserData.userName ||
+                currentUserData.usernameLower ||
+                "";
+
+            if (canonicalUsername) {
+                localStorage.setItem(
+                    "username",
+                    canonicalUsername
+                );
+                localStorage.setItem(
+                    "currentUsername",
+                    canonicalUsername
+                );
+            }
 
 
             console.log(
@@ -3452,7 +3514,6 @@
         fetchServants();
 
     </script>
-
 </body>
 
 </html>
