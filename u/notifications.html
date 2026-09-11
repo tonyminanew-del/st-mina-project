@@ -1,561 +1,533 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>St. Mina - إشعارات المخدوم</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #f4f6f8;
-            font-family: 'Cairo', sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .header {
-            background: #232f3e;
-            color: #febd69;
-            width: 100%;
-            max-width: 600px;
-            padding: 15px;
-            text-align: center;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .back-home-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #37475a, #232f3e);
-            color: #ffffff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 600;
-            font-size: 13px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .back-home-btn i {
-            font-size: 14px;
-            color: #febd69;
-            transition: transform 0.3s ease;
-        }
-
-        .back-home-btn:hover {
-            background: linear-gradient(135deg, #131921, #232f3e);
-            transform: translateY(-1px);
-            color: #febd69;
-        }
-
-        .back-home-btn:hover i {
-            transform: scale(1.1);
-        }
-
-        .notification-status {
-            width: 100%;
-            max-width: 600px;
-            background: white;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-enabled {
-            color: #137333;
-        }
-
-        .status-disabled {
-            color: #b3261e;
-        }
-
-        /* شريط يوضح صف المخدوم الحالي (مسحوب من users/{username}.grade) */
-        .grade-banner {
-            width: 100%;
-            max-width: 600px;
-            background: #fff8e6;
-            border: 1px solid #f0d789;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            color: #7c1b28;
-            font-weight: bold;
-        }
-
-        .grade-banner.grade-missing {
-            background: #fdeceb;
-            border-color: #f3b3ae;
-            color: #b3261e;
-        }
-
-        .list {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .card {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .card.unread {
-            border-right: 5px solid #febd69;
-            background: #fffdf5;
-        }
-
-        .card-top {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .icon-container {
-            width: 45px;
-            height: 45px;
-            min-width: 45px;
-            border-radius: 50%;
-            overflow: hidden;
-            background: #e8f0fe;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .icon-container i {
-            color: #1a73e8;
-            font-size: 18px;
-        }
-
-        .details {
-            flex: 1;
-        }
-
-        .details h3 {
-            font-size: 15px;
-            margin: 0 0 5px 0;
-            color: #111;
-        }
-
-        .details p {
-            font-size: 13px;
-            margin: 0;
-            color: #555;
-            line-height: 1.7;
-        }
-
-        .badge-status {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 8px;
-        }
-
-        .badge-pending {
-            background: #fff4d8;
-            color: #b45309;
-        }
-
-        .badge-accepted {
-            background: #e6f4ea;
-            color: #137333;
-        }
-
-        .badge-delivered {
-            background: #e8f0fe;
-            color: #1a73e8;
-        }
-
-        .badge-rejected {
-            background: #fce8e6;
-            color: #b3261e;
-        }
-
-        .no-data {
-            background: #fff;
-            padding: 30px;
-            text-align: center;
-            border-radius: 8px;
-            color: #777;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .notification-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.65);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-            padding: 20px;
-        }
-
-        .notification-box {
-            width: 100%;
-            max-width: 420px;
-            background: white;
-            border-radius: 20px;
-            padding: 30px 25px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .notification-icon {
-            width: 80px;
-            height: 80px;
-            background: #fff4d8;
-            color: #f59e0b;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 35px;
-        }
-
-        .allow-btn,
-        .later-btn {
-            border: none;
-            padding: 13px;
-            border-radius: 10px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .allow-btn {
-            background: #232f3e;
-            color: #febd69;
-            margin-bottom: 10px;
-        }
-
-        .later-btn {
-            background: #eeeeee;
-            color: #555;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إشعاراتي - St. Mina</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --navy: #061d39;
+      --navy-dark: #020c19;
+      --maroon: #7d1424;
+      --maroon-dark: #5d101c;
+      --maroon-light: #a51f35;
+      --gold: #c9a24b;
+      --ink: #211918;
+      --muted: #817773;
+      --line: #eadfe0;
+      --soft: #fff7f8;
+      --green: #137333;
+      --blue: #185abc;
+      --orange: #9a6700;
+      --red: #b42318;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body {
+      min-height: 100dvh;
+      padding: 15px 12px 30px;
+      color: var(--ink);
+      font-family: "Tajawal", sans-serif;
+      background: radial-gradient(circle at top, #0a2d57 0, var(--navy) 48%, var(--navy-dark) 100%);
+    }
+    button { cursor: pointer; font: inherit; }
+    .topbar, .page { width: min(900px, 100%); margin-inline: auto; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: #fff;
+      font-weight: 800;
+    }
+    .topbar-title { display: flex; align-items: center; gap: 9px; }
+    .topbar-title i { color: var(--gold); }
+    .topbar-actions { display: flex; gap: 7px; }
+    .topbar-actions button {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--maroon);
+      background: #fff;
+      box-shadow: 0 7px 18px rgb(0 0 0 / 22%);
+    }
+    .page {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      border-radius: 27px;
+      background: #fff;
+      box-shadow: 0 30px 70px rgb(0 0 0 / 35%);
+    }
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 7px;
+      background: linear-gradient(90deg, var(--navy), var(--maroon), var(--gold), var(--maroon), var(--navy));
+    }
+    .page-head { margin-bottom: 20px; text-align: center; }
+    .page-icon {
+      width: 65px;
+      height: 65px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 27px;
+      background: linear-gradient(145deg, var(--maroon-light), var(--maroon-dark));
+    }
+    h1 { color: var(--ink); font: 700 clamp(27px, 5vw, 37px) "Amiri", serif; }
+    h1 span { color: var(--maroon); }
+    .page-head p { margin-top: 4px; color: var(--muted); font-size: 14px; }
+    .info-row { display: grid; gap: 10px; margin-bottom: 18px; }
+    .info-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 15px;
+      border: 1px solid #eadbdd;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f8f0f1, #fff);
+    }
+    .info-card.status-enabled { color: var(--green); border-color: #b7dfc1; background: #f1fbf3; }
+    .info-card.status-disabled { color: var(--red); border-color: #efc2c5; background: #fff5f5; }
+    .info-card.grade { color: var(--maroon-dark); border-color: #ead9bd; background: #fffaf0; }
+    .info-card i { width: 38px; text-align: center; color: var(--maroon); font-size: 22px; }
+    .info-card.status-enabled i { color: var(--green); }
+    .info-card.status-disabled i { color: var(--red); }
+    .info-card strong { display: block; font-size: 14px; }
+    .info-card small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 8px 2px 12px;
+    }
+    .section-head h2 { font: 700 23px "Amiri", serif; }
+    .count {
+      min-width: 34px;
+      padding: 6px 10px;
+      border: 1px solid #e7cdd1;
+      border-radius: 20px;
+      color: var(--maroon-dark);
+      text-align: center;
+      font-weight: 800;
+      background: var(--soft);
+    }
+    .notifications-list { display: grid; gap: 12px; }
+    .notification-card {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgb(40 20 25 / 6%);
+      transition: .2s ease;
+    }
+    .notification-card:hover { border-color: #dcbec3; transform: translateY(-2px); }
+    .notification-card.unread {
+      border-right: 5px solid var(--gold);
+      background: linear-gradient(135deg, #fffdf5, #fff);
+    }
+    .notification-image, .notification-icon {
+      width: 62px;
+      height: 62px;
+      min-width: 62px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid #e4d0d3;
+      border-radius: 15px;
+      color: var(--maroon);
+      font-size: 23px;
+      background: #fff7f8;
+    }
+    .notification-image { object-fit: cover; }
+    .notification-content { min-width: 0; flex: 1; }
+    .notification-content h3 {
+      margin-bottom: 4px;
+      color: var(--maroon-dark);
+      font: 700 19px "Amiri", serif;
+    }
+    .notification-content p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+    .notification-date { margin-top: 5px; color: #a49a96 !important; font-size: 11px !important; }
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+      padding: 5px 10px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .badge-pending { color: var(--orange); background: #fff4d8; }
+    .badge-accepted { color: var(--green); background: #e6f4ea; }
+    .badge-delivered { color: var(--blue); background: #e8f0fe; }
+    .badge-rejected { color: var(--red); background: #fce8e6; }
+    .empty, .loading, .error {
+      padding: 35px 15px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: var(--muted);
+      text-align: center;
+      background: #fffafa;
+    }
+    .empty i, .loading i, .error i { display: block; margin-bottom: 9px; color: var(--maroon); font-size: 28px; }
+    .error { color: var(--red); border-color: #efc2c5; }
+    .permission-overlay {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgb(0 0 0 / 65%);
+    }
+    .permission-box {
+      width: min(420px, 100%);
+      padding: 30px 25px;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 20px 60px rgb(0 0 0 / 30%);
+      text-align: center;
+    }
+    .permission-icon {
+      width: 80px;
+      height: 80px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      color: var(--gold);
+      background: #fff4d8;
+      font-size: 35px;
+    }
+    .permission-box h2 { font: 700 25px "Amiri", serif; }
+    .permission-box p { margin: 7px 0 20px; color: var(--muted); }
+    .allow-btn, .later-btn {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 11px;
+      font-weight: 800;
+    }
+    .allow-btn { margin-bottom: 10px; color: #fff; background: var(--maroon); }
+    .later-btn { color: var(--muted); background: #f1eeee; }
+    @media (max-width: 540px) {
+      body { padding: 9px 8px 22px; }
+      .page { padding: 23px 14px; border-radius: 22px; }
+      .notification-card { gap: 10px; padding: 11px; }
+      .notification-image, .notification-icon { width: 54px; height: 54px; min-width: 54px; }
+      .notification-content h3 { font-size: 17px; }
+    }
+  </style>
 </head>
 <body>
-
-    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-
-    <div id="notificationOverlay" class="notification-overlay">
-        <div class="notification-box">
-            <div class="notification-icon">
-                <i class="fas fa-bell"></i>
-            </div>
-            <h2>تفعيل الإشعارات 🔔</h2>
-            <p>هل تريد السماح لموقع <strong>St. Mina</strong> بإرسال التنبيهات؟</p>
-            <button id="allowNotificationsBtn" class="allow-btn">السماح</button>
-            <button id="laterNotificationsBtn" class="later-btn">رفض</button>
-        </div>
+  <div id="permissionOverlay" class="permission-overlay">
+    <div class="permission-box">
+      <div class="permission-icon"><i class="fas fa-bell"></i></div>
+      <h2>تفعيل الإشعارات</h2>
+      <p>هل تريد السماح لموقع St. Mina بإرسال التنبيهات؟</p>
+      <button id="allowNotificationsBtn" class="allow-btn" type="button">السماح</button>
+      <button id="laterNotificationsBtn" class="later-btn" type="button">لاحقًا</button>
     </div>
+  </div>
 
-    <div class="header">
-        <div>
-            <i class="fas fa-bell"></i>
-            إشعاراتي والطلبات - St. Mina
-        </div>
-        <a href="home.html" class="back-home-btn">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
-        </a>
+  <header class="topbar">
+    <div class="topbar-title"><i class="fas fa-bell"></i><span>إشعاراتي</span></div>
+    <div class="topbar-actions">
+      <button id="homeBtn" type="button" title="الرئيسية"><i class="fas fa-house"></i></button>
+      <button id="reloadBtn" type="button" title="تحديث"><i class="fas fa-rotate"></i></button>
     </div>
+  </header>
 
-    <!-- شريط يوضح صف المخدوم الحالي (مسحوب من users/{username}.grade) -->
-    <div id="gradeBanner" class="grade-banner">
-        <i class="fas fa-graduation-cap"></i>
-        <span id="gradeBannerText">جاري تحديد صفك...</span>
-    </div>
+  <main class="page">
+    <header class="page-head">
+      <div class="page-icon"><i class="fas fa-bell"></i></div>
+      <h1>الإشعارات <span>والطلبات</span></h1>
+      <p>تابع حالة طلباتك والإعلانات الخاصة بصفك</p>
+    </header>
 
-    <div id="notificationStatus" class="notification-status">
+    <section class="info-row">
+      <div id="notificationStatus" class="info-card">
         <i class="fas fa-spinner fa-spin"></i>
-        جاري فحص الإشعارات...
+        <div><strong>جاري فحص الإشعارات...</strong></div>
+      </div>
+      <div id="gradeBanner" class="info-card grade" style="display:none">
+        <i class="fas fa-graduation-cap"></i>
+        <div>
+          <strong id="gradeBannerText">جاري تحديد صفك...</strong>
+          <small>الإعلانات المعروضة مخصصة لصفك</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <h2>آخر الإشعارات</h2>
+      <span id="notificationCount" class="count">0</span>
     </div>
+    <section id="notificationsContainer" class="notifications-list">
+      <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري تحميل الإشعارات...</div>
+    </section>
+  </main>
 
-    <div id="notificationsContainer" class="list">
-        <div class="no-data">جاري التحميل...</div>
-    </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import {
+      getFirestore, collection, query, orderBy, onSnapshot,
+      doc, getDoc, getDocs, updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQPZ5p8VHykUWE",
+      authDomain: "st-mina-c01ec.firebaseapp.com",
+      databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+      projectId: "st-mina-c01ec",
+      storageBucket: "st-mina-c01ec.firebasestorage.app",
+      messagingSenderId: "792349150559",
+      appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+      measurementId: "G-XZGSBG05KR"
+    };
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-            authDomain: "st-mina-c01ec.firebaseapp.com",
-            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
-            projectId: "st-mina-c01ec",
-            storageBucket: "st-mina-c01ec.firebasestorage.app",
-            messagingSenderId: "792349150559",
-            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
-            measurementId: "G-XZGSBG05KR"
-        };
+    const db = getFirestore(initializeApp(firebaseConfig));
+    const $ = (selector) => document.querySelector(selector);
+    let myGrade = "";
+    let currentUsername = "";
+    let giftCatalog = [];
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    function normalize(value) {
+      return String(value ?? "")
+        .normalize("NFKC")
+        .replace(/[\u064B-\u065F\u0670]/g, "")
+        .replace(/ـ/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLocaleLowerCase("ar-EG");
+    }
 
-        const overlay = document.getElementById("notificationOverlay");
-        const allowBtn = document.getElementById("allowNotificationsBtn");
-        const laterBtn = document.getElementById("laterNotificationsBtn");
-        const status = document.getElementById("notificationStatus");
-        const container = document.getElementById("notificationsContainer");
-        const sound = document.getElementById("notifSound");
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-        const gradeBanner = document.getElementById("gradeBanner");
-        const gradeBannerText = document.getElementById("gradeBannerText");
+    function parseStored(value) {
+      if (!value) return {};
+      try {
+        const parsed = JSON.parse(value);
+        return parsed && typeof parsed === "object" ? parsed : { username: value };
+      } catch {
+        return { username: value };
+      }
+    }
 
-        const loggedInUsername = localStorage.getItem('currentUser') || localStorage.getItem('username') || "tony1";
+    function getCurrentProfile() {
+      const stored = parseStored(localStorage.getItem("currentUser"));
+      return {
+        ...stored,
+        id: stored.id || stored.docId || localStorage.getItem("userDocId") || "",
+        username: stored.username || stored.userName
+          || localStorage.getItem("username")
+          || localStorage.getItem("currentUsername")
+          || "tony1",
+        fullName: stored.fullName || stored.name || localStorage.getItem("fullName") || ""
+      };
+    }
 
-        // صف المخدوم الحالي، هيتم تحديده من Firestore (users/{username}.grade)
-        let myGrade = null;
+    function dateValue(value) {
+      if (!value) return 0;
+      if (typeof value?.toDate === "function") return value.toDate().getTime();
+      if (typeof value === "object" && value.seconds !== undefined) {
+        return Number(value.seconds) * 1000;
+      }
+      const result = new Date(value).getTime();
+      return Number.isNaN(result) ? 0 : result;
+    }
 
-        function updateNotificationStatus() {
-            if (!("Notification" in window)) {
-                status.className = "notification-status status-disabled";
-                status.innerHTML = `<i class="fas fa-bell-slash"></i> المتصفح لا يدعم الإشعارات`;
-                return;
-            }
-            if (Notification.permission === "granted") {
-                status.className = "notification-status status-enabled";
-                status.innerHTML = `<i class="fas fa-bell"></i> الإشعارات مفعلة`;
-            } else {
-                status.className = "notification-status status-disabled";
-                status.innerHTML = `<i class="fas fa-bell-slash"></i> الإشعارات غير مفعلة`;
-            }
+    function formatDate(value) {
+      const time = dateValue(value);
+      return time
+        ? new Date(time).toLocaleString("ar-EG", {
+            year: "numeric", month: "long", day: "numeric",
+            hour: "2-digit", minute: "2-digit"
+          })
+        : "تاريخ غير محدد";
+    }
+
+    function updateNotificationStatus() {
+      const status = $("#notificationStatus");
+      if (!("Notification" in window)) {
+        status.className = "info-card status-disabled";
+        status.innerHTML = `<i class="fas fa-bell-slash"></i><div><strong>المتصفح لا يدعم الإشعارات</strong></div>`;
+        return;
+      }
+      if (Notification.permission === "granted") {
+        status.className = "info-card status-enabled";
+        status.innerHTML = `<i class="fas fa-bell"></i><div><strong>الإشعارات مفعلة</strong><small>ستظهر لك التحديثات الجديدة</small></div>`;
+      } else {
+        status.className = "info-card status-disabled";
+        status.innerHTML = `<i class="fas fa-bell-slash"></i><div><strong>الإشعارات غير مفعلة</strong><small>يمكنك تفعيلها من الزر عند ظهور الطلب</small></div>`;
+      }
+    }
+
+    function findCatalogGift(item) {
+      const giftId = normalize(item.giftId);
+      const giftName = normalize(item.giftName || item.title);
+      return giftCatalog.find((gift) =>
+        (giftId && [gift.id, gift.giftId].map(normalize).includes(giftId))
+        || (giftName && [gift.name, gift.giftName, gift.title].map(normalize).includes(giftName))
+      ) || {};
+    }
+
+    function statusBadge(item, personal) {
+      if (item.status === "accepted") {
+        return `<span class="badge-status badge-accepted"><i class="fas fa-check"></i> تمت الموافقة - في انتظار التسليم</span>`;
+      }
+      if (item.status === "delivered" || item.isDelivered === true) {
+        return `<span class="badge-status badge-delivered"><i class="fas fa-check-double"></i> تم تسليم الهدية</span>`;
+      }
+      if (item.status === "rejected" || item.isRejected === true) {
+        return `<span class="badge-status badge-rejected"><i class="fas fa-times"></i> تم رفض الطلب وإرجاع النقاط</span>`;
+      }
+      return personal && (item.giftName || item.giftId)
+        ? `<span class="badge-status badge-pending"><i class="fas fa-clock"></i> الطلب قيد المراجعة</span>`
+        : "";
+    }
+
+    async function loadUserData() {
+      const profile = getCurrentProfile();
+      currentUsername = normalize(profile.username);
+
+      try {
+        const directSnap = await getDoc(doc(db, "users", profile.username));
+        if (directSnap.exists()) {
+          myGrade = String(directSnap.data().grade || "").trim();
+        } else {
+          const usersSnap = await getDocs(collection(db, "users"));
+          const user = usersSnap.docs.find((item) => {
+            const data = item.data();
+            return [item.id, data.username, data.userName, data.fullName]
+              .map(normalize)
+              .includes(currentUsername);
+          });
+          myGrade = String(user?.data()?.grade || "").trim();
         }
+      } catch (error) {
+        console.error("تعذر جلب بيانات المخدوم:", error);
+      }
 
-        allowBtn.addEventListener("click", async () => {
-            try {
-                await Notification.requestPermission();
-            } catch (e) {
-                console.error(e);
-            }
-            updateNotificationStatus();
-            overlay.style.display = "none";
+      const banner = $("#gradeBanner");
+      banner.style.display = "flex";
+      $("#gradeBannerText").textContent = myGrade
+        ? `صفك الحالي: ${myGrade}`
+        : "لم يتم العثور على صفك الدراسي";
+      if (!myGrade) banner.classList.add("status-disabled");
+    }
+
+    async function loadGiftCatalog() {
+      try {
+        const snapshot = await getDocs(collection(db, "gifts"));
+        giftCatalog = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+      } catch (error) {
+        console.warn("تعذر تحميل صور الهدايا:", error);
+        giftCatalog = [];
+      }
+    }
+
+    async function startNotifications() {
+      await Promise.all([loadUserData(), loadGiftCatalog()]);
+
+      const notificationsQuery = query(
+        collection(db, "notifications"),
+        orderBy("timestamp", "desc")
+      );
+
+      onSnapshot(notificationsQuery, (snapshot) => {
+        const container = $("#notificationsContainer");
+        container.innerHTML = "";
+        let count = 0;
+
+        snapshot.forEach((docSnap) => {
+          const item = docSnap.data();
+          const personal = normalize(item.username) === currentUsername;
+          const general = item.type === "announcement" || (!item.username && !item.type);
+          const showAnnouncement = general && (
+            (myGrade && normalize(item.targetGrade) === normalize(myGrade))
+            || (!myGrade && !item.targetGrade)
+          );
+
+          if (!personal && !showAnnouncement) return;
+          count++;
+
+          const catalogGift = findCatalogGift(item);
+          const image = item.imageUrl || item.giftImage || item.image
+            || catalogGift.image || catalogGift.giftImage || "";
+          const title = item.title || item.giftName || "إشعار جديد";
+          const card = document.createElement("article");
+          card.className = `notification-card ${item.isRead ? "" : "unread"}`;
+          card.innerHTML = `
+            ${image
+              ? `<img class="notification-image" src="${escapeHtml(image)}" alt="${escapeHtml(title)}">`
+              : `<div class="notification-icon"><i class="fas ${item.giftName ? "fa-gift" : "fa-bell"}"></i></div>`}
+            <div class="notification-content">
+              <h3>${escapeHtml(title)}</h3>
+              <p>${escapeHtml(item.message || "")}</p>
+              ${statusBadge(item, personal)}
+              <p class="notification-date"><i class="fas fa-calendar"></i> ${escapeHtml(formatDate(item.timestamp || item.createdAt))}</p>
+            </div>
+          `;
+
+          if (!item.isRead) {
+            updateDoc(doc(db, "notifications", docSnap.id), { isRead: true }).catch(() => {});
+          }
+          container.appendChild(card);
         });
 
-        laterBtn.addEventListener("click", () => {
-            overlay.style.display = "none";
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-            updateNotificationStatus();
-            if ("Notification" in window && Notification.permission === "default") {
-                overlay.style.display = "flex";
-            }
-        });
-
-        /*
-         * جلب صف المخدوم الحالي من Firestore.
-         * زي صفحة البروفايل، بيانات المخدوم محفوظة في:
-         * users/{username} وفيها حقل "grade" (الصف الدراسي).
-         */
-        async function loadMyGrade() {
-
-            let userData = null;
-
-            try {
-
-                // أولاً: نجرب نجيب الدوكيومنت مباشرة باستخدام اسم المستخدم كـ ID
-                const directRef = doc(db, "users", loggedInUsername);
-                const directSnap = await getDoc(directRef);
-
-                if (directSnap.exists()) {
-
-                    userData = directSnap.data();
-
-                } else {
-
-                    // لو مفيش دوكيومنت بنفس الاسم كـ ID، نبحث في الكولكشن كلها
-                    const usersSnap = await getDocs(collection(db, "users"));
-                    const usernameClean = loggedInUsername.trim().toLowerCase();
-
-                    for (const userDoc of usersSnap.docs) {
-
-                        const data = userDoc.data();
-                        const docIdClean = String(userDoc.id).trim().toLowerCase();
-                        const dataUsernameClean = data.username
-                            ? String(data.username).trim().toLowerCase()
-                            : "";
-
-                        if (docIdClean === usernameClean || dataUsernameClean === usernameClean) {
-                            userData = data;
-                            break;
-                        }
-                    }
-                }
-
-            } catch (e) {
-
-                console.error("خطأ في جلب صف المخدوم:", e);
-            }
-
-            if (userData && userData.grade) {
-
-                myGrade = String(userData.grade).trim();
-            }
-
-            gradeBanner.style.display = "flex";
-
-            if (myGrade) {
-
-                gradeBannerText.innerText =
-                    `صفك الحالي: ${myGrade} — بتشوف إعلانات صفك فقط`;
-
-            } else {
-
-                gradeBanner.classList.add("grade-missing");
-
-                gradeBannerText.innerText =
-                    "لم يتم العثور على صفك الدراسي في بياناتك، تأكد من تحديث بياناتك من صفحة البروفايل";
-            }
+        $("#notificationCount").textContent = count;
+        if (!count) {
+          container.innerHTML = `<div class="empty"><i class="fas fa-bell-slash"></i> لا توجد إشعارات أو طلبات جديدة حاليًا</div>`;
         }
+      }, (error) => {
+        console.error("خطأ في الإشعارات:", error);
+        $("#notificationsContainer").innerHTML = `<div class="error"><i class="fas fa-triangle-exclamation"></i> حدث خطأ أثناء تحميل الإشعارات</div>`;
+      });
+    }
 
-        /*
-         * نبدأ الاستماع للإشعارات بعد ما نعرف صف المخدوم،
-         * عشان الفلترة تبقى صحيحة من أول لحظة تحميل
-         */
-        (async () => {
+    $("#allowNotificationsBtn").addEventListener("click", async () => {
+      try { await Notification.requestPermission(); } catch (error) { console.error(error); }
+      updateNotificationStatus();
+      $("#permissionOverlay").style.display = "none";
+    });
+    $("#laterNotificationsBtn").addEventListener("click", () => {
+      $("#permissionOverlay").style.display = "none";
+    });
+    $("#homeBtn").addEventListener("click", () => { location.href = "home.html"; });
+    $("#reloadBtn").addEventListener("click", () => location.reload());
 
-            await loadMyGrade();
-
-            const q = query(
-                collection(db, "notifications"),
-                orderBy("timestamp", "desc")
-            );
-
-            onSnapshot(q, (snapshot) => {
-                container.innerHTML = "";
-                let count = 0;
-
-                snapshot.forEach((docSnap) => {
-                    const item = docSnap.data();
-                    const docId = docSnap.id;
-
-                    // إشعار شخصي (طلب هدية / رد على طلب) خاص بيّ
-                    const isForUser = (item.username && item.username.trim().toLowerCase() === loggedInUsername.trim().toLowerCase());
-
-                    // إعلان عام (زي الإعلانات اللي بتنشرها لوحة الإدارة)
-                    const isGeneralAnnouncement = item.type === "announcement" || (!item.username && !item.type);
-
-                    let showAnnouncement = false;
-
-                    if (isGeneralAnnouncement) {
-
-                        if (myGrade) {
-
-                            // نعرض الإعلان فقط لو موجّه لصفي بالتحديد
-                            showAnnouncement = (item.targetGrade === myGrade);
-
-                        } else {
-
-                            // لو صفي غير معروف، نعرض بس الإعلانات العامة اللي مش موجّهة لصف معين
-                            showAnnouncement = !item.targetGrade;
-                        }
-                    }
-
-                    if (!isForUser && !showAnnouncement) {
-                        return;
-                    }
-
-                    count++;
-                    const card = document.createElement("div");
-                    card.className = `card ${item.isRead ? "" : "unread"}`;
-
-                    let iconHTML = `<i class="fas fa-bell"></i>`;
-                    let defaultImg = "https://cdn-icons-png.flaticon.com/512/3233/3233483.png";
-
-                    if (item.imageUrl) {
-                        defaultImg = item.imageUrl;
-                    } else if (item.giftName) {
-                        defaultImg = "https://cdn-icons-png.flaticon.com/512/4213/4213958.png";
-                    }
-
-                    let statusBadge = "";
-                    if (item.status === "accepted") {
-                        statusBadge = `<div class="badge-status badge-accepted">حالة الطلب: تم قبول الطلب (في انتظار التسليم ⏳)</div>`;
-                    } else if (item.status === "delivered") {
-                        statusBadge = `<div class="badge-status badge-delivered">حالة الطلب: تم تسليم الهدية بنجاح ✅</div>`;
-                    } else if (item.status === "rejected") {
-                        statusBadge = `<div class="badge-status badge-rejected">حالة الطلب: تم رفض الطلب وإرجاع النقاط ❌</div>`;
-                    } else if (isForUser && item.giftName) {
-                        statusBadge = `<div class="badge-status badge-pending">حالة الطلب: قيد المراجعة 🕒</div>`;
-                    }
-
-                    card.innerHTML = `
-                        <div class="card-top">
-                            <div class="icon-container">
-                                <img src="${defaultImg}" alt="icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3233/3233483.png'">
-                            </div>
-                            <div class="details">
-                                <h3>${item.title || "إشعار جديد"}</h3>
-                                <p>${item.message || ""}</p>
-                                ${statusBadge}
-                            </div>
-                        </div>
-                    `;
-
-                    // تحديد الإشعار كمقروء عند تحميله
-                    if (!item.isRead) {
-                        updateDoc(doc(db, "notifications", docId), { isRead: true }).catch(() => {});
-                    }
-
-                    container.appendChild(card);
-                });
-
-                if (count === 0) {
-                    container.innerHTML = `<div class="no-data">لا توجد إشعارات أو طلبات خاصة بصفك حالياً</div>`;
-                }
-            });
-
-        })();
-    </script>
+    updateNotificationStatus();
+    if ("Notification" in window && Notification.permission === "default") {
+      $("#permissionOverlay").style.display = "grid";
+    }
+    startNotifications();
+  </script>
 </body>
 </html>
