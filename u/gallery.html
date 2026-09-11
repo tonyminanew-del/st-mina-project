@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>هدايا مرحلتي</title>
+  <title>هدايا صفّي المتاحة</title>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -188,7 +188,7 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="topbar-title"><i class="fas fa-gift"></i><span>هدايا المخدوم</span></div>
+    <div class="topbar-title"><i class="fas fa-gift"></i><span>هدايا صفّي المتاحة</span></div>
     <div class="topbar-actions">
       <button id="homeBtn" type="button" title="الرئيسية"><i class="fas fa-house"></i></button>
       <button id="reloadBtn" type="button" title="تحديث"><i class="fas fa-rotate"></i></button>
@@ -198,14 +198,14 @@
   <main class="page">
     <header class="page-head">
       <div class="page-icon"><i class="fas fa-gift"></i></div>
-      <h1>هدايا <span>مرحلتي</span></h1>
-      <p>الهدايا المتاحة لمخدومين مرحلتك فقط</p>
+      <h1>هدايا <span>صفّي المتاحة</span></h1>
+      <p>نفس الهدايا التي أضافها المشرف لصفّك، بتصميم مرتب</p>
     </header>
 
     <div class="servant-badge">
       <i class="fas fa-graduation-cap"></i>
       <div>
-        <small>المرحلة والصف</small>
+        <small>الصف والمرحلة</small>
         <strong id="stageBadge">جاري التحميل...</strong>
       </div>
     </div>
@@ -307,7 +307,14 @@
       const servantGrade = normalize(servant.grade);
       const sameGrade = !giftGrade || giftGrade === servantGrade;
 
-      return Boolean(servant.stage) && sameStage && sameGrade;
+      /*
+       * صفحة الأدمن الحالية تحفظ الهدايا مع grade فقط.
+       * لذلك نطابق الصف دائمًا، ونطابق المرحلة فقط إذا كانت
+       * الهدية تحتوي على stage؛ وبذلك تظهر نفس قائمة الأدمن
+       * للمخدوم بدون اختفاء الهدايا القديمة.
+       */
+      return Boolean(servant.grade) && sameGrade
+        && (!gift.stage && !gift.stageName || sameStage);
     }
 
     function openGift(gift) {
@@ -330,19 +337,19 @@
           userValues(user).some((value) => userValues(profile).includes(value))
         );
 
-        if (!servant?.stage) {
-          $("#stageBadge").textContent = "لم يتم تحديد المرحلة";
+        if (!servant?.grade) {
+          $("#stageBadge").textContent = "لم يتم تحديد صف المخدوم";
           container.innerHTML = `
             <div class="no-gifts">
               <i class="fas fa-triangle-exclamation"></i>
-              لم يتم تحديد مرحلة المخدوم في بياناته.
+              لم يتم تحديد صف المخدوم في بياناته.
             </div>
           `;
           return;
         }
 
         $("#stageBadge").textContent =
-          `${servant.stage}${servant.grade ? ` • ${servant.grade}` : ""}`;
+          `${servant.grade}${servant.stage ? ` • ${servant.stage}` : ""}`;
 
         const giftsSnapshot = await getDocs(collection(db, "gifts"));
         const gifts = giftsSnapshot.docs
@@ -354,7 +361,7 @@
           container.innerHTML = `
             <div class="no-gifts">
               <i class="fas fa-gift"></i>
-              لا توجد هدايا متاحة لمرحلتك حاليًا.
+              لا توجد هدايا متاحة لصفّك حاليًا.
             </div>
           `;
           return;
@@ -383,11 +390,11 @@
           container.appendChild(card);
         });
       } catch (error) {
-        console.error("خطأ في تحميل هدايا المرحلة:", error);
+        console.error("خطأ في تحميل هدايا الصف:", error);
         container.innerHTML = `
           <div class="no-gifts">
             <i class="fas fa-triangle-exclamation"></i>
-            حدث خطأ أثناء تحميل هدايا المرحلة.
+            حدث خطأ أثناء تحميل هدايا الصف.
           </div>
         `;
       }
