@@ -1,375 +1,2649 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سلة الطلبات - متجر الكنيسة</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>سلة طلباتي</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <!-- ================= FIREBASE ================= -->
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        import { initializeApp }
+            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            query,
+            where
+        }
+        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQPZ5p8VHykUWE",
+
             authDomain: "st-mina-c01ec.firebaseapp.com",
-            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+
+            databaseURL:
+                "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+
             projectId: "st-mina-c01ec",
-            storageBucket: "st-mina-c01ec.firebasestorage.app",
+
+            storageBucket:
+                "st-mina-c01ec.firebasestorage.app",
+
             messagingSenderId: "792349150559",
-            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+
+            appId:
+                "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+
             measurementId: "G-XZGSBG05KR"
         };
 
+
         const app = initializeApp(firebaseConfig);
+
         const db = getFirestore(app);
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const menuBtn = document.getElementById('menuBtn');
-            const closeBtn = document.getElementById('closeBtn');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const logoutBtn = document.getElementById('logoutBtn');
+
+        /* ================= NAVIGATION ================= */
+
+        window.navigateTo = function (page) {
+
+            const userId =
+                localStorage.getItem("userDocId");
+
+            if (page === "profile.html" && userId) {
+
+                window.location.href =
+                    `profile.html?user=${userId}`;
+
+            } else {
+
+                window.location.href = page;
+
+            }
+        };
+
+
+        /* ================= LOAD ORDERS ================= */
+
+        document.addEventListener("DOMContentLoaded", async () => {
+
+
+            const userOrdersContainer =
+                document.getElementById(
+                    "userOrdersContainer"
+                );
+
+
+            /* ================= MENU ================= */
+
+            const menuBtn =
+                document.getElementById("menuBtn");
+
+            const closeBtn =
+                document.getElementById("closeBtn");
+
+            const sidebar =
+                document.getElementById("sidebar");
+
+            const overlay =
+                document.getElementById("overlay");
+
+            const logoutBtn =
+                document.getElementById("logoutBtn");
+
 
             function openSidebar() {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
+
+                sidebar.classList.add("active");
+
+                overlay.classList.add("active");
+
             }
+
+
             function closeSidebar() {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
+
+                sidebar.classList.remove("active");
+
+                overlay.classList.remove("active");
+
             }
 
-            if (menuBtn) menuBtn.addEventListener('click', openSidebar);
-            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-            if (overlay) overlay.addEventListener('click', closeSidebar);
 
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
+            menuBtn.addEventListener(
+                "click",
+                openSidebar
+            );
+
+
+            closeBtn.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+
+            overlay.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+
+            /* ================= LOGOUT ================= */
+
+            logoutBtn.addEventListener(
+                "click",
+                () => {
+
+                    if (
+                        confirm(
+                            "هل تريد تسجيل الخروج حقاً؟"
+                        )
+                    ) {
+
                         localStorage.clear();
-                        window.location.href = '../index.html';
-                    }
-                });
-            }
 
-            const loggedInUsername = localStorage.getItem('currentUser') || localStorage.getItem('username') || "Mina";
-            const userOrdersContainer = document.getElementById('userOrdersContainer');
+                        window.location.href =
+                            "../index.html";
+
+                    }
+
+                }
+            );
+
+
+            /* ================= USER ================= */
+
+            let loggedInUsername =
+                localStorage.getItem("currentUser") ||
+                localStorage.getItem("username");
+
+
+            const userDocId =
+                localStorage.getItem("userDocId");
+
 
             /*
-             * ترتيب فحص الحالة مهم هنا (نفس منطق صفحة الإشعارات):
-             * 1) delivered -> تم القبول والتسليم (الحالة النهائية)
-             * 2) accepted / approved -> تم القبول فقط (لسه في انتظار الاستلام)
-             * 3) rejected -> مرفوض
-             * 4) غير ذلك -> قيد المراجعة
-             *
-             * قبل التعديل كانت accepted و delivered بيتعاملوا كحالة واحدة،
-             * فكان أي طلب "مقبول" بيظهر كـ "تم التسليم" فورًا وهو ده الخطأ.
+             * لو currentUser عبارة عن JSON
+             * نحاول استخراج username منه
              */
-            function resolveOrderStatus(order) {
-                if (order.status === "delivered" || order.isDelivered) {
-                    return {
-                        text: "تم القبول والتسليم ✅",
-                        cls: "status-delivered",
-                        icon: "fa-check-double"
-                    };
-                }
 
-                if (order.status === "accepted" || order.status === "approved") {
-                    return {
-                        text: "تم القبول (في انتظار الاستلام) ⏳",
-                        cls: "status-approved",
-                        icon: "fa-check-circle"
-                    };
-                }
+            if (loggedInUsername) {
 
-                if (order.status === "rejected" || order.isRejected) {
-                    return {
-                        text: "مرفوض (تم إرجاع النقاط) ❌",
-                        cls: "status-rejected",
-                        icon: "fa-times-circle"
-                    };
-                }
-
-                return {
-                    text: "قيد المراجعة 🕒",
-                    cls: "status-pending",
-                    icon: "fa-clock"
-                };
-            }
-
-            async function fetchUserOrders() {
-                userOrdersContainer.innerHTML = `<div class="no-orders"><i class="fas fa-spinner fa-spin"></i> جاري تحميل طلباتك السابقة...</div>`;
                 try {
-                    const q = query(collection(db, "notifications"), where("username", "==", loggedInUsername));
-                    const querySnapshot = await getDocs(q);
 
-                    userOrdersContainer.innerHTML = '';
-                    let count = 0;
+                    const parsed =
+                        JSON.parse(loggedInUsername);
 
-                    querySnapshot.forEach((docSnap) => {
-                        const order = docSnap.data();
-                        count++;
+                    if (
+                        parsed &&
+                        typeof parsed === "object"
+                    ) {
 
-                        const { text: statusText, cls: statusClass, icon: statusIcon } = resolveOrderStatus(order);
+                        loggedInUsername =
+                            parsed.username ||
+                            parsed.userName ||
+                            parsed.name ||
+                            parsed.fullName ||
+                            loggedInUsername;
 
-                        let orderDate = "حديث";
-                        if (order.timestamp && order.timestamp.toDate) {
-                            orderDate = new Date(order.timestamp.toDate()).toLocaleString('ar-EG');
-                        }
-
-                        const card = document.createElement('div');
-                        card.className = 'order-card';
-                        card.innerHTML = `
-                            <div class="order-header">
-                                <span class="order-title"><i class="fas fa-gift" style="color: #f59e0b;"></i> ${order.giftName || order.title || 'طلب هدية'}</span>
-                                <span class="order-status ${statusClass}"><i class="fas ${statusIcon}"></i> ${statusText}</span>
-                            </div>
-                            <div class="order-body">
-                                <div><i class="fas fa-coins"></i> التكلفة: <strong>${order.pointsSpent || 1} نقطة</strong></div>
-                                <div style="margin-top: 5px;"><i class="fas fa-calendar-alt"></i> التاريخ: <strong>${orderDate}</strong></div>
-                            </div>
-                        `;
-                        userOrdersContainer.appendChild(card);
-                    });
-
-                    if (count === 0) {
-                        userOrdersContainer.innerHTML = `<div class="no-orders">لا توجد طلبات سابقة حتى الآن. ابدأ باستبدال نقاطك بهدايا رائعة!</div>`;
                     }
 
-                } catch (error) {
-                    console.error("خطأ في جلب الطلبات:", error);
-                    userOrdersContainer.innerHTML = `<div class="no-orders">حدث خطأ أثناء تحميل الطلبات. تأكد من اتصالك بالإنترنت.</div>`;
+                } catch (e) {
+
+                    // النص عادي وليس JSON
+
                 }
+
             }
 
+
+            loggedInUsername =
+                loggedInUsername || "Mina";
+
+
+            /* ================= FETCH ORDERS ================= */
+
+            async function fetchUserOrders() {
+
+
+                userOrdersContainer.innerHTML = `
+
+                    <div class="loading-box">
+
+                        <div class="loading-icon">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+
+                        <h3>جاري تحميل طلباتك</h3>
+
+                        <p>
+                            برجاء الانتظار قليلاً...
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                try {
+
+
+                    let querySnapshot;
+
+
+                    /*
+                     * أولاً نحاول بالـ username
+                     */
+
+                    const q =
+                        query(
+                            collection(
+                                db,
+                                "notifications"
+                            ),
+                            where(
+                                "username",
+                                "==",
+                                loggedInUsername
+                            )
+                        );
+
+
+                    querySnapshot =
+                        await getDocs(q);
+
+
+                    /*
+                     * لو مفيش نتائج نحاول البحث
+                     * باستخدام userId
+                     */
+
+                    if (
+                        querySnapshot.empty &&
+                        userDocId
+                    ) {
+
+                        const q2 =
+                            query(
+                                collection(
+                                    db,
+                                    "notifications"
+                                ),
+                                where(
+                                    "userId",
+                                    "==",
+                                    userDocId
+                                )
+                            );
+
+
+                        querySnapshot =
+                            await getDocs(q2);
+
+                    }
+
+
+                    userOrdersContainer.innerHTML = "";
+
+
+                    let count = 0;
+
+
+                    /* ================= HEADER ================= */
+
+                    const header =
+                        document.createElement("div");
+
+                    header.className =
+                        "orders-summary";
+
+
+                    header.innerHTML = `
+
+                        <div class="summary-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+
+                        <div class="summary-text">
+
+                            <h2>
+                                سجل طلباتي
+                            </h2>
+
+                            <p>
+                                جميع الهدايا التي طلبتها وحالة كل طلب
+                            </p>
+
+                        </div>
+
+                        <div class="summary-count">
+
+                            <strong id="ordersCount">
+                                0
+                            </strong>
+
+                            <span>
+                                طلب
+                            </span>
+
+                        </div>
+
+                    `;
+
+
+                    userOrdersContainer.appendChild(
+                        header
+                    );
+
+
+                    /* ================= ORDERS ================= */
+
+                    querySnapshot.forEach(
+                        (docSnap) => {
+
+
+                            const order =
+                                docSnap.data();
+
+
+                            count++;
+
+
+                            /* ================= STATUS ================= */
+
+
+                            let statusText =
+                                "قيد المراجعة";
+
+
+                            let statusClass =
+                                "status-pending";
+
+
+                            let statusIcon =
+                                "fa-clock";
+
+
+                            if (
+                                order.status ===
+                                    "accepted" ||
+
+                                order.status ===
+                                    "delivered" ||
+
+                                order.isDelivered
+                            ) {
+
+                                statusText =
+                                    "تمت الموافقة والتسليم";
+
+
+                                statusClass =
+                                    "status-delivered";
+
+
+                                statusIcon =
+                                    "fa-check-double";
+
+                            }
+
+
+                            else if (
+                                order.status ===
+                                    "rejected" ||
+
+                                order.isRejected
+                            ) {
+
+                                statusText =
+                                    "مرفوض وتم إرجاع النقاط";
+
+
+                                statusClass =
+                                    "status-rejected";
+
+
+                                statusIcon =
+                                    "fa-times-circle";
+
+                            }
+
+
+                            else if (
+                                order.status ===
+                                    "approved"
+                            ) {
+
+                                statusText =
+                                    "تمت الموافقة - في انتظار الاستلام";
+
+
+                                statusClass =
+                                    "status-approved";
+
+
+                                statusIcon =
+                                    "fa-check-circle";
+
+                            }
+
+
+                            /* ================= DATE ================= */
+
+                            let orderDate =
+                                "حديث";
+
+
+                            if (
+                                order.timestamp &&
+                                typeof order.timestamp.toDate ===
+                                    "function"
+                            ) {
+
+                                orderDate =
+                                    new Date(
+                                        order.timestamp.toDate()
+                                    ).toLocaleString(
+                                        "ar-EG",
+                                        {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit"
+                                        }
+                                    );
+
+                            }
+
+
+                            /* ================= GIFT ================= */
+
+                            const giftName =
+                                order.giftName ||
+                                order.title ||
+                                order.name ||
+                                "طلب هدية";
+
+
+                            const points =
+                                order.pointsSpent ||
+                                order.points ||
+                                1;
+
+
+                            /* ================= CARD ================= */
+
+                            const card =
+                                document.createElement("div");
+
+
+                            card.className =
+                                "order-card";
+
+
+                            card.innerHTML = `
+
+                                <div class="order-top">
+
+                                    <div class="gift-icon">
+
+                                        <i class="fas fa-gift"></i>
+
+                                    </div>
+
+                                    <div class="order-title-area">
+
+                                        <h3>
+                                            ${giftName}
+                                        </h3>
+
+                                        <span>
+                                            <i class="fas fa-calendar-alt"></i>
+                                            ${orderDate}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="order-status-row">
+
+                                    <span class="status ${statusClass}">
+
+                                        <i class="fas ${statusIcon}"></i>
+
+                                        ${statusText}
+
+                                    </span>
+
+                                </div>
+
+
+                                <div class="order-details">
+
+                                    <div class="detail-item">
+
+                                        <div class="detail-icon">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <small>
+                                                تكلفة الهدية
+                                            </small>
+
+                                            <strong>
+                                                ${points} نقطة
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="detail-item">
+
+                                        <div class="detail-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <small>
+                                                حالة الطلب
+                                            </small>
+
+                                            <strong>
+                                                ${statusText}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            `;
+
+
+                            userOrdersContainer.appendChild(
+                                card
+                            );
+
+
+                        }
+                    );
+
+
+                    /* ================= COUNT ================= */
+
+                    const countElement =
+                        document.getElementById(
+                            "ordersCount"
+                        );
+
+
+                    if (countElement) {
+
+                        countElement.textContent =
+                            count;
+
+                    }
+
+
+                    /* ================= EMPTY ================= */
+
+                    if (count === 0) {
+
+                        const empty =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        empty.className =
+                            "empty-box";
+
+
+                        empty.innerHTML = `
+
+                            <div class="empty-icon">
+
+                                <i class="fas fa-gift"></i>
+
+                            </div>
+
+                            <h3>
+                                لا توجد طلبات حتى الآن
+                            </h3>
+
+                            <p>
+                                لم تقم بطلب أي هدية بعد.
+                                اذهب إلى معرض الهدايا واختر ما يناسبك.
+                            </p>
+
+                            <button
+                                type="button"
+                                onclick="navigateTo('gallery.html')"
+                            >
+
+                                <i class="fas fa-gift"></i>
+
+                                الذهاب إلى معرض الهدايا
+
+                            </button>
+
+                        `;
+
+
+                        userOrdersContainer.appendChild(
+                            empty
+                        );
+
+                    }
+
+
+                } catch (error) {
+
+
+                    console.error(
+                        "خطأ في جلب الطلبات:",
+                        error
+                    );
+
+
+                    userOrdersContainer.innerHTML = `
+
+                        <div class="error-box">
+
+                            <div class="error-icon">
+
+                                <i class="fas fa-triangle-exclamation"></i>
+
+                            </div>
+
+                            <h3>
+                                حدث خطأ أثناء تحميل الطلبات
+                            </h3>
+
+                            <p>
+                                تأكد من اتصالك بالإنترنت
+                                ثم حاول مرة أخرى.
+                            </p>
+
+                            <button
+                                onclick="location.reload()"
+                            >
+
+                                <i class="fas fa-rotate"></i>
+
+                                إعادة المحاولة
+
+                            </button>
+
+                        </div>
+
+                    `;
+
+                }
+
+            }
+
+
             await fetchUserOrders();
+
+
         });
+
     </script>
 
+
     <style>
-        :root{
-            --wine-900:#4a0e16;
-            --wine-800:#6b1420;
-            --wine-700:#7c1b28;
-            --gold:#c9a04d;
-            --gold-light:#e6c878;
-            --paper:#f6f1e9;
-            --card:#ffffff;
-            --ink:#2a2320;
-            --ink-soft:#6b625c;
-            --line:#e9dfd0;
-            --green:#16a34a;
-            --red:#dc3545;
-            --blue:#0d6efd;
+
+        /* =====================================================
+           COLORS
+        ===================================================== */
+
+        :root {
+
+            --navy: #061d39;
+
+            --navy-dark: #020c19;
+
+            --maroon: #7d1424;
+
+            --maroon-dark: #5d101c;
+
+            --maroon-light: #a51f35;
+
+            --gold: #c9a24b;
+
+            --gold-light: #e6c878;
+
+            --ink: #211918;
+
+            --muted: #817773;
+
+            --line: #eadfe0;
+
+            --soft: #faf6f6;
+
+            --surface: #ffffff;
+
+            --green: #137333;
+
+            --red: #b3261e;
+
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+
+            box-sizing: border-box;
+
+            margin: 0;
+
+            padding: 0;
+
+        }
+
+
+        html,
+        body {
+
+            min-height: 100%;
+
+        }
+
 
         body {
-            background: linear-gradient(160deg, #000000 0%, #001b3d 45%, #000000 100%);
-            min-height: 100vh;
-            font-family: 'Cairo', sans-serif;
-            color: var(--ink);
+
+            min-height: 100dvh;
+
             display: flex;
+
             flex-direction: column;
-            align-items: center;
+
+            color: var(--ink);
+
+            font-family:
+                "Tajawal",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #0a2d57 0,
+                    var(--navy) 45%,
+                    var(--navy-dark) 100%
+                );
+
+            padding-bottom:
+                92px;
+
         }
 
-        .navbar {
-            width: 100%;
-            background: linear-gradient(180deg, var(--wine-800), var(--wine-900));
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 8px 20px rgba(74,14,22,0.25);
-            position: relative;
-        }
 
-        .navbar::after{
-            content:'';
-            position:absolute;
-            bottom:0; right:0; left:0;
-            height:4px;
-            background:linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
+        button,
+        a {
 
-        .menu-btn {
-            background: rgba(255,255,255,0.06);
-            border: 1.5px solid rgba(230,200,120,0.4);
-            color: var(--gold-light);
-            font-size: 14px;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 20px;
             cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            transition: 0.25s;
-        }
-        .menu-btn:hover { background: rgba(230,200,120,0.15); border-color: var(--gold); }
 
-        .page-title {
-            color: var(--gold-light);
-            font-family: 'Amiri', serif;
-            font-size: 24px;
-            margin-bottom: 20px;
-            text-align: right;
-            font-weight: 700;
+            font: inherit;
+
         }
 
-        .sidebar {
-            position: fixed; top: 0; right: -300px;
-            width: 290px; height: 100%;
-            background: var(--wine-900);
-            border-left: 1px solid rgba(230,200,120,0.2);
-            transition: right 0.3s ease;
-            z-index: 9999;
-            padding: 22px;
-            display: flex; flex-direction: column;
-        }
-        .sidebar.active { right: 0; }
-        .sidebar-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(230,200,120,0.2);
-            padding-bottom: 14px; margin-bottom: 20px;
-        }
-        .sidebar-header h3 { color: #fbeed4; font-family:'Amiri', serif; font-size: 19px; }
-        .close-btn { background: none; border: none; color: var(--gold-light); font-size: 22px; cursor: pointer; }
-        .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-        .sidebar-links a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 15px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(230,200,120,0.15);
-            border-radius: 12px;
-            color: #f3e9d8;
-            text-decoration: none;
-            font-size: 15px;
-            font-family: 'Cairo', sans-serif;
-            transition: 0.25s;
-            cursor: pointer;
-        }
-        .sidebar-links a:hover { background: var(--gold); color: var(--wine-900); border-color: var(--gold); }
 
-        .logout-link {
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            padding: 12px 15px;
-            background: rgba(220, 53, 69, 0.15);
-            border: 1.5px solid #dc3545;
-            border-radius: 12px;
-            color: #ff6b6b;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: 'Cairo', sans-serif;
-            margin-top: auto;
-            cursor: pointer;
-            transition: 0.25s;
-            width: 100%;
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+
+            width:
+                min(720px, 100%);
+
+            margin:
+                0 auto;
+
+            padding:
+                18px 14px 0;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                12px;
+
         }
-        .logout-link:hover { background: #dc3545; color: #ffffff; }
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,10,8,0.55); display: none; z-index: 998; }
-        .overlay.active { display: block; }
 
-        .main-content { max-width: 600px; width: 100%; padding: 26px 16px 50px; }
+        .topbar-title {
 
-        .orders-grid { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                11px;
+
+            color:
+                #fff;
+
+        }
+
+
+        .topbar-title .mark {
+
+            width:
+                38px;
+
+            height:
+                38px;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            border-radius:
+                11px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            color:
+                var(--gold-light);
+
+            font-size:
+                16px;
+
+            flex-shrink:
+                0;
+
+        }
+
+
+        .topbar-title span {
+
+            font-weight:
+                800;
+
+            font-size:
+                13px;
+
+            line-height:
+                1.5;
+
+        }
+
+
+        .topbar-btn {
+
+            width:
+                44px;
+
+            height:
+                44px;
+
+            border:
+                0;
+
+            border-radius:
+                13px;
+
+            color:
+                var(--maroon);
+
+            background:
+                #fff;
+
+            box-shadow:
+                0 8px 20px
+                rgb(0 0 0 / 22%);
+
+            flex-shrink:
+                0;
+
+            text-decoration:
+                none;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            transition:
+                .2s ease;
+
+        }
+
+
+        .topbar-btn:hover {
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .page {
+
+            width:
+                min(720px, 100%);
+
+            margin:
+                16px auto 0;
+
+            padding:
+                0 14px;
+
+        }
+
+
+        /* =====================================================
+           MAIN CARD
+        ===================================================== */
+
+        .card {
+
+            position:
+                relative;
+
+            overflow:
+                hidden;
+
+            border-radius:
+                26px;
+
+            background:
+                var(--surface);
+
+            box-shadow:
+                0 25px 65px
+                rgb(0 0 0 / 30%);
+
+            margin-bottom:
+                16px;
+
+        }
+
+
+        .card::before {
+
+            content:
+                "";
+
+            position:
+                absolute;
+
+            inset:
+                0 0 auto;
+
+            height:
+                6px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--navy),
+                    var(--maroon),
+                    var(--gold),
+                    var(--maroon),
+                    var(--navy)
+                );
+
+        }
+
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+
+        .page-header {
+
+            padding:
+                30px 22px 22px;
+
+            text-align:
+                center;
+
+        }
+
+
+        .page-icon {
+
+            width:
+                72px;
+
+            height:
+                72px;
+
+            margin:
+                0 auto 12px;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            border-radius:
+                50%;
+
+            color:
+                #fff;
+
+            font-size:
+                27px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            box-shadow:
+                0 12px 25px
+                rgb(125 20 36 / 25%);
+
+        }
+
+
+        .page-header h1 {
+
+            font:
+                700 clamp(24px, 5vw, 30px)
+                "Amiri",
+                serif;
+
+            color:
+                var(--maroon);
+
+        }
+
+
+        .page-header p {
+
+            margin-top:
+                6px;
+
+            color:
+                var(--muted);
+
+            font-size:
+                13px;
+
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
+        #userOrdersContainer {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                14px;
+
+        }
+
+
+        .orders-summary {
+
+            position:
+                relative;
+
+            overflow:
+                hidden;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                13px;
+
+            padding:
+                18px;
+
+            border-radius:
+                20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff,
+                    var(--soft)
+                );
+
+            border:
+                1px solid
+                var(--line);
+
+            box-shadow:
+                0 8px 20px
+                rgb(0 0 0 / 5%);
+
+        }
+
+
+        .summary-icon {
+
+            width:
+                48px;
+
+            height:
+                48px;
+
+            flex-shrink:
+                0;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            border-radius:
+                14px;
+
+            color:
+                #fff;
+
+            font-size:
+                18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+        }
+
+
+        .summary-text {
+
+            flex:
+                1;
+
+        }
+
+
+        .summary-text h2 {
+
+            font:
+                700 21px
+                "Amiri",
+                serif;
+
+            color:
+                var(--maroon);
+
+        }
+
+
+        .summary-text p {
+
+            margin-top:
+                2px;
+
+            color:
+                var(--muted);
+
+            font-size:
+                11px;
+
+        }
+
+
+        .summary-count {
+
+            min-width:
+                55px;
+
+            padding:
+                8px;
+
+            border-radius:
+                13px;
+
+            text-align:
+                center;
+
+            background:
+                #fff8ed;
+
+            border:
+                1px solid
+                #ead9bd;
+
+            color:
+                #74520e;
+
+        }
+
+
+        .summary-count strong {
+
+            display:
+                block;
+
+            font:
+                700 22px
+                "Amiri",
+                serif;
+
+        }
+
+
+        .summary-count span {
+
+            display:
+                block;
+
+            font-size:
+                10px;
+
+        }
+
+
+        /* =====================================================
+           ORDER CARD
+        ===================================================== */
 
         .order-card {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 8px 20px rgba(74,14,22,0.06);
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+
+            position:
+                relative;
+
+            overflow:
+                hidden;
+
+            padding:
+                18px;
+
+            border-radius:
+                20px;
+
+            background:
+                #fff;
+
+            border:
+                1px solid
+                var(--line);
+
+            box-shadow:
+                0 8px 20px
+                rgb(0 0 0 / 6%);
+
+            transition:
+                .25s ease;
+
         }
 
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            border-bottom: 1px solid var(--line);
-            padding-bottom: 10px;
+
+        .order-card::before {
+
+            content:
+                "";
+
+            position:
+                absolute;
+
+            top:
+                0;
+
+            right:
+                0;
+
+            width:
+                4px;
+
+            height:
+                100%;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    var(--gold),
+                    var(--maroon)
+                );
+
         }
 
-        .order-title {
-            font-size: 16px;
-            font-weight: 700;
-            font-family: 'Amiri', serif;
-            color: var(--wine-800);
+
+        .order-card:hover {
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 15px 30px
+                rgb(125 20 36 / 10%);
+
+            border-color:
+                #d9b6bc;
+
         }
 
-        .order-status {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+
+        /* =====================================================
+           ORDER TOP
+        ===================================================== */
+
+        .order-top {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                13px;
+
         }
 
-        .status-pending { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .status-approved { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
-        .status-delivered { background: #d1e7dd; color: #137333; border: 1px solid #b7eb8f; }
-        .status-rejected { background: #f8d7da; color: #b3261e; border: 1px solid #f5c6cb; }
 
-        .order-body {
-            display: flex;
-            flex-direction: column;
-            font-size: 14px;
-            color: var(--ink-soft);
-        }
-        .order-body strong { color: var(--ink); }
+        .gift-icon {
 
-        .no-orders {
-            padding: 40px;
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            color: var(--ink-soft);
-            text-align: center;
-            font-size: 15px;
+            width:
+                48px;
+
+            height:
+                48px;
+
+            flex-shrink:
+                0;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            border-radius:
+                14px;
+
+            color:
+                #fff;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            box-shadow:
+                0 7px 16px
+                rgb(125 20 36 / 20%);
+
         }
+
+
+        .order-title-area {
+
+            flex:
+                1;
+
+            min-width:
+                0;
+
+        }
+
+
+        .order-title-area h3 {
+
+            color:
+                var(--maroon);
+
+            font:
+                700 20px
+                "Amiri",
+                serif;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
+
+            white-space:
+                nowrap;
+
+        }
+
+
+        .order-title-area span {
+
+            display:
+                block;
+
+            margin-top:
+                3px;
+
+            color:
+                var(--muted);
+
+            font-size:
+                11px;
+
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .order-status-row {
+
+            margin-top:
+                14px;
+
+            padding-top:
+                12px;
+
+            border-top:
+                1px solid
+                var(--line);
+
+        }
+
+
+        .status {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                7px;
+
+            padding:
+                7px 13px;
+
+            border-radius:
+                20px;
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+
+        }
+
+
+        .status-pending {
+
+            color:
+                #856404;
+
+            background:
+                #fff3cd;
+
+            border:
+                1px solid
+                #ffeeba;
+
+        }
+
+
+        .status-approved {
+
+            color:
+                #0f5132;
+
+            background:
+                #d1e7dd;
+
+            border:
+                1px solid
+                #badbcc;
+
+        }
+
+
+        .status-delivered {
+
+            color:
+                var(--green);
+
+            background:
+                #e5f5e9;
+
+            border:
+                1px solid
+                #b7eb8f;
+
+        }
+
+
+        .status-rejected {
+
+            color:
+                var(--red);
+
+            background:
+                #f8d7da;
+
+            border:
+                1px solid
+                #f5c6cb;
+
+        }
+
+
+        /* =====================================================
+           DETAILS
+        ===================================================== */
+
+        .order-details {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                10px;
+
+            margin-top:
+                13px;
+
+        }
+
+
+        .detail-item {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                9px;
+
+            padding:
+                11px;
+
+            border-radius:
+                13px;
+
+            background:
+                var(--soft);
+
+            border:
+                1px solid
+                var(--line);
+
+            min-width:
+                0;
+
+        }
+
+
+        .detail-icon {
+
+            width:
+                34px;
+
+            height:
+                34px;
+
+            flex-shrink:
+                0;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            border-radius:
+                10px;
+
+            color:
+                var(--maroon);
+
+            background:
+                #fff;
+
+            border:
+                1px solid
+                var(--line);
+
+            font-size:
+                13px;
+
+        }
+
+
+        .detail-item small {
+
+            display:
+                block;
+
+            color:
+                var(--muted);
+
+            font-size:
+                9px;
+
+        }
+
+
+        .detail-item strong {
+
+            display:
+                block;
+
+            margin-top:
+                2px;
+
+            color:
+                var(--ink);
+
+            font-size:
+                11px;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
+
+            white-space:
+                nowrap;
+
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty-box,
+        .loading-box,
+        .error-box {
+
+            padding:
+                38px 20px;
+
+            border-radius:
+                20px;
+
+            background:
+                #fff;
+
+            border:
+                1px solid
+                var(--line);
+
+            box-shadow:
+                0 8px 20px
+                rgb(0 0 0 / 5%);
+
+            text-align:
+                center;
+
+        }
+
+
+        .empty-icon,
+        .loading-icon,
+        .error-icon {
+
+            width:
+                65px;
+
+            height:
+                65px;
+
+            margin:
+                0 auto 13px;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            border-radius:
+                50%;
+
+            color:
+                #fff;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            font-size:
+                25px;
+
+        }
+
+
+        .loading-icon {
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--navy),
+                    #0a2d57
+                );
+
+        }
+
+
+        .error-icon {
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #c0392b,
+                    #8e1b12
+                );
+
+        }
+
+
+        .empty-box h3,
+        .loading-box h3,
+        .error-box h3 {
+
+            font:
+                700 21px
+                "Amiri",
+                serif;
+
+            color:
+                var(--maroon);
+
+        }
+
+
+        .empty-box p,
+        .loading-box p,
+        .error-box p {
+
+            margin-top:
+                6px;
+
+            color:
+                var(--muted);
+
+            font-size:
+                12px;
+
+            line-height:
+                1.8;
+
+        }
+
+
+        .empty-box button,
+        .error-box button {
+
+            margin-top:
+                16px;
+
+            padding:
+                11px 18px;
+
+            border:
+                0;
+
+            border-radius:
+                13px;
+
+            color:
+                #fff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            box-shadow:
+                0 7px 15px
+                rgb(125 20 36 / 25%);
+
+            font-weight:
+                800;
+
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+
+            position:
+                fixed;
+
+            top:
+                0;
+
+            right:
+                -300px;
+
+            width:
+                290px;
+
+            height:
+                100%;
+
+            background:
+                var(--navy-dark);
+
+            border-left:
+                1px solid
+                rgb(230 200 120 / 20%);
+
+            transition:
+                right .3s ease;
+
+            z-index:
+                1100;
+
+            padding:
+                22px;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+        }
+
+
+        .sidebar.active {
+
+            right:
+                0;
+
+        }
+
+
+        .sidebar-header {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            padding-bottom:
+                14px;
+
+            margin-bottom:
+                20px;
+
+            border-bottom:
+                1px solid
+                rgb(230 200 120 / 20%);
+
+        }
+
+
+        .sidebar-header h3 {
+
+            color:
+                var(--gold-light);
+
+            font:
+                700 19px
+                "Amiri",
+                serif;
+
+        }
+
+
+        .close-btn {
+
+            border:
+                0;
+
+            background:
+                none;
+
+            color:
+                var(--gold-light);
+
+            font-size:
+                22px;
+
+        }
+
+
+        .sidebar-links {
+
+            list-style:
+                none;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                10px;
+
+            flex-grow:
+                1;
+
+        }
+
+
+        .sidebar-links a {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
+
+            padding:
+                12px 15px;
+
+            border:
+                1px solid
+                rgb(230 200 120 / 15%);
+
+            border-radius:
+                12px;
+
+            color:
+                #f3e9d8;
+
+            text-decoration:
+                none;
+
+            font-size:
+                14px;
+
+            transition:
+                .25s ease;
+
+        }
+
+
+        .sidebar-links a:hover {
+
+            background:
+                var(--gold);
+
+            color:
+                var(--navy-dark);
+
+            border-color:
+                var(--gold);
+
+        }
+
+
+        .logout-link {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            gap:
+                12px;
+
+            width:
+                100%;
+
+            padding:
+                12px 15px;
+
+            border:
+                1.5px solid
+                #dc3545;
+
+            border-radius:
+                12px;
+
+            color:
+                #ff6b6b;
+
+            background:
+                rgb(220 53 69 / 15%);
+
+            font-weight:
+                700;
+
+            font-size:
+                14px;
+
+            margin-top:
+                auto;
+
+            transition:
+                .25s ease;
+
+        }
+
+
+        .logout-link:hover {
+
+            background:
+                #dc3545;
+
+            color:
+                #fff;
+
+        }
+
+
+        .overlay {
+
+            position:
+                fixed;
+
+            inset:
+                0;
+
+            background:
+                rgb(0 0 0 / 50%);
+
+            z-index:
+                1050;
+
+            display:
+                none;
+
+        }
+
+
+        .overlay.active {
+
+            display:
+                block;
+
+        }
+
+
+        /* =====================================================
+           BOTTOM NAV
+        ===================================================== */
+
+        nav.bottom-nav {
+
+            position:
+                fixed;
+
+            bottom:
+                0;
+
+            right:
+                0;
+
+            left:
+                0;
+
+            background:
+                var(--navy-dark);
+
+            border-top:
+                1px solid
+                rgb(230 200 120 / 25%);
+
+            display:
+                flex;
+
+            justify-content:
+                space-around;
+
+            padding:
+                10px 4px
+                calc(10px + env(safe-area-inset-bottom));
+
+            box-shadow:
+                0 -8px 20px
+                rgb(0 0 0 / 25%);
+
+            overflow-x:
+                auto;
+
+            z-index:
+                10;
+
+        }
+
+
+        nav.bottom-nav a {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            align-items:
+                center;
+
+            gap:
+                4px;
+
+            padding:
+                4px 6px;
+
+            flex-shrink:
+                0;
+
+            border:
+                0;
+
+            background:
+                none;
+
+            color:
+                #c9b7a8;
+
+            text-decoration:
+                none;
+
+            font-size:
+                10px;
+
+            font-family:
+                "Tajawal",
+                sans-serif;
+
+            transition:
+                .25s ease;
+
+        }
+
+
+        nav.bottom-nav a i {
+
+            font-size:
+                17px;
+
+        }
+
+
+        nav.bottom-nav a:hover,
+        nav.bottom-nav a.active {
+
+            color:
+                var(--gold-light);
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 520px) {
+
+            .page {
+
+                padding:
+                    0 10px;
+
+            }
+
+
+            .page-header {
+
+                padding:
+                    27px 16px 20px;
+
+            }
+
+
+            .order-card {
+
+                padding:
+                    15px;
+
+            }
+
+
+            .order-details {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .summary-text p {
+
+                display:
+                    none;
+
+            }
+
+
+            .summary-count {
+
+                min-width:
+                    48px;
+
+            }
+
+        }
+
+
+        @media (max-width: 380px) {
+
+            .topbar-title span {
+
+                font-size:
+                    11px;
+
+            }
+
+
+            .topbar-title .mark {
+
+                width:
+                    34px;
+
+                height:
+                    34px;
+
+            }
+
+
+            .topbar-btn {
+
+                width:
+                    40px;
+
+                height:
+                    40px;
+
+            }
+
+
+            .order-title-area h3 {
+
+                font-size:
+                    18px;
+
+            }
+
+        }
+
     </style>
+
 </head>
+
+
 <body>
 
-    <div class="navbar">
-        <button id="menuBtn" class="menu-btn"><i class="fas fa-bars"></i> القائمة</button>
-        <div style="color: var(--gold-light); font-weight: 700; font-family: 'Amiri', serif; font-size: 18px;">سلة طلباتي</div>
-    </div>
 
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h3>خيارات الحساب</h3>
-            <button id="closeBtn" class="close-btn"><i class="fas fa-times"></i></button>
+    <!-- =====================================================
+         TOP BAR
+    ===================================================== -->
+
+    <div class="topbar">
+
+        <div class="topbar-title">
+
+            <div class="mark">
+
+                <i class="fas fa-cross"></i>
+
+            </div>
+
+            <span>
+                كنيسه الشهيد العظيم<br>
+                استيفانوس ومارمينا العجايبي
+            </span>
+
         </div>
+
+
+        <a
+            class="topbar-btn"
+            href="javascript:void(0)"
+            title="الإشعارات"
+            onclick="navigateTo('notifications.html')"
+        >
+
+            <i class="fas fa-bell"></i>
+
+        </a>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PAGE
+    ===================================================== -->
+
+    <main class="page">
+
+
+        <!-- PAGE HEADER -->
+
+        <section class="card page-header">
+
+            <div class="page-icon">
+
+                <i class="fas fa-shopping-bag"></i>
+
+            </div>
+
+
+            <h1>
+                سلة <span>طلباتي</span>
+            </h1>
+
+
+            <p>
+                تابع جميع الهدايا التي طلبتها وحالة كل طلب
+            </p>
+
+        </section>
+
+
+
+        <!-- ORDERS -->
+
+        <section class="card"
+            style="
+                padding: 18px;
+                background: #fff;
+            "
+        >
+
+            <div id="userOrdersContainer"></div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ===================================================== -->
+
+    <div
+        id="sidebar"
+        class="sidebar"
+    >
+
+        <div class="sidebar-header">
+
+            <h3>
+                قائمة التنقل
+            </h3>
+
+
+            <button
+                id="closeBtn"
+                class="close-btn"
+                type="button"
+            >
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+
         <ul class="sidebar-links">
-            <li><a href="home.html"><i class="fas fa-home"></i>الرئيسية</a></li>
-            <li><a href="profile.html"><i class="fas fa-user-circle"></i>البروفايل</a></li>
-            <li><a href="gallery.html"><i class="fas fa-gift"></i>معرض الهدايا</a></li>
-            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>السلة</a></li>
-            <li><a href="notifications.html"><i class="fas fa-bell"></i>الإشعارات</a></li>
-            <li><button id="logoutBtn" class="logout-link"><i class="fas fa-sign-out-alt"></i>تسجيل خروج</button></li>
+
+            <li>
+
+                <a href="home.html">
+
+                    <i class="fas fa-home"></i>
+
+                    الرئيسية
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="profile.html">
+
+                    <i class="fas fa-user"></i>
+
+                    البروفايل
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="gallery.html">
+
+                    <i class="fas fa-images"></i>
+
+                    معرض الهدايا
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="cart.html">
+
+                    <i class="fas fa-shopping-cart"></i>
+
+                    سلة الطلبات
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="notifications.html">
+
+                    <i class="fas fa-bell"></i>
+
+                    الإشعارات
+
+                </a>
+
+            </li>
+
         </ul>
+
+
+        <button
+            id="logoutBtn"
+            class="logout-link"
+            type="button"
+        >
+
+            <i class="fas fa-sign-out-alt"></i>
+
+            تسجيل خروج
+
+        </button>
+
     </div>
 
-    <div id="overlay" class="overlay"></div>
 
-    <div class="main-content">
-        <h1 class="page-title">سجل المشتريات والطلبات السابقة</h1>
-        <div id="userOrdersContainer" class="orders-grid"></div>
-    </div>
+
+    <!-- OVERLAY -->
+
+    <div
+        id="overlay"
+        class="overlay"
+    ></div>
+
+
+
+    <!-- =====================================================
+         BOTTOM NAV
+    ===================================================== -->
+
+    <nav class="bottom-nav">
+
+
+        <a onclick="navigateTo('profile.html')">
+
+            <i class="fas fa-user"></i>
+
+            <span>
+                البروفايل
+            </span>
+
+        </a>
+
+
+        <a onclick="navigateTo('gallery.html')">
+
+            <i class="fas fa-images"></i>
+
+            <span>
+                المعرض
+            </span>
+
+        </a>
+
+
+        <a onclick="navigateTo('home.html')">
+
+            <i class="fas fa-house-chimney"></i>
+
+            <span>
+                الرئيسية
+            </span>
+
+        </a>
+
+
+        <a
+            class="active"
+            onclick="navigateTo('cart.html')"
+        >
+
+            <i class="fas fa-heart"></i>
+
+            <span>
+                الطلبات
+            </span>
+
+        </a>
+
+
+        <a onclick="navigateTo('notifications.html')">
+
+            <i class="fas fa-bell"></i>
+
+            <span>
+                الإشعارات
+            </span>
+
+        </a>
+
+
+    </nav>
+
 
 </body>
+
 </html>
