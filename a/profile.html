@@ -1,423 +1,2727 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
     <title>البروفايل - لوحة الخادم</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- =====================================================
+         الخطوط
+    ====================================================== -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+
+    <!-- =====================================================
+         Font Awesome
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
     <style>
-        :root{
-            --wine-900:#4a0e16;
-            --wine-800:#6b1420;
-            --wine-700:#7c1b28;
-            --gold:#c9a04d;
-            --gold-light:#e6c878;
-            --paper:#f6f1e9;
-            --card:#ffffff;
-            --ink:#2a2320;
-            --ink-soft:#6b625c;
-            --line:#e9dfd0;
+
+        /* =====================================================
+           الألوان
+        ====================================================== */
+
+        :root {
+
+            --wine-900: #4a0e16;
+            --wine-800: #6b1420;
+            --wine-700: #7c1b28;
+
+            --gold: #c9a04d;
+            --gold-light: #e6c878;
+
+            --paper: #f6f1e9;
+
+            --card: #ffffff;
+
+            --ink: #2a2320;
+            --ink-soft: #6b625c;
+
+            --line: #e9dfd0;
+
+            --green: #16a34a;
+            --green-dark: #15803d;
+
+            --red: #dc2626;
+
         }
 
-        * { box-sizing:border-box; margin:0; padding:0; }
 
-        body{
-            background:var(--paper);
-            display:flex;
-            flex-direction:column;
-            min-height:100vh;
-            font-family:'Cairo', sans-serif;
-            color:var(--ink);
+        /* =====================================================
+           Reset
+        ====================================================== */
+
+        * {
+
+            box-sizing: border-box;
+
+            margin: 0;
+            padding: 0;
+
         }
 
-        /* ===== الهيدر ===== */
-        header.church-header{
-            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
-            padding:22px 20px 26px;
-            text-align:center;
-            position:relative;
-            box-shadow:0 8px 20px rgba(74,14,22,0.25);
+
+        /* =====================================================
+           Body
+        ====================================================== */
+
+        body {
+
+            background: var(--paper);
+
+            display: flex;
+
+            flex-direction: column;
+
+            min-height: 100vh;
+
+            font-family: 'Cairo', sans-serif;
+
+            color: var(--ink);
+
         }
 
-        header.church-header::after{
-            content:'';
-            position:absolute;
-            bottom:0; right:0; left:0;
-            height:4px;
-            background:linear-gradient(90deg, transparent, var(--gold), transparent);
+
+        /* =====================================================
+           Header
+        ====================================================== */
+
+        header.church-header {
+
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    var(--wine-800),
+                    var(--wine-900)
+                );
+
+            padding: 22px 30px 26px;
+
+            text-align: center;
+
+            position: relative;
+
+            box-shadow:
+                0 8px 20px
+                rgba(74, 14, 22, 0.25);
+
         }
 
-        .church-logo{
-            width:52px;
-            height:52px;
-            border-radius:50%;
-            background:var(--wine-700);
-            border:2px solid var(--gold);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            margin:0 auto 10px;
+
+        header.church-header::after {
+
+            content: '';
+
+            position: absolute;
+
+            bottom: 0;
+
+            right: 0;
+
+            left: 0;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--gold),
+                    transparent
+                );
+
         }
 
-        .church-logo i{
-            color:var(--gold-light);
-            font-size:24px;
+
+        /* =====================================================
+           Logo
+        ====================================================== */
+
+        .church-logo {
+
+            width: 64px;
+
+            height: 64px;
+
+            border-radius: 50%;
+
+            background: var(--wine-700);
+
+            border:
+                2px solid
+                var(--gold);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin:
+                0 auto
+                11px;
+
+            box-shadow:
+                0 7px 18px
+                rgba(0, 0, 0, 0.2);
+
         }
 
-        header.church-header h2{
-            font-family:'Amiri', serif;
-            color:#fbeed4;
-            font-size:18px;
-            font-weight:700;
+
+        .church-logo i {
+
+            color: var(--gold-light);
+
+            font-size: 29px;
+
         }
 
-        /* ===== المحتوى ===== */
-        .main-content{
-            flex:1;
-            padding:18px 16px 100px; /* مسافة كافية لعدم تداخل المحتوى مع شريط التنقل السفلي */
-            max-width:620px;
-            width:100%;
-            margin:0 auto;
+
+        header.church-header h2 {
+
+            font-family: 'Amiri', serif;
+
+            color: #fbeed4;
+
+            font-size: 21px;
+
+            font-weight: 700;
+
         }
 
-        /* ===== الويدجت الموحد ===== */
-        .widget{
-            background:var(--card);
-            border-radius:22px;
-            border:1px solid var(--line);
-            box-shadow:0 12px 28px rgba(74,14,22,0.08);
-            margin-bottom:18px;
-            overflow:hidden;
-            position:relative;
+
+        /* =====================================================
+           Main Content
+        ====================================================== */
+
+        .main-content {
+
+            flex: 1;
+
+            padding:
+                30px
+                30px
+                120px;
+
+            max-width: 1200px;
+
+            width: 100%;
+
+            margin: 0 auto;
+
         }
 
-        .widget::before{
-            content:'';
-            position:absolute;
-            top:0; right:0; left:0;
-            height:3px;
-            background:linear-gradient(90deg, var(--wine-700), var(--gold), var(--wine-700));
-            opacity:.9;
+
+        /* =====================================================
+           Widget
+        ====================================================== */
+
+        .widget {
+
+            background: var(--card);
+
+            border-radius: 24px;
+
+            border:
+                1px solid
+                var(--line);
+
+            box-shadow:
+                0 14px 32px
+                rgba(74, 14, 22, 0.10);
+
+            margin-bottom: 24px;
+
+            overflow: hidden;
+
+            position: relative;
+
         }
 
-        .widget-head{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            padding:16px 18px 4px;
+
+        .widget::before {
+
+            content: '';
+
+            position: absolute;
+
+            top: 0;
+
+            right: 0;
+
+            left: 0;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--wine-700),
+                    var(--gold),
+                    var(--wine-700)
+                );
+
         }
 
-        .widget-head .icon-badge{
-            width:30px; height:30px;
-            border-radius:10px;
-            background:var(--wine-700);
-            color:var(--gold-light);
-            display:flex; align-items:center; justify-content:center;
-            font-size:13px;
-            flex-shrink:0;
+
+        /* =====================================================
+           Profile Card
+        ====================================================== */
+
+        .avatar-widget .widget-body {
+
+            padding:
+                40px
+                25px
+                43px;
+
+            text-align: center;
+
         }
 
-        .widget-head h3{
-            font-size:14px;
-            font-weight:700;
-            color:var(--wine-800);
+
+        .avatar-widget h1 {
+
+            font-family: 'Amiri', serif;
+
+            font-size: 30px;
+
+            color: var(--wine-800);
+
+            margin-bottom: 20px;
+
         }
 
-        /* بطاقة الصورة الشخصية */
-        .avatar-widget .widget-body{
-            padding:14px 20px 22px;
-            text-align:center;
+
+        .profile-subtitle {
+
+            color: var(--ink-soft);
+
+            font-size: 14px;
+
+            margin-top: 12px;
+
         }
 
-        .avatar-widget h1{
-            font-family:'Amiri', serif;
-            font-size:21px;
-            color:var(--wine-800);
-            margin-bottom:16px;
+
+        /* =====================================================
+           Avatar
+        ====================================================== */
+
+        .avatar-container {
+
+            position: relative;
+
+            width: 145px;
+
+            height: 145px;
+
+            margin:
+                0 auto;
+
         }
 
-        .avatar-container{
-            position:relative;
-            width:120px;
-            height:120px;
-            margin:0 auto;
+
+        .avatar {
+
+            width: 100%;
+
+            height: 100%;
+
+            border-radius: 50%;
+
+            border:
+                4px solid
+                var(--gold);
+
+            object-fit: cover;
+
+            background: var(--paper);
+
+            box-shadow:
+                0 12px 28px
+                rgba(74, 14, 22, 0.23);
+
         }
 
-        .avatar{
-            width:100%;
-            height:100%;
-            border-radius:50%;
-            border:3px solid var(--gold);
-            object-fit:cover;
-            background:var(--paper);
-            box-shadow:0 6px 16px rgba(74,14,22,0.25);
+
+        /* =====================================================
+           Upload
+        ====================================================== */
+
+        .upload-label {
+
+            position: absolute;
+
+            bottom: 3px;
+
+            left: 3px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--gold-light),
+                    var(--gold)
+                );
+
+            color: var(--wine-900);
+
+            width: 43px;
+
+            height: 43px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 5px 13px
+                rgba(74, 14, 22, 0.35);
+
+            transition: .3s;
+
+            border:
+                3px solid
+                var(--card);
+
         }
 
-        .upload-label{
-            position:absolute;
-            bottom:0;
-            left:0;
-            background:linear-gradient(135deg, var(--gold-light), var(--gold));
-            color:var(--wine-900);
-            width:34px;
-            height:34px;
-            border-radius:50%;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            cursor:pointer;
-            box-shadow:0 4px 10px rgba(74,14,22,0.35);
-            transition:.3s;
-            border:2px solid var(--card);
+
+        .upload-label:hover {
+
+            transform: scale(1.1);
+
         }
 
-        .upload-label:hover{
-            transform:scale(1.08);
+
+        #avatar-input {
+
+            display: none;
+
         }
 
-        #avatar-input{ display:none; }
 
-        /* بطاقة بيانات الخادم */
-        .info-widget .widget-body{
-            padding:8px 18px 20px;
+        /* =====================================================
+           Info Header
+        ====================================================== */
+
+        .widget-head {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding:
+                20px
+                28px
+                16px;
+
+            border-bottom:
+                1px dashed
+                var(--line);
+
         }
 
-        .info-list{
-            display:flex;
-            flex-direction:column;
-            gap:10px;
+
+        .title-row {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
         }
 
-        .info-item{
-            background:var(--paper);
-            border:1px solid var(--line);
-            border-right:4px solid var(--gold);
-            padding:12px 16px;
-            border-radius:12px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:10px;
+
+        .icon-badge {
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 11px;
+
+            background: var(--wine-700);
+
+            color: var(--gold-light);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 15px;
+
+            flex-shrink: 0;
+
         }
 
-        .info-label{
-            color:var(--wine-700);
-            font-weight:700;
-            font-size:14px;
-            display:flex;
-            align-items:center;
-            gap:8px;
+
+        .widget-head h3 {
+
+            font-family: 'Amiri', serif;
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            color: var(--wine-800);
+
         }
 
-        .info-label i{ width:16px; text-align:center; }
 
-        .info-value{
-            color:var(--ink);
-            font-size:14px;
-            font-weight:600;
+        /* =====================================================
+           Edit Button
+        ====================================================== */
+
+        .edit-btn {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--wine-700),
+                    var(--wine-900)
+                );
+
+            color: #fbeed4;
+
+            border: none;
+
+            padding:
+                10px
+                22px;
+
+            border-radius: 22px;
+
+            font-family: 'Cairo', sans-serif;
+
+            font-weight: 700;
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 5px 14px
+                rgba(74, 14, 22, 0.25);
+
+            transition: .3s;
+
         }
 
-        /* ===== شريط التنقل السفلي ===== */
-        nav.bottom-nav{
-            position:fixed;
-            bottom:0; right:0; left:0;
-            background:var(--wine-900);
-            border-top:1px solid rgba(230,200,120,0.25);
-            display:flex;
-            justify-content:space-around;
-            padding:10px 4px calc(10px + env(safe-area-inset-bottom));
-            box-shadow:0 -8px 20px rgba(0,0,0,0.25);
-            overflow-x:auto;
-            z-index:10;
+
+        .edit-btn:hover {
+
+            transform:
+                translateY(-2px);
+
         }
 
-        nav.bottom-nav a, nav.bottom-nav button{
-            background:none;
-            border:none;
-            color:#c9b7a8;
-            text-decoration:none;
-            font-size:10px;
-            font-family:'Cairo', sans-serif;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:4px;
-            transition:all .25s ease;
-            cursor:pointer;
-            padding:4px 6px;
-            flex-shrink:0;
+
+        .edit-btn.save-mode {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--green),
+                    var(--green-dark)
+                );
+
+            box-shadow:
+                0 5px 14px
+                rgba(22, 163, 74, 0.3);
+
         }
 
-        nav.bottom-nav a i, nav.bottom-nav button i{ font-size:17px; }
+
+        .edit-btn:disabled {
+
+            opacity: .65;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+        }
+
+
+        /* =====================================================
+           Info Body
+        ====================================================== */
+
+        .info-widget .widget-body {
+
+            padding:
+                12px
+                30px
+                22px;
+
+        }
+
+
+        /* =====================================================
+           Information Grid
+        ====================================================== */
+
+        .info-list {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap:
+                15px
+                35px;
+
+        }
+
+
+        /* =====================================================
+           Info Item
+        ====================================================== */
+
+        .info-item {
+
+            background:
+                var(--paper);
+
+            border:
+                1px solid
+                var(--line);
+
+            border-right:
+                4px solid
+                var(--gold);
+
+            padding:
+                15px
+                17px;
+
+            border-radius: 13px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            min-height: 67px;
+
+            transition: .25s;
+
+        }
+
+
+        .info-item:hover {
+
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 5px 12px
+                rgba(74, 14, 22, 0.06);
+
+        }
+
+
+        /* =====================================================
+           Label
+        ====================================================== */
+
+        .info-label {
+
+            color: var(--wine-700);
+
+            font-weight: 700;
+
+            font-size: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .info-label i {
+
+            width: 17px;
+
+            text-align: center;
+
+        }
+
+
+        /* =====================================================
+           Value
+        ====================================================== */
+
+        .info-value {
+
+            color: var(--ink);
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            text-align: right;
+
+            word-break: break-word;
+
+        }
+
+
+        /* =====================================================
+           Inputs
+        ====================================================== */
+
+        .edit-input,
+        .edit-select {
+
+            background:
+                #ffffff;
+
+            border:
+                1.5px solid
+                var(--gold);
+
+            color: var(--ink);
+
+            padding:
+                9px
+                11px;
+
+            border-radius: 9px;
+
+            font-family:
+                'Cairo',
+                sans-serif;
+
+            font-size: 13px;
+
+            width: 230px;
+
+            max-width: 100%;
+
+            text-align: right;
+
+            direction: rtl;
+
+            outline: none;
+
+            transition: .2s;
+
+        }
+
+
+        .edit-input:focus,
+        .edit-select:focus {
+
+            border-color:
+                var(--wine-700);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    124,
+                    27,
+                    40,
+                    .08
+                );
+
+        }
+
+
+        .edit-select {
+
+            cursor: pointer;
+
+        }
+
+
+        /* =====================================================
+           Bottom Navigation
+        ====================================================== */
+
+        nav.bottom-nav {
+
+            position: fixed;
+
+            bottom: 0;
+
+            right: 0;
+
+            left: 0;
+
+            background:
+                var(--wine-900);
+
+            border-top:
+                1px solid
+                rgba(
+                    230,
+                    200,
+                    120,
+                    .25
+                );
+
+            display: flex;
+
+            justify-content:
+                space-around;
+
+            padding:
+                10px
+                4px
+                calc(
+                    10px +
+                    env(
+                        safe-area-inset-bottom
+                    )
+                );
+
+            box-shadow:
+                0 -8px 20px
+                rgba(0,0,0,.25);
+
+            overflow-x: auto;
+
+            z-index: 100;
+
+        }
+
+
+        nav.bottom-nav a,
+        nav.bottom-nav button {
+
+            background: none;
+
+            border: none;
+
+            color: #c9b7a8;
+
+            text-decoration: none;
+
+            font-size: 10px;
+
+            font-family:
+                'Cairo',
+                sans-serif;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 4px;
+
+            transition:
+                all .25s ease;
+
+            cursor: pointer;
+
+            padding:
+                4px
+                8px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        nav.bottom-nav a i,
+        nav.bottom-nav button i {
+
+            font-size: 18px;
+
+        }
+
 
         nav.bottom-nav a:hover,
-        nav.bottom-nav a.active{
-            color:var(--gold-light);
-            transform:translateY(-2px);
+        nav.bottom-nav a.active {
+
+            color:
+                var(--gold-light);
+
+            transform:
+                translateY(-2px);
+
         }
 
-        nav.bottom-nav .logout-link{
-            color:#e88a84;
+
+        nav.bottom-nav .logout-link {
+
+            color:
+                #e88a84;
+
         }
 
-        nav.bottom-nav .logout-link:hover{
-            color:#ff6b6b;
-            transform:translateY(-2px);
+
+        nav.bottom-nav .logout-link:hover {
+
+            color:
+                #ff6b6b;
+
+            transform:
+                translateY(-2px);
+
         }
+
+
+        /* =====================================================
+           Desktop
+        ====================================================== */
+
+        @media (min-width: 1000px) {
+
+            .main-content {
+
+                max-width: 1200px;
+
+                padding-left: 40px;
+
+                padding-right: 40px;
+
+            }
+
+
+            .info-list {
+
+                column-gap: 45px;
+
+            }
+
+
+            .info-item {
+
+                min-height: 72px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           Large Desktop
+        ====================================================== */
+
+        @media (min-width: 1400px) {
+
+            .main-content {
+
+                max-width: 1250px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           Tablet
+        ====================================================== */
+
+        @media (max-width: 850px) {
+
+            .main-content {
+
+                max-width: 100%;
+
+                padding:
+                    24px
+                    18px
+                    115px;
+
+            }
+
+
+            .info-list {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .edit-input,
+            .edit-select {
+
+                width: 260px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           Mobile
+        ====================================================== */
+
+        @media (max-width: 600px) {
+
+            header.church-header {
+
+                padding:
+                    19px
+                    15px
+                    23px;
+
+            }
+
+
+            .church-logo {
+
+                width: 56px;
+
+                height: 56px;
+
+            }
+
+
+            .church-logo i {
+
+                font-size: 25px;
+
+            }
+
+
+            header.church-header h2 {
+
+                font-size: 17px;
+
+                line-height: 1.6;
+
+            }
+
+
+            .main-content {
+
+                width: 100%;
+
+                padding:
+                    18px
+                    11px
+                    110px;
+
+            }
+
+
+            .widget {
+
+                border-radius: 20px;
+
+                margin-bottom: 18px;
+
+            }
+
+
+            .avatar-widget .widget-body {
+
+                padding:
+                    28px
+                    15px
+                    30px;
+
+            }
+
+
+            .avatar-widget h1 {
+
+                font-size: 25px;
+
+            }
+
+
+            .avatar-container {
+
+                width: 115px;
+
+                height: 115px;
+
+            }
+
+
+            .upload-label {
+
+                width: 38px;
+
+                height: 38px;
+
+            }
+
+
+            .profile-subtitle {
+
+                font-size: 12px;
+
+            }
+
+
+            .widget-head {
+
+                padding:
+                    16px
+                    15px
+                    13px;
+
+            }
+
+
+            .widget-head h3 {
+
+                font-size: 17px;
+
+            }
+
+
+            .icon-badge {
+
+                width: 33px;
+
+                height: 33px;
+
+            }
+
+
+            .edit-btn {
+
+                padding:
+                    8px
+                    13px;
+
+                font-size: 11px;
+
+            }
+
+
+            .info-widget .widget-body {
+
+                padding:
+                    10px
+                    15px
+                    18px;
+
+            }
+
+
+            .info-list {
+
+                display: flex;
+
+                flex-direction: column;
+
+                gap: 10px;
+
+            }
+
+
+            .info-item {
+
+                padding:
+                    13px
+                    14px;
+
+                min-height: 60px;
+
+                gap: 10px;
+
+            }
+
+
+            .info-label {
+
+                font-size: 12px;
+
+            }
+
+
+            .info-value {
+
+                font-size: 12px;
+
+                max-width: 58%;
+
+            }
+
+
+            .edit-input,
+            .edit-select {
+
+                width: 175px;
+
+                font-size: 11px;
+
+                padding:
+                    8px
+                    8px;
+
+            }
+
+
+            nav.bottom-nav {
+
+                padding-top: 8px;
+
+            }
+
+
+            nav.bottom-nav a,
+            nav.bottom-nav button {
+
+                font-size: 9px;
+
+                padding:
+                    4px
+                    5px;
+
+            }
+
+
+            nav.bottom-nav a i,
+            nav.bottom-nav button i {
+
+                font-size: 16px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           Small Mobile
+        ====================================================== */
+
+        @media (max-width: 400px) {
+
+            header.church-header h2 {
+
+                font-size: 15px;
+
+            }
+
+
+            .edit-btn {
+
+                padding:
+                    7px
+                    10px;
+
+                font-size: 10px;
+
+            }
+
+
+            .info-item {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+            }
+
+
+            .info-value {
+
+                width: 100%;
+
+                max-width: 100%;
+
+                text-align: right;
+
+            }
+
+
+            .edit-input,
+            .edit-select {
+
+                width: 100%;
+
+            }
+
+
+            nav.bottom-nav a,
+            nav.bottom-nav button {
+
+                min-width: 48px;
+
+            }
+
+        }
+
     </style>
 
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // جلب بيانات المشرف مباشرة من localStorage
-            // (نفس المفاتيح اللي بتتحفظ في صفحة تسجيل المشرف)
-            const username = localStorage.getItem('username') || 'غير محدد';
-            const fullName = localStorage.getItem('fullName') || 'خادم الرب';
-            const servantTitle = localStorage.getItem('servantTitle') || '';
-            const servantStage = localStorage.getItem('servantStage') || 'غير محددة';
-            const servantGrade = localStorage.getItem('servantGrade') || 'غير محدد';
-            const servantNumber = localStorage.getItem('servantNumber') || 'غير متوفر';
 
-            const usernameEl = document.getElementById('val-username');
-            const fullnameEl = document.getElementById('val-fullname');
-            const stageEl = document.getElementById('val-stage');
-            const gradeEl = document.getElementById('val-grade');
-            const numberEl = document.getElementById('val-number');
+        /* =====================================================
+           عند تحميل الصفحة
+        ====================================================== */
 
-            if (usernameEl) usernameEl.innerText = username;
-            if (fullnameEl) fullnameEl.innerText = servantTitle ? `${servantTitle} ${fullName}` : fullName;
-            if (stageEl) stageEl.innerText = servantStage;
-            if (gradeEl) gradeEl.innerText = servantGrade;
-            if (numberEl) numberEl.innerText = servantNumber;
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
 
-            // معالجة رفع وعرض الصورة الشخصية وحفظها محلياً
-            const avatarInput = document.getElementById('avatar-input');
-            const profileImage = document.getElementById('profile-image');
 
-            // تحميل الصورة المحفوظة مسبقاً إن وجدت
-            const savedImage = localStorage.getItem('profileImage');
-            if (savedImage && profileImage) {
-                profileImage.src = savedImage;
+                /* =================================================
+                   قراءة البيانات من LocalStorage
+                ================================================== */
+
+                loadProfile();
+
+
+                /* =================================================
+                   الصورة
+                ================================================== */
+
+                setupImageUpload();
+
+
+                /* =================================================
+                   تسجيل الخروج
+                ================================================== */
+
+                const logoutBtn =
+                    document.getElementById(
+                        'logoutBtn'
+                    );
+
+
+                if (logoutBtn) {
+
+                    logoutBtn.addEventListener(
+                        'click',
+                        function () {
+
+                            if (
+                                confirm(
+                                    "هل تريد تسجيل الخروج حقاً؟"
+                                )
+                            ) {
+
+                                localStorage.clear();
+
+                                window.location.href =
+                                    'index.html';
+
+                            }
+
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           تحميل بيانات الخادم
+        ====================================================== */
+
+        function loadProfile() {
+
+            const username =
+                localStorage.getItem(
+                    'username'
+                ) ||
+                'غير محدد';
+
+
+            const fullName =
+                localStorage.getItem(
+                    'fullName'
+                ) ||
+                'خادم الرب';
+
+
+            const servantTitle =
+                localStorage.getItem(
+                    'servantTitle'
+                ) ||
+                '';
+
+
+            const servantStage =
+                localStorage.getItem(
+                    'servantStage'
+                ) ||
+                'غير محددة';
+
+
+            const servantGrade =
+                localStorage.getItem(
+                    'servantGrade'
+                ) ||
+                'غير محدد';
+
+
+            const servantNumber =
+                localStorage.getItem(
+                    'servantNumber'
+                ) ||
+                'غير متوفر';
+
+
+            /* =================================================
+               عرض البيانات
+            ================================================== */
+
+            const usernameEl =
+                document.getElementById(
+                    'val-username'
+                );
+
+
+            const fullnameEl =
+                document.getElementById(
+                    'val-fullname'
+                );
+
+
+            const stageEl =
+                document.getElementById(
+                    'val-stage'
+                );
+
+
+            const gradeEl =
+                document.getElementById(
+                    'val-grade'
+                );
+
+
+            const numberEl =
+                document.getElementById(
+                    'val-number'
+                );
+
+
+            if (usernameEl) {
+
+                usernameEl.innerText =
+                    username;
+
             }
 
-            if (avatarInput && profileImage) {
-                avatarInput.addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const base64Image = e.target.result;
-                            profileImage.src = base64Image;
-                            localStorage.setItem('profileImage', base64Image); // حفظ الصورة
+
+            if (fullnameEl) {
+
+                fullnameEl.innerText =
+                    servantTitle
+                        ? `${servantTitle} ${fullName}`
+                        : fullName;
+
+            }
+
+
+            if (stageEl) {
+
+                stageEl.innerText =
+                    servantStage;
+
+            }
+
+
+            if (gradeEl) {
+
+                gradeEl.innerText =
+                    servantGrade;
+
+            }
+
+
+            if (numberEl) {
+
+                numberEl.innerText =
+                    servantNumber;
+
+            }
+
+
+            /* =================================================
+               الصورة
+            ================================================== */
+
+            const profileImage =
+                document.getElementById(
+                    'profile-image'
+                );
+
+
+            const savedImage =
+                localStorage.getItem(
+                    'profileImage'
+                );
+
+
+            if (
+                savedImage &&
+                profileImage
+            ) {
+
+                profileImage.src =
+                    savedImage;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           رفع الصورة
+        ====================================================== */
+
+        function setupImageUpload() {
+
+            const avatarInput =
+                document.getElementById(
+                    'avatar-input'
+                );
+
+
+            const profileImage =
+                document.getElementById(
+                    'profile-image'
+                );
+
+
+            if (
+                !avatarInput ||
+                !profileImage
+            ) {
+
+                return;
+
+            }
+
+
+            avatarInput.addEventListener(
+                'change',
+                function (event) {
+
+                    const file =
+                        event.target.files[0];
+
+
+                    if (!file) {
+
+                        return;
+
+                    }
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        function (e) {
+
+                            const base64Image =
+                                e.target.result;
+
+
+                            profileImage.src =
+                                base64Image;
+
+
+                            localStorage.setItem(
+                                'profileImage',
+                                base64Image
+                            );
+
+
+                            alert(
+                                'تم تحديث الصورة الشخصية بنجاح! 🖼️'
+                            );
+
                         };
-                        reader.readAsDataURL(file);
-                    }
-                });
+
+
+                    reader.readAsDataURL(
+                        file
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           مراحل وصفوف
+        ====================================================== */
+
+        const stageGrades = {
+
+            "ابتدائي": [
+
+                "الأول الابتدائي",
+                "الثاني الابتدائي",
+                "الثالث الابتدائي",
+                "الرابع الابتدائي",
+                "الخامس الابتدائي",
+                "السادس الابتدائي"
+
+            ],
+
+            "إعدادي": [
+
+                "الأول الإعدادي",
+                "الثاني الإعدادي",
+                "الثالث الإعدادي"
+
+            ],
+
+            "ثانوي": [
+
+                "الأول الثانوي",
+                "الثاني الثانوي",
+                "الثالث الثانوي"
+
+            ],
+
+            "جامعة": [
+
+                "الفرقة الأولى",
+                "الفرقة الثانية",
+                "الفرقة الثالثة",
+                "الفرقة الرابعة"
+
+            ],
+
+            "خريج": [
+
+                "خريج"
+
+            ]
+
+        };
+
+
+        /* =====================================================
+           إنشاء Select المرحلة
+        ====================================================== */
+
+        function buildStageSelect(
+            currentStage
+        ) {
+
+            let html = `
+                <select
+                    id="edit-stage"
+                    class="edit-select"
+                >
+            `;
+
+
+            Object.keys(
+                stageGrades
+            ).forEach(
+                stage => {
+
+                    html += `
+                        <option
+                            value="${stage}"
+                            ${
+                                stage === currentStage
+                                    ? 'selected'
+                                    : ''
+                            }
+                        >
+                            ${stage}
+                        </option>
+                    `;
+
+                }
+            );
+
+
+            html += `
+                </select>
+            `;
+
+
+            return html;
+
+        }
+
+
+        /* =====================================================
+           إنشاء Select الصف
+        ====================================================== */
+
+        function buildGradeSelect(
+            stage,
+            currentGrade
+        ) {
+
+            const grades =
+                stageGrades[stage] || [];
+
+
+            let html = `
+                <select
+                    id="edit-grade"
+                    class="edit-select"
+                >
+            `;
+
+
+            grades.forEach(
+                grade => {
+
+                    html += `
+                        <option
+                            value="${grade}"
+                            ${
+                                grade === currentGrade
+                                    ? 'selected'
+                                    : ''
+                            }
+                        >
+                            ${grade}
+                        </option>
+                    `;
+
+                }
+            );
+
+
+            html += `
+                </select>
+            `;
+
+
+            return html;
+
+        }
+
+
+        /* =====================================================
+           تغيير المرحلة
+        ====================================================== */
+
+        function changeStage() {
+
+            const stageSelect =
+                document.getElementById(
+                    'edit-stage'
+                );
+
+
+            const gradeContainer =
+                document.getElementById(
+                    'val-grade'
+                );
+
+
+            if (
+                !stageSelect ||
+                !gradeContainer
+            ) {
+
+                return;
+
             }
 
-            // زر تسجيل الخروج في الشريط السفلي
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    if (confirm("هل تريد تسجيل الخروج حقاً؟")) {
-                        localStorage.clear();
-                        window.location.href = 'index.html';
-                    }
-                });
+
+            const selectedStage =
+                stageSelect.value;
+
+
+            const grades =
+                stageGrades[
+                    selectedStage
+                ] || [];
+
+
+            const firstGrade =
+                grades[0] || "";
+
+
+            gradeContainer.innerHTML =
+                buildGradeSelect(
+                    selectedStage,
+                    firstGrade
+                );
+
+        }
+
+
+        /* =====================================================
+           وضع التعديل
+        ====================================================== */
+
+        let isEditing = false;
+
+
+        function toggleEditMode() {
+
+            const button =
+                document.getElementById(
+                    'edit-btn'
+                );
+
+
+            if (!isEditing) {
+
+                startEditing();
+
+                return;
+
             }
-        });
+
+
+            saveProfile();
+
+        }
+
+
+        /* =====================================================
+           بدء التعديل
+        ====================================================== */
+
+        function startEditing() {
+
+            const username =
+                localStorage.getItem(
+                    'username'
+                ) || "";
+
+
+            const fullName =
+                localStorage.getItem(
+                    'fullName'
+                ) || "";
+
+
+            const servantTitle =
+                localStorage.getItem(
+                    'servantTitle'
+                ) || "";
+
+
+            const servantStage =
+                localStorage.getItem(
+                    'servantStage'
+                ) || "";
+
+
+            const servantGrade =
+                localStorage.getItem(
+                    'servantGrade'
+                ) || "";
+
+
+            const servantNumber =
+                localStorage.getItem(
+                    'servantNumber'
+                ) || "";
+
+
+            /* =================================================
+               اسم المستخدم
+            ================================================== */
+
+            document.getElementById(
+                'val-username'
+            ).innerHTML = `
+
+                <input
+                    id="edit-username"
+                    class="edit-input"
+                    type="text"
+                    value="${escapeHtml(username)}"
+                >
+
+            `;
+
+
+            /* =================================================
+               الاسم الكامل
+            ================================================== */
+
+            document.getElementById(
+                'val-fullname'
+            ).innerHTML = `
+
+                <div
+                    style="
+                        display:flex;
+                        flex-direction:column;
+                        gap:8px;
+                        width:100%;
+                    "
+                >
+
+                    <input
+                        id="edit-title"
+                        class="edit-input"
+                        type="text"
+                        placeholder="اللقب"
+                        value="${escapeHtml(servantTitle)}"
+                    >
+
+                    <input
+                        id="edit-fullname"
+                        class="edit-input"
+                        type="text"
+                        placeholder="الاسم الكامل"
+                        value="${escapeHtml(fullName)}"
+                    >
+
+                </div>
+
+            `;
+
+
+            /* =================================================
+               المرحلة
+            ================================================== */
+
+            const stageContainer =
+                document.getElementById(
+                    'val-stage'
+                );
+
+
+            stageContainer.innerHTML =
+                buildStageSelect(
+                    servantStage
+                );
+
+
+            const stageSelect =
+                document.getElementById(
+                    'edit-stage'
+                );
+
+
+            if (stageSelect) {
+
+                stageSelect.addEventListener(
+                    'change',
+                    changeStage
+                );
+
+            }
+
+
+            /* =================================================
+               الصف
+            ================================================== */
+
+            const gradeContainer =
+                document.getElementById(
+                    'val-grade'
+                );
+
+
+            gradeContainer.innerHTML =
+                buildGradeSelect(
+                    servantStage,
+                    servantGrade
+                );
+
+
+            /* =================================================
+               رقم الخادم
+            ================================================== */
+
+            document.getElementById(
+                'val-number'
+            ).innerHTML = `
+
+                <input
+                    id="edit-number"
+                    class="edit-input"
+                    type="text"
+                    value="${escapeHtml(servantNumber)}"
+                >
+
+            `;
+
+
+            /* =================================================
+               تغيير الزر
+            ================================================== */
+
+            const button =
+                document.getElementById(
+                    'edit-btn'
+                );
+
+
+            button.innerHTML = `
+
+                <i class="fas fa-save"></i>
+
+                حفظ التغييرات
+
+            `;
+
+
+            button.classList.add(
+                'save-mode'
+            );
+
+
+            isEditing = true;
+
+        }
+
+
+        /* =====================================================
+           حفظ البيانات
+        ====================================================== */
+
+        function saveProfile() {
+
+            const button =
+                document.getElementById(
+                    'edit-btn'
+                );
+
+
+            button.disabled = true;
+
+
+            button.innerHTML = `
+
+                <i class="fas fa-spinner fa-spin"></i>
+
+                جاري الحفظ...
+
+            `;
+
+
+            try {
+
+                const username =
+                    document.getElementById(
+                        'edit-username'
+                    ).value.trim();
+
+
+                const title =
+                    document.getElementById(
+                        'edit-title'
+                    ).value.trim();
+
+
+                const fullName =
+                    document.getElementById(
+                        'edit-fullname'
+                    ).value.trim();
+
+
+                const stage =
+                    document.getElementById(
+                        'edit-stage'
+                    ).value;
+
+
+                const grade =
+                    document.getElementById(
+                        'edit-grade'
+                    ).value;
+
+
+                const number =
+                    document.getElementById(
+                        'edit-number'
+                    ).value.trim();
+
+
+                /* =================================================
+                   التحقق
+                ================================================== */
+
+                if (!username) {
+
+                    alert(
+                        "من فضلك اكتب اسم المستخدم."
+                    );
+
+                    resetEditButton();
+
+                    return;
+
+                }
+
+
+                if (!fullName) {
+
+                    alert(
+                        "من فضلك اكتب الاسم الكامل."
+                    );
+
+                    resetEditButton();
+
+                    return;
+
+                }
+
+
+                if (!stage) {
+
+                    alert(
+                        "من فضلك اختر المرحلة."
+                    );
+
+                    resetEditButton();
+
+                    return;
+
+                }
+
+
+                if (!grade) {
+
+                    alert(
+                        "من فضلك اختر الصف."
+                    );
+
+                    resetEditButton();
+
+                    return;
+
+                }
+
+
+                /* =================================================
+                   حفظ LocalStorage
+                ================================================== */
+
+                localStorage.setItem(
+                    'username',
+                    username
+                );
+
+
+                localStorage.setItem(
+                    'fullName',
+                    fullName
+                );
+
+
+                localStorage.setItem(
+                    'servantTitle',
+                    title
+                );
+
+
+                localStorage.setItem(
+                    'servantStage',
+                    stage
+                );
+
+
+                localStorage.setItem(
+                    'servantGrade',
+                    grade
+                );
+
+
+                localStorage.setItem(
+                    'servantNumber',
+                    number
+                );
+
+
+                /* =================================================
+                   تحديث الشاشة
+                ================================================== */
+
+                document.getElementById(
+                    'val-username'
+                ).innerText =
+                    username;
+
+
+                document.getElementById(
+                    'val-fullname'
+                ).innerText =
+                    title
+                        ? `${title} ${fullName}`
+                        : fullName;
+
+
+                document.getElementById(
+                    'val-stage'
+                ).innerText =
+                    stage;
+
+
+                document.getElementById(
+                    'val-grade'
+                ).innerText =
+                    grade;
+
+
+                document.getElementById(
+                    'val-number'
+                ).innerText =
+                    number ||
+                    'غير متوفر';
+
+
+                /* =================================================
+                   إنهاء التعديل
+                ================================================== */
+
+                isEditing = false;
+
+
+                button.disabled = false;
+
+
+                button.innerHTML = `
+
+                    <i class="fas fa-pen"></i>
+
+                    تعديل البيانات
+
+                `;
+
+
+                button.classList.remove(
+                    'save-mode'
+                );
+
+
+                alert(
+                    "تم حفظ بيانات الخادم بنجاح! ✅"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "خطأ أثناء حفظ البيانات:",
+                    error
+                );
+
+
+                alert(
+                    "حدث خطأ أثناء حفظ البيانات."
+                );
+
+
+                resetEditButton();
+
+            }
+
+        }
+
+
+        /* =====================================================
+           إعادة زر التعديل
+        ====================================================== */
+
+        function resetEditButton() {
+
+            const button =
+                document.getElementById(
+                    'edit-btn'
+                );
+
+
+            button.disabled = false;
+
+
+            button.innerHTML = `
+
+                <i class="fas fa-save"></i>
+
+                حفظ التغييرات
+
+            `;
+
+        }
+
+
+        /* =====================================================
+           حماية النصوص
+        ====================================================== */
+
+        function escapeHtml(value) {
+
+            return String(value || "")
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
     </script>
+
 </head>
+
+
 <body>
 
+
+    <!-- =====================================================
+         Header
+    ====================================================== -->
+
     <header class="church-header">
-        <div class="church-logo"><i class="fas fa-cross"></i></div>
-        <h2>كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي</h2>
+
+
+        <div class="church-logo">
+
+            <i class="fas fa-cross"></i>
+
+        </div>
+
+
+        <h2>
+
+            كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي
+
+        </h2>
+
+
     </header>
+
+
+
+    <!-- =====================================================
+         Main
+    ====================================================== -->
 
     <div class="main-content">
 
-        <!-- بطاقة الصورة الشخصية -->
+
+        <!-- =================================================
+             Profile
+        ================================================== -->
+
         <div class="widget avatar-widget">
+
+
             <div class="widget-body">
-                <h1>الملف الشخصي للخادم</h1>
+
+
+                <h1>
+
+                    الملف الشخصي للخادم
+
+                </h1>
+
+
                 <div class="avatar-container">
-                    <img id="profile-image" class="avatar" src="https://via.placeholder.com/150/f6f1e9/7c1b28?text=صورة+الخادم" alt="صورة الخادم">
-                    <label for="avatar-input" class="upload-label" title="تغيير الصورة">
+
+
+                    <img
+                        id="profile-image"
+                        class="avatar"
+                        src="https://via.placeholder.com/150/f6f1e9/7c1b28?text=صورة+الخادم"
+                        alt="صورة الخادم"
+                    >
+
+
+                    <label
+                        for="avatar-input"
+                        class="upload-label"
+                        title="تغيير الصورة"
+                    >
+
                         <i class="fas fa-camera"></i>
+
                     </label>
-                    <input type="file" id="avatar-input" accept="image/*">
+
+
+                    <input
+                        type="file"
+                        id="avatar-input"
+                        accept="image/*"
+                    >
+
+
                 </div>
+
+
+                <div class="profile-subtitle">
+
+                    يمكنك تعديل بياناتك الشخصية من هنا
+
+                </div>
+
+
             </div>
+
         </div>
 
-        <!-- بطاقة بيانات الخادم -->
+
+
+        <!-- =================================================
+             Server Information
+        ================================================== -->
+
         <div class="widget info-widget">
+
+
+            <!-- Header -->
+
             <div class="widget-head">
-                <div class="icon-badge"><i class="fas fa-id-card"></i></div>
-                <h3>بيانات الخادم</h3>
-            </div>
-            <div class="widget-body">
-                <div class="info-list">
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-user"></i> اسم المستخدم:</span>
-                        <span id="val-username" class="info-value">جاري التحميل...</span>
+
+
+                <div class="title-row">
+
+
+                    <div class="icon-badge">
+
+                        <i class="fas fa-id-card"></i>
+
                     </div>
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-id-badge"></i> الاسم الكامل:</span>
-                        <span id="val-fullname" class="info-value">جاري التحميل...</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-graduation-cap"></i> المرحلة الخدمية:</span>
-                        <span id="val-stage" class="info-value">جاري التحميل...</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-book-open"></i> الصف الدراسي:</span>
-                        <span id="val-grade" class="info-value">جاري التحميل...</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label"><i class="fas fa-hashtag"></i> رقم الخادم:</span>
-                        <span id="val-number" class="info-value">جاري التحميل...</span>
-                    </div>
+
+
+                    <h3>
+
+                        بيانات الخادم
+
+                    </h3>
+
+
                 </div>
+
+
+                <button
+                    id="edit-btn"
+                    class="edit-btn"
+                    onclick="toggleEditMode()"
+                >
+
+                    <i class="fas fa-pen"></i>
+
+                    تعديل البيانات
+
+                </button>
+
+
             </div>
+
+
+
+            <!-- =================================================
+                 Information
+            ================================================== -->
+
+            <div class="widget-body">
+
+
+                <div class="info-list">
+
+
+                    <!-- اسم المستخدم -->
+
+                    <div class="info-item">
+
+
+                        <span class="info-label">
+
+                            <i class="fas fa-user"></i>
+
+                            اسم المستخدم:
+
+                        </span>
+
+
+                        <span
+                            id="val-username"
+                            class="info-value"
+                        >
+
+                            جاري التحميل...
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- الاسم الكامل -->
+
+                    <div class="info-item">
+
+
+                        <span class="info-label">
+
+                            <i class="fas fa-id-badge"></i>
+
+                            الاسم الكامل:
+
+                        </span>
+
+
+                        <span
+                            id="val-fullname"
+                            class="info-value"
+                        >
+
+                            جاري التحميل...
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- المرحلة -->
+
+                    <div class="info-item">
+
+
+                        <span class="info-label">
+
+                            <i class="fas fa-graduation-cap"></i>
+
+                            المرحلة الخدمية:
+
+                        </span>
+
+
+                        <span
+                            id="val-stage"
+                            class="info-value"
+                        >
+
+                            جاري التحميل...
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- الصف -->
+
+                    <div class="info-item">
+
+
+                        <span class="info-label">
+
+                            <i class="fas fa-book-open"></i>
+
+                            الصف الدراسي:
+
+                        </span>
+
+
+                        <span
+                            id="val-grade"
+                            class="info-value"
+                        >
+
+                            جاري التحميل...
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- رقم الخادم -->
+
+                    <div class="info-item">
+
+
+                        <span class="info-label">
+
+                            <i class="fas fa-hashtag"></i>
+
+                            رقم الخادم:
+
+                        </span>
+
+
+                        <span
+                            id="val-number"
+                            class="info-value"
+                        >
+
+                            جاري التحميل...
+
+                        </span>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
         </div>
+
 
     </div>
 
-    <!-- شريط التنقل السفلي -->
+
+
+    <!-- =====================================================
+         Bottom Navigation
+    ====================================================== -->
+
     <nav class="bottom-nav">
+
+
         <a href="home.html">
+
             <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
+
+            <span>
+                الرئيسية
+            </span>
+
         </a>
-        <a class="active" href="profile.html">
+
+
+        <a
+            class="active"
+            href="profile.html"
+        >
+
             <i class="fas fa-user-circle"></i>
-            <span>البروفايل</span>
+
+            <span>
+                البروفايل
+            </span>
+
         </a>
+
+
         <a href="gifts.html">
+
             <i class="fas fa-gift"></i>
-            <span>الهدايا</span>
+
+            <span>
+                الهدايا
+            </span>
+
         </a>
+
+
         <a href="control.html">
+
             <i class="fas fa-cogs"></i>
-            <span>الإدارة</span>
+
+            <span>
+                الإدارة
+            </span>
+
         </a>
+
+
         <a href="cart.html">
+
             <i class="fas fa-shopping-cart"></i>
-            <span>السلة</span>
+
+            <span>
+                السلة
+            </span>
+
         </a>
+
+
         <a href="../notifications/index.html">
+
             <i class="fas fa-bell"></i>
-            <span>الإشعارات</span>
+
+            <span>
+                الإشعارات
+            </span>
+
         </a>
-        <button id="logoutBtn" class="logout-link">
+
+
+        <button
+            id="logoutBtn"
+            class="logout-link"
+        >
+
             <i class="fas fa-sign-out-alt"></i>
-            <span>خروج</span>
+
+            <span>
+                خروج
+            </span>
+
         </button>
+
+
     </nav>
 
+
 </body>
+
 </html>
