@@ -1,343 +1,491 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الرئيسية - لوحة الخادم</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الرئيسية - لوحة الخادم</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        :root{
-            --wine-900:#4a0e16;
-            --wine-800:#6b1420;
-            --wine-700:#7c1b28;
-            --gold:#c9a04d;
-            --gold-light:#e6c878;
-            --paper:#f6f1e9;
-            --card:#ffffff;
-            --ink:#2a2320;
-            --ink-soft:#6b625c;
-            --line:#e9dfd0;
-        }
+  <style>
+    :root {
+      --navy: #061d39;
+      --navy-dark: #020c19;
+      --maroon: #7d1424;
+      --maroon-dark: #5d101c;
+      --maroon-light: #a51f35;
+      --gold: #c9a24b;
+      --gold-light: #e6c878;
+      --ink: #211918;
+      --muted: #817773;
+      --line: #eadfe0;
+      --surface: #ffffff;
+      --soft: #faf6f6;
+      --green: #137333;
+    }
 
-        * { box-sizing:border-box; margin:0; padding:0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body{
-            background:var(--paper);
-            display:flex;
-            flex-direction:column;
-            min-height:100vh;
-            font-family:'Cairo', sans-serif;
-            color:var(--ink);
-        }
+    html, body { min-height: 100%; }
 
-        /* ===== الهيدر ===== */
-        header.church-header{
-            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
-            padding:18px 20px 26px;
-            text-align:center;
-            position:relative;
-            box-shadow:0 8px 20px rgba(74,14,22,0.25);
-        }
+    body {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      color: var(--ink);
+      font-family: "Tajawal", sans-serif;
+      background: radial-gradient(circle at top, #0a2d57 0, var(--navy) 45%, var(--navy-dark) 100%);
+      padding-bottom: 92px;
+    }
 
-        header.church-header::after{
-            content:'';
-            position:absolute;
-            bottom:0; right:0; left:0;
-            height:4px;
-            background:linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
+    button { cursor: pointer; font: inherit; }
 
-        .church-logo{
-            width:52px;
-            height:52px;
-            border-radius:50%;
-            background:var(--wine-700);
-            border:2px solid var(--gold);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            margin:0 auto 10px;
-        }
+    /* ===== الشريط العلوي ===== */
+    .topbar {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      padding: 18px 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
 
-        .church-logo i{
-            color:var(--gold-light);
-            font-size:24px;
-        }
+    .topbar-title {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #fff;
+    }
 
-        header.church-header h2{
-            font-family:'Amiri', serif;
-            color:#fbeed4;
-            font-size:18px;
-            font-weight:700;
-        }
+    .topbar-title .mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: linear-gradient(145deg, var(--maroon-light), var(--maroon-dark));
+      color: var(--gold-light);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
 
-        /* ===== المحتوى ===== */
-        .main-content{
-            flex:1;
-            padding:18px 16px 100px;
-            max-width:620px;
-            width:100%;
-            margin:0 auto;
-        }
+    .topbar-title span {
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1.5;
+    }
 
-        /* ===== الويدجت الموحد ===== */
-        .widget{
-            background:var(--card);
-            border-radius:22px;
-            border:1px solid var(--line);
-            box-shadow:0 12px 28px rgba(74,14,22,0.08);
-            margin-bottom:18px;
-            overflow:hidden;
-            position:relative;
-        }
+    .topbar-btn {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 13px;
+      color: var(--maroon);
+      background: #fff;
+      box-shadow: 0 8px 20px rgb(0 0 0 / 22%);
+      flex-shrink: 0;
+    }
 
-        .widget::before{
-            content:'';
-            position:absolute;
-            top:0; right:0; left:0;
-            height:3px;
-            background:linear-gradient(90deg, var(--wine-700), var(--gold), var(--wine-700));
-            opacity:.9;
-        }
+    .topbar-btn:hover { transform: translateY(-2px); }
 
-        .widget-head{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            padding:16px 18px 4px;
-        }
+    /* ===== الصفحة ===== */
+    .page {
+      width: min(720px, 100%);
+      margin: 16px auto 0;
+      padding: 0 14px;
+    }
 
-        .widget-head .icon-badge{
-            width:30px; height:30px;
-            border-radius:10px;
-            background:var(--wine-700);
-            color:var(--gold-light);
-            display:flex; align-items:center; justify-content:center;
-            font-size:13px;
-            flex-shrink:0;
-        }
+    .card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      background: var(--surface);
+      box-shadow: 0 25px 65px rgb(0 0 0 / 30%);
+      margin-bottom: 16px;
+    }
 
-        .widget-head h3{
-            font-size:14px;
-            font-weight:700;
-            color:var(--wine-800);
-        }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 6px;
+      background: linear-gradient(90deg, var(--navy), var(--maroon), var(--gold), var(--maroon), var(--navy));
+    }
 
-        /* بطاقة الترحيب */
-        .welcome-widget .widget-body{
-            padding:14px 20px 22px;
-            text-align:center;
-        }
+    /* بطاقة الترحيب */
+    .hero-card {
+      padding: 34px 26px 30px;
+      text-align: center;
+    }
 
-        .welcome-widget h1{
-            font-family:'Amiri', serif;
-            font-size:22px;
-            color:var(--wine-800);
-            margin-bottom:4px;
-        }
+    .hero-avatar {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 16px;
+    }
 
-        /* تنسيق ألوان اللقب والاسم */
-        .welcome-title {
-            color: var(--gold);
-        }
+    .hero-avatar img,
+    .hero-avatar .fallback {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
 
-        .welcome-name {
-            color: var(--wine-800);
-        }
+    .hero-avatar img {
+      display: block;
+      border: 3px solid var(--gold);
+      object-fit: cover;
+      background: var(--soft);
+      box-shadow: 0 14px 28px rgb(125 20 36 / 30%);
+    }
 
-        /* بطاقة تفاصيل الخدمة (المرحلة والصف) */
-        .info-widget .widget-body {
-            padding: 14px 20px 18px;
-            display: flex;
-            justify-content: space-around;
-            text-align: center;
-        }
+    .hero-avatar .fallback {
+      display: grid;
+      place-items: center;
+      border: 3px solid var(--gold);
+      color: #fff;
+      font-size: 30px;
+      background: linear-gradient(145deg, var(--maroon-light), var(--maroon-dark));
+      box-shadow: 0 14px 28px rgb(125 20 36 / 30%);
+    }
 
-        .info-item {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+    .hero-avatar img.hidden,
+    .hero-avatar .fallback.hidden { display: none; }
 
-        .info-item .label {
-            font-size: 12px;
-            color: var(--ink-soft);
-            font-weight: 600;
-        }
+    .hero-card h1 {
+      font: 700 clamp(24px, 5vw, 30px) / 1.6 "Amiri", serif;
+      color: var(--ink);
+    }
 
-        .info-item .value {
-            font-size: 15px;
-            color: var(--wine-800);
-            font-weight: 700;
-        }
+    .hero-card h1 .title { color: var(--gold); }
+    .hero-card h1 .name { color: var(--maroon); }
 
-        /* آية اليوم */
-        .verse-widget .widget-body{
-            padding:8px 18px 20px;
-        }
+    .hero-card p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-        .verse-widget p{
-            font-family:'Amiri', serif;
-            font-style:italic;
-            font-size:18px;
-            line-height:1.9;
-            color:var(--ink);
-            background:var(--paper);
-            border-right:4px solid var(--gold);
-            padding:14px 16px;
-            border-radius:12px;
-        }
+    /* بطاقة بيانات الخدمة */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 20px 22px 14px;
+    }
 
-        .verse-widget span{
-            display:block;
-            text-align:left;
-            font-size:13px;
-            color:var(--wine-700);
-            font-weight:700;
-            margin-top:10px;
-        }
+    .section-head .icon-badge {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      background: linear-gradient(145deg, var(--maroon-light), var(--maroon-dark));
+      flex-shrink: 0;
+    }
 
-        /* ===== شريط التنقل السفلي ===== */
-        nav.bottom-nav{
-            position:fixed;
-            bottom:0; right:0; left:0;
-            background:var(--wine-900);
-            border-top:1px solid rgba(230,200,120,0.25);
-            display:flex;
-            justify-content:space-around;
-            padding:10px 4px calc(10px + env(safe-area-inset-bottom));
-            box-shadow:0 -8px 20px rgba(0,0,0,0.25);
-            overflow-x:auto;
-            z-index:10;
-        }
+    .section-head h2 {
+      font: 700 20px "Amiri", serif;
+      color: var(--maroon);
+    }
 
-        nav.bottom-nav a{
-            background:none;
-            border:none;
-            color:#c9b7a8;
-            text-decoration:none;
-            font-size:10px;
-            font-family:'Cairo', sans-serif;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:4px;
-            transition:all .25s ease;
-            cursor:pointer;
-            padding:4px 6px;
-            flex-shrink:0;
-        }
+    .section-head p {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-        nav.bottom-nav a i{ font-size:17px; }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0 22px 22px;
+    }
 
-        nav.bottom-nav a:hover,
-        nav.bottom-nav a.active{
-            color:var(--gold-light);
-            transform:translateY(-2px);
-        }
-    </style>
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--soft), #fff);
+    }
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const welcomeMsg = document.getElementById('welcome-msg');
-            const stageDisplay = document.getElementById('stage-display');
-            const gradeDisplay = document.getElementById('grade-display');
+    .info-item .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
 
-            // جلب بيانات المشرف مباشرة من localStorage
-            const servantTitle = localStorage.getItem('servantTitle') || '';
-            const fullName = localStorage.getItem('fullName') || 'خادم الرب';
-            const servantStage = localStorage.getItem('servantStage') || 'غير محدد';
-            const servantGrade = localStorage.getItem('servantGrade') || 'غير محدد';
+    .info-item .value {
+      color: var(--maroon);
+      font: 700 19px "Amiri", serif;
+    }
 
-            // عرض الترحيب مع وضع كل جزء داخل عنصر خاص لتمييزه بلون مستقل
-            if (welcomeMsg) {
-                welcomeMsg.innerHTML = `أهلاً بك يا <span class="welcome-title">${servantTitle}</span> <span class="welcome-name">${fullName}</span>`;
-            }
+    /* بطاقة آية اليوم */
+    .verse-body { padding: 4px 22px 26px; }
 
-            // عرض المرحلة والصف الدراسي في البطاقة المخصصة
-            if (stageDisplay) stageDisplay.innerText = servantStage;
-            if (gradeDisplay) gradeDisplay.innerText = servantGrade;
-        });
-    </script>
+    .verse-text {
+      position: relative;
+      padding: 20px 20px 20px 18px;
+      border-right: 4px solid var(--gold);
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--soft), #fff);
+      font: italic 700 18px/1.95 "Amiri", serif;
+      color: var(--ink);
+    }
+
+    .verse-ref {
+      display: block;
+      margin-top: 14px;
+      text-align: left;
+      color: var(--maroon);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    /* روابط سريعة */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0 22px 24px;
+    }
+
+    .quick-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      color: var(--ink);
+      transition: .2s ease;
+    }
+
+    .quick-link:hover {
+      border-color: rgb(125 20 36 / 35%);
+      box-shadow: 0 12px 25px rgb(31 23 21 / 10%);
+      transform: translateY(-2px);
+    }
+
+    .quick-link .icon-badge {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      border-radius: 10px;
+    }
+
+    .quick-link span {
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* ===== شريط التنقل السفلي ===== */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0; right: 0; left: 0;
+      background: var(--navy-dark);
+      border-top: 1px solid rgb(230 200 120 / 25%);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 4px calc(10px + env(safe-area-inset-bottom));
+      box-shadow: 0 -8px 20px rgb(0 0 0 / 25%);
+      overflow-x: auto;
+      z-index: 10;
+    }
+
+    nav.bottom-nav a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 6px;
+      flex-shrink: 0;
+      color: #c9b7a8;
+      text-decoration: none;
+      font-size: 10px;
+      font-family: "Tajawal", sans-serif;
+      transition: .25s ease;
+    }
+
+    nav.bottom-nav a i { font-size: 17px; }
+
+    nav.bottom-nav a:hover,
+    nav.bottom-nav a.active {
+      color: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 480px) {
+      .hero-card { padding: 28px 18px 24px; }
+      .info-grid, .quick-grid { grid-template-columns: 1fr 1fr; padding-inline: 16px; }
+      .section-head, .verse-body { padding-inline: 16px; }
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const welcomeMsg = document.getElementById("welcome-msg");
+      const stageDisplay = document.getElementById("stage-display");
+      const gradeDisplay = document.getElementById("grade-display");
+
+      const servantTitle = localStorage.getItem("servantTitle") || "";
+      const fullName = localStorage.getItem("fullName") || "خادم الرب";
+      const servantStage = localStorage.getItem("servantStage") || "غير محدد";
+      const servantGrade = localStorage.getItem("servantGrade") || "غير محدد";
+
+      if (welcomeMsg) {
+        welcomeMsg.innerHTML = `أهلاً بك يا <span class="title">${servantTitle}</span> <span class="name">${fullName}</span>`;
+      }
+      if (stageDisplay) stageDisplay.innerText = servantStage;
+      if (gradeDisplay) gradeDisplay.innerText = servantGrade;
+
+      // ===== الصورة الشخصية =====
+      // نفس المفتاح المستخدم في صفحة البروفايل: profileImage (Base64 محفوظ محلياً)
+      const homeAvatar = document.getElementById("home-avatar");
+      const homeAvatarFallback = document.getElementById("home-avatar-fallback");
+      const savedImage = localStorage.getItem("profileImage");
+
+      if (savedImage && homeAvatar) {
+        homeAvatar.src = savedImage;
+        homeAvatar.classList.remove("hidden");
+        homeAvatarFallback.classList.add("hidden");
+      } else if (homeAvatarFallback) {
+        homeAvatarFallback.classList.remove("hidden");
+      }
+    });
+  </script>
 </head>
 <body>
 
-    <header class="church-header">
-        <div class="church-logo"><i class="fas fa-cross"></i></div>
-        <h2>كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي</h2>
-    </header>
-
-    <div class="main-content">
-
-        <!-- بطاقة الترحيب -->
-        <div class="widget welcome-widget">
-            <div class="widget-body">
-                <h1 id="welcome-msg">أهلاً بك يا <span class="welcome-title">خادم</span> <span class="welcome-name">الرب</span></h1>
-            </div>
-        </div>
-
-        <!-- بطاقة تفاصيل الخدمة (المرحلة والصف) -->
-        <div class="widget info-widget">
-            <div class="widget-head">
-                <div class="icon-badge"><i class="fas fa-church"></i></div>
-                <h3>بيانات الخدمة</h3>
-            </div>
-            <div class="widget-body">
-                <div class="info-item">
-                    <span class="label">المرحلة</span>
-                    <span id="stage-display" class="value">-</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">الصف الدراسي</span>
-                    <span id="grade-display" class="value">-</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- آية اليوم -->
-        <div class="widget verse-widget">
-            <div class="widget-head">
-                <div class="icon-badge"><i class="fas fa-book-bible"></i></div>
-                <h3>آية اليوم</h3>
-            </div>
-            <div class="widget-body">
-                <p>"لِذَلِكَ كُونُوا رَاسِخِينَ، غَيْرَ مُتَزَحْزِحِينَ، مُكْثِرِينَ فِي عَمَلِ الرَّبِّ كُلَّ حِينٍ، عَالِمِينَ أَنَّ تَعَبَكُمْ لَيْسَ بَاطِلاً فِي الرَّبِّ."</p>
-                <span>(1 كورنثوس 15: 58)</span>
-            </div>
-        </div>
-
+  <div class="topbar">
+    <div class="topbar-title">
+      <div class="mark"><i class="fas fa-cross"></i></div>
+      <span>كنيسه الشهيد العظيم<br>استيفانوس ومارمينا العجايبي</span>
     </div>
+    <button class="topbar-btn" type="button" title="الإشعارات" onclick="location.href='../notifications/index.html'">
+      <i class="fas fa-bell"></i>
+    </button>
+  </div>
 
-    <!-- شريط التنقل السفلي -->
-    <nav class="bottom-nav">
-        <a class="active" href="home.html">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
+  <div class="page">
+
+    <!-- بطاقة الترحيب -->
+    <section class="card hero-card">
+      <div class="hero-avatar">
+        <img id="home-avatar" class="hidden" src="" alt="صورة الخادم">
+        <div id="home-avatar-fallback" class="fallback"><i class="fas fa-user"></i></div>
+      </div>
+      <h1 id="welcome-msg">أهلاً بك يا <span class="title">خادم</span> <span class="name">الرب</span></h1>
+      <p>نتمنى لك يوماً مباركاً في خدمتك</p>
+    </section>
+
+    <!-- بطاقة بيانات الخدمة -->
+    <section class="card">
+      <div class="section-head">
+        <div class="icon-badge"><i class="fas fa-church"></i></div>
+        <div>
+          <h2>بيانات الخدمة</h2>
+          <p>المرحلة والصف الدراسي الذي تخدمه</p>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">المرحلة</span>
+          <span id="stage-display" class="value">-</span>
+        </div>
+        <div class="info-item">
+          <span class="label">الصف الدراسي</span>
+          <span id="grade-display" class="value">-</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- آية اليوم -->
+    <section class="card">
+      <div class="section-head">
+        <div class="icon-badge"><i class="fas fa-book-bible"></i></div>
+        <div>
+          <h2>آية اليوم</h2>
+          <p>كلمة نتأمل فيها معاً</p>
+        </div>
+      </div>
+      <div class="verse-body">
+        <p class="verse-text">"لِذَلِكَ كُونُوا رَاسِخِينَ، غَيْرَ مُتَزَحْزِحِينَ، مُكْثِرِينَ فِي عَمَلِ الرَّبِّ كُلَّ حِينٍ، عَالِمِينَ أَنَّ تَعَبَكُمْ لَيْسَ بَاطِلاً فِي الرَّبِّ."</p>
+        <span class="verse-ref">(1 كورنثوس 15: 58)</span>
+      </div>
+    </section>
+
+    <!-- روابط سريعة -->
+    <section class="card">
+      <div class="section-head">
+        <div class="icon-badge"><i class="fas fa-grip"></i></div>
+        <div>
+          <h2>روابط سريعة</h2>
+          <p>أهم أقسام لوحة الخادم</p>
+        </div>
+      </div>
+      <div class="quick-grid">
+        <a class="quick-link" href="profile.html">
+          <div class="icon-badge"><i class="fas fa-user-circle"></i></div>
+          <span>البروفايل</span>
         </a>
-        <a href="profile.html">
-            <i class="fas fa-user-circle"></i>
-            <span>البروفايل</span>
+        <a class="quick-link" href="gifts.html">
+          <div class="icon-badge"><i class="fas fa-gift"></i></div>
+          <span>الهدايا</span>
         </a>
-        <a href="gifts.html">
-            <i class="fas fa-gift"></i>
-            <span>الهدايا</span>
+        <a class="quick-link" href="control.html">
+          <div class="icon-badge"><i class="fas fa-cogs"></i></div>
+          <span>الإدارة</span>
         </a>
-        <a href="control.html">
-            <i class="fas fa-cogs"></i>
-            <span>الإدارة</span>
+        <a class="quick-link" href="cart.html">
+          <div class="icon-badge"><i class="fas fa-shopping-cart"></i></div>
+          <span>السلة</span>
         </a>
-        <a href="cart.html">
-            <i class="fas fa-shopping-cart"></i>
-            <span>السلة</span>
-        </a>
-        <a href="../notifications/index.html">
-            <i class="fas fa-bell"></i>
-            <span>الإشعارات</span>
-        </a>
-    </nav>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- شريط التنقل السفلي -->
+  <nav class="bottom-nav">
+    <a class="active" href="home.html">
+      <i class="fas fa-home"></i>
+      <span>الرئيسية</span>
+    </a>
+    <a href="profile.html">
+      <i class="fas fa-user-circle"></i>
+      <span>البروفايل</span>
+    </a>
+    <a href="gifts.html">
+      <i class="fas fa-gift"></i>
+      <span>الهدايا</span>
+    </a>
+    <a href="control.html">
+      <i class="fas fa-cogs"></i>
+      <span>الإدارة</span>
+    </a>
+    <a href="cart.html">
+      <i class="fas fa-shopping-cart"></i>
+      <span>السلة</span>
+    </a>
+    <a href="../notifications/index.html">
+      <i class="fas fa-bell"></i>
+      <span>الإشعارات</span>
+    </a>
+  </nav>
 
 </body>
 </html>
