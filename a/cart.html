@@ -1,3174 +1,805 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>الهدايا المستلمة - متجر الكنيسة</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script type="module">
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-        import {
-            getFirestore,
-            collection,
-            getDocs
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-
-        /* =========================
-           FIREBASE
-        ========================= */
-
-        const firebaseConfig = {
-
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-
-            authDomain: "st-mina-c01ec.firebaseapp.com",
-
-            databaseURL:
-                "https://st-mina-c01ec-default-rtdb.firebaseio.com",
-
-            projectId: "st-mina-c01ec",
-
-            storageBucket:
-                "st-mina-c01ec.firebasestorage.app",
-
-            messagingSenderId: "792349150559",
-
-            appId:
-                "1:792349150559:web:8a86bbf57c2c7e351f3aea",
-
-            measurementId: "G-XZGSBG05KR"
-        };
-
-
-        const app = initializeApp(firebaseConfig);
-
-        const db = getFirestore(app);
-
-
-        /* =========================
-           VARIABLES
-        ========================= */
-
-        const myGrade =
-            (localStorage.getItem("servantGrade") || "").trim();
-
-        let allServants = [];
-
-        let allNotifications = [];
-
-
-        /* =========================
-           START
-        ========================= */
-
-        document.addEventListener("DOMContentLoaded", async () => {
-
-            setupMenu();
-
-            setupGradeHeader();
-
-            await loadData();
-
-        });
-
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        function setupGradeHeader() {
-
-            const gradeNameEl =
-                document.getElementById("myGradeName");
-
-            const pageTitleEl =
-                document.getElementById("pageTitle");
-
-            const sectionTitleEl =
-                document.getElementById("sectionTitle");
-
-
-            if (myGrade) {
-
-                gradeNameEl.textContent = myGrade;
-
-                pageTitleEl.textContent =
-                    `الهدايا المستلمة - ${myGrade}`;
-
-                sectionTitleEl.textContent =
-                    `مخدومين ${myGrade}`;
-
-            } else {
-
-                gradeNameEl.textContent = "غير محدد";
-
-                pageTitleEl.textContent =
-                    "الهدايا المستلمة";
-
-                sectionTitleEl.textContent =
-                    "مخدومين صفّي";
-            }
-        }
-
-
-        /* =========================
-           MENU
-        ========================= */
-
-        function setupMenu() {
-
-            const logoutBtn =
-                document.getElementById("logoutBtn");
-
-
-            if (!logoutBtn) return;
-
-
-            logoutBtn.addEventListener("click", () => {
-
-                if (
-                    confirm(
-                        "هل تريد تسجيل الخروج حقاً؟"
-                    )
-                ) {
-
-                    localStorage.clear();
-
-                    window.location.href =
-                        "../index.html";
-                }
-
-            });
-        }
-
-
-        /* =========================
-           LOAD DATA
-        ========================= */
-
-        async function loadData() {
-
-            showLoading();
-
-
-            if (!myGrade) {
-
-                showNoGrade();
-
-                return;
-            }
-
-
-            try {
-
-                /* USERS */
-
-                const usersSnapshot =
-                    await getDocs(
-                        collection(db, "users")
-                    );
-
-
-                const all = [];
-
-
-                usersSnapshot.forEach(docSnap => {
-
-                    const data =
-                        docSnap.data();
-
-
-                    const username =
-                        data.username ||
-                        data.userName ||
-                        data.name ||
-                        data.fullName ||
-                        data.displayName ||
-                        docSnap.id;
-
-
-                    const stage =
-                        data.stage ||
-                        data.stageName ||
-                        "عام";
-
-
-                    const grade =
-                        data.grade ||
-                        data.className ||
-                        "";
-
-
-                    all.push({
-
-                        id: docSnap.id,
-
-                        username:
-                            String(username).trim(),
-
-                        fullName:
-                            data.fullName ||
-                            data.name ||
-                            data.userName ||
-                            username,
-
-                        stage:
-                            String(stage).trim(),
-
-                        grade:
-                            String(grade).trim(),
-
-                        image:
-                            data.image ||
-                            data.photoBase64 ||
-                            data.photo ||
-                            ""
-
-                    });
-
-                });
-
-
-                /* SAME GRADE ONLY */
-
-                allServants =
-                    all.filter(
-                        user =>
-                            user.grade === myGrade
-                    );
-
-
-                /* NOTIFICATIONS */
-
-                const notificationsSnapshot =
-                    await getDocs(
-                        collection(
-                            db,
-                            "notifications"
-                        )
-                    );
-
-
-                allNotifications = [];
-
-
-                notificationsSnapshot.forEach(
-                    docSnap => {
-
-                        const data =
-                            docSnap.data();
-
-
-                        if (
-                            data.type &&
-                            data.type !== "gift_order"
-                        ) return;
-
-
-                        allNotifications.push({
-
-                            id: docSnap.id,
-
-                            username:
-                                String(
-                                    data.username || ""
-                                ).trim(),
-
-                            message:
-                                String(
-                                    data.message || ""
-                                ).trim(),
-
-                            giftName:
-                                data.giftName ||
-                                data.title ||
-                                "هدية",
-
-                            giftImage:
-                                data.giftImage ||
-                                data.image ||
-                                data.photo ||
-                                "",
-
-                            pointsSpent:
-                                Number(
-                                    data.pointsSpent || 0
-                                ),
-
-                            timestamp:
-                                data.timestamp || null,
-
-                            deliveredAt:
-                                data.deliveredAt ||
-                                data.updatedAt ||
-                                null
-                        });
-
-                    }
-                );
-
-
-                showServants();
-
-                setupSearch();
-
-
-            } catch (error) {
-
-                console.error(
-                    "Firebase Error:",
-                    error
-                );
-
-
-                showError(
-                    "حدث خطأ أثناء تحميل البيانات. تأكد من اتصالك بالإنترنت وصلاحيات Firestore."
-                );
-
-            }
-
-        }
-
-
-        /* =========================
-           SHOW SERVANTS
-        ========================= */
-
-        function showServants(searchText = "") {
-
-            const container =
-                document.getElementById(
-                    "servantsContainer"
-                );
-
-
-            container.innerHTML = "";
-
-
-            let servants =
-                [...allServants];
-
-
-            if (searchText.trim()) {
-
-                const search =
-                    searchText
-                        .trim()
-                        .toLowerCase();
-
-
-                servants =
-                    servants.filter(user =>
-                        String(user.fullName)
-                            .toLowerCase()
-                            .includes(search)
-                    );
-
-            }
-
-
-            servants.sort(
-                (a, b) =>
-                    a.fullName.localeCompare(
-                        b.fullName,
-                        "ar"
-                    )
-            );
-
-
-            document.getElementById(
-                "servantsCount"
-            ).textContent =
-                servants.length;
-
-
-            if (servants.length === 0) {
-
-                container.innerHTML = `
-
-                    <div class="empty-box">
-
-                        <div class="empty-icon">
-
-                            <i class="fas fa-user-slash"></i>
-
-                        </div>
-
-                        <h3>
-                            لا يوجد مخدومون
-                        </h3>
-
-                        <p>
-                            لا يوجد مخدومون مسجلون في صفّك حالياً.
-                        </p>
-
-                    </div>
-
-                `;
-
-                return;
-            }
-
-
-            servants.forEach(user => {
-
-                const card =
-                    document.createElement("div");
-
-
-                card.className =
-                    "servant-card";
-
-
-                const gifts =
-                    getServantGifts(
-                        user.fullName,
-                        user.username
-                    );
-
-
-                const giftCount =
-                    gifts.length;
-
-
-                let avatarHTML =
-                    user.image
-
-                        ?
-
-                    `
-                    <img
-                        src="${user.image}"
-                        alt="${escapeHTML(user.fullName)}"
-                        class="servant-avatar"
-                    >
-                    `
-
-                        :
-
-                    `
-                    <div class="servant-avatar default-avatar">
-
-                        <i class="fas fa-user"></i>
-
-                    </div>
-                    `;
-
-
-                let displaySubText =
-                    user.grade
-
-                        ?
-
-                    `${user.stage} - ${user.grade}`
-
-                        :
-
-                    (
-                        user.stage ||
-                        "مخدوم"
-                    );
-
-
-                card.innerHTML = `
-
-                    <div class="servant-right">
-
-                        ${avatarHTML}
-
-                        <div class="servant-info">
-
-                            <div class="servant-name">
-
-                                ${escapeHTML(
-                                    user.fullName
-                                )}
-
-                            </div>
-
-
-                            <div class="servant-grade">
-
-                                <i class="fas fa-layer-group"></i>
-
-                                ${escapeHTML(
-                                    displaySubText
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="servant-left">
-
-                        <div class="gift-count">
-
-                            <i class="fas fa-gift"></i>
-
-                            <span>
-                                ${giftCount}
-                            </span>
-
-                        </div>
-
-
-                        <div class="arrow-box">
-
-                            <i class="fas fa-chevron-left arrow"></i>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-
-                card.addEventListener(
-                    "click",
-                    () =>
-                        openServant(
-                            user,
-                            displaySubText
-                        )
-                );
-
-
-                container.appendChild(card);
-
-            });
-
-        }
-
-
-        /* =========================
-           GET SERVANT GIFTS
-        ========================= */
-
-        function getServantGifts(
-            fullName,
-            username
-        ) {
-
-            return allNotifications.filter(
-                notification => {
-
-                    const notificationUser =
-                        String(
-                            notification.username || ""
-                        )
-                            .trim()
-                            .toLowerCase();
-
-
-                    const notificationMessage =
-                        String(
-                            notification.message || ""
-                        )
-                            .trim()
-                            .toLowerCase();
-
-
-                    const userName =
-                        String(
-                            username || ""
-                        )
-                            .trim()
-                            .toLowerCase();
-
-
-                    const full =
-                        String(
-                            fullName || ""
-                        )
-                            .trim()
-                            .toLowerCase();
-
-
-                    return (
-
-                        (
-                            userName &&
-                            notificationUser === userName
-                        )
-
-                        ||
-
-                        (
-                            full &&
-                            notificationUser === full
-                        )
-
-                        ||
-
-                        (
-                            notificationUser &&
-                            full.includes(
-                                notificationUser
-                            )
-                        )
-
-                        ||
-
-                        (
-                            notificationUser &&
-                            notificationUser.includes(full)
-                        )
-
-                        ||
-
-                        notificationMessage.includes(full)
-
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =========================
-           OPEN SERVANT
-        ========================= */
-
-        function openServant(
-            user,
-            subText
-        ) {
-
-            const gifts =
-                getServantGifts(
-                    user.fullName,
-                    user.username
-                );
-
-
-            document.getElementById(
-                "servantsSection"
-            ).style.display = "none";
-
-
-            document.getElementById(
-                "detailsSection"
-            ).style.display = "block";
-
-
-            document.getElementById(
-                "selectedName"
-            ).textContent =
-                user.fullName;
-
-
-            document.getElementById(
-                "selectedGrade"
-            ).textContent =
-                subText;
-
-
-            document.getElementById(
-                "selectedGiftCount"
-            ).textContent =
-                gifts.length;
-
-
-            const container =
-                document.getElementById(
-                    "giftsContainer"
-                );
-
-
-            container.innerHTML = "";
-
-
-            if (gifts.length === 0) {
-
-                container.innerHTML = `
-
-                    <div class="empty-box">
-
-                        <div class="empty-icon">
-
-                            <i class="fas fa-gift"></i>
-
-                        </div>
-
-                        <h3>
-                            لا توجد هدايا مستلمة
-                        </h3>
-
-                        <p>
-                            هذا المخدوم لم يستلم أي هدايا مسجلة حتى الآن.
-                        </p>
-
-                    </div>
-
-                `;
-
-                return;
-            }
-
-
-            gifts.sort(
-                (a, b) =>
-                    getDateValue(
-                        b.deliveredAt ||
-                        b.timestamp
-                    )
-                    -
-                    getDateValue(
-                        a.deliveredAt ||
-                        a.timestamp
-                    )
-            );
-
-
-            gifts.forEach(
-                (gift, index) => {
-
-                    const card =
-                        document.createElement("div");
-
-
-                    card.className =
-                        "gift-card";
-
-
-                    const date =
-                        formatDate(
-                            gift.deliveredAt ||
-                            gift.timestamp
-                        );
-
-
-                    let giftImageHTML =
-                        gift.giftImage
-
-                            ?
-
-                        `
-                        <img
-                            src="${gift.giftImage}"
-                            alt="${escapeHTML(gift.giftName)}"
-                            class="gift-img"
-                            loading="lazy"
-                        >
-                        `
-
-                            :
-
-                        `
-                        <div class="gift-icon">
-
-                            <i class="fas fa-gift"></i>
-
-                        </div>
-                        `;
-
-
-                    card.innerHTML = `
-
-                        <div class="gift-number">
-
-                            ${index + 1}
-
-                        </div>
-
-
-                        ${giftImageHTML}
-
-
-                        <div class="gift-details">
-
-                            <div class="gift-name">
-
-                                ${escapeHTML(
-                                    gift.giftName
-                                )}
-
-                            </div>
-
-
-                            <div class="gift-date">
-
-                                <i class="fas fa-calendar-alt"></i>
-
-                                ${date}
-
-                            </div>
-
-
-                            ${
-                                gift.message
-
-                                    ?
-
-                                `
-                                <div class="gift-msg">
-
-                                    <i class="fas fa-info-circle"></i>
-
-                                    ${escapeHTML(
-                                        gift.message
-                                    )}
-
-                                </div>
-                                `
-
-                                    :
-
-                                ""
-                            }
-
-                        </div>
-
-
-                        <div class="gift-points">
-
-                            <i class="fas fa-star"></i>
-
-                            <span>
-                                ${gift.pointsSpent}
-                            </span>
-
-                            <small>
-                                نقطة
-                            </small>
-
-                        </div>
-
-                    `;
-
-
-                    container.appendChild(card);
-
-                }
-            );
-
-        }
-
-
-        /* =========================
-           BACK
-        ========================= */
-
-        function backToServants() {
-
-            document.getElementById(
-                "detailsSection"
-            ).style.display = "none";
-
-
-            document.getElementById(
-                "servantsSection"
-            ).style.display = "block";
-
-        }
-
-
-        /* =========================
-           SEARCH
-        ========================= */
-
-        function setupSearch() {
-
-            const search =
-                document.getElementById(
-                    "searchInput"
-                );
-
-
-            if (!search) return;
-
-
-            search.addEventListener(
-                "input",
-                () => {
-
-                    showServants(
-                        search.value
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =========================
-           DATE
-        ========================= */
-
-        function getDateValue(value) {
-
-            if (!value) return 0;
-
-
-            if (
-                typeof value.toDate ===
-                "function"
-            ) {
-
-                return value
-                    .toDate()
-                    .getTime();
-
-            }
-
-
-            if (
-                value instanceof Date
-            ) {
-
-                return value.getTime();
-
-            }
-
-
-            const date =
-                new Date(value);
-
-
-            return isNaN(
-                date.getTime()
-            )
-
-                ?
-
-            0
-
-                :
-
-            date.getTime();
-
-        }
-
-
-        function formatDate(value) {
-
-            if (!value)
-                return "تاريخ غير محدد";
-
-
-            let date =
-                typeof value.toDate ===
-                "function"
-
-                    ?
-
-                value.toDate()
-
-                    :
-
-                new Date(value);
-
-
-            if (
-                isNaN(
-                    date.getTime()
-                )
-            ) {
-
-                return "تاريخ غير محدد";
-
-            }
-
-
-            return date.toLocaleString(
-                "ar-EG",
-                {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            );
-
-        }
-
-
-        /* =========================
-           SECURITY
-        ========================= */
-
-        function escapeHTML(value) {
-
-            return String(
-                value || ""
-            )
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
-        }
-
-
-        /* =========================
-           LOADING
-        ========================= */
-
-        function showLoading() {
-
-            document.getElementById(
-                "servantsContainer"
-            ).innerHTML = `
-
-                <div class="loading-box">
-
-                    <div class="loading-icon">
-
-                        <i class="fas fa-spinner fa-spin"></i>
-
-                    </div>
-
-                    <p>
-                        جاري تحميل مخدومي صفّك...
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-
-        /* =========================
-           NO GRADE
-        ========================= */
-
-        function showNoGrade() {
-
-            document.getElementById(
-                "servantsContainer"
-            ).innerHTML = `
-
-                <div class="empty-box">
-
-                    <div class="empty-icon">
-
-                        <i class="fas fa-triangle-exclamation"></i>
-
-                    </div>
-
-                    <h3>
-                        لم يتم تحديد صفّك
-                    </h3>
-
-                    <p>
-                        يرجى إكمال بيانات ملفك الشخصي لتحديد الصف الذي تخدمه.
-                    </p>
-
-                </div>
-
-            `;
-
-
-            document.getElementById(
-                "servantsCount"
-            ).textContent = "0";
-
-        }
-
-
-        /* =========================
-           ERROR
-        ========================= */
-
-        function showError(message) {
-
-            document.getElementById(
-                "servantsContainer"
-            ).innerHTML = `
-
-                <div class="error-box">
-
-                    <div class="error-icon">
-
-                        <i class="fas fa-exclamation-triangle"></i>
-
-                    </div>
-
-                    <h3>
-                        حدث خطأ
-                    </h3>
-
-                    <p>
-                        ${escapeHTML(message)}
-                    </p>
-
-                    <button
-                        class="retry-btn"
-                        onclick="location.reload()"
-                    >
-
-                        <i class="fas fa-redo"></i>
-
-                        إعادة المحاولة
-
-                    </button>
-
-                </div>
-
-            `;
-
-        }
-
-
-        window.backToServants =
-            backToServants;
-
-    </script>
-
-
-    <style>
-
-        /* =====================================
-           ROOT
-        ===================================== */
-
-        :root {
-
-            --navy-deep: #041a36;
-
-            --navy-mid: #062348;
-
-            --navy-edge: #000b18;
-
-            --maroon-dark: #5d101c;
-
-            --maroon: #7d1424;
-
-            --maroon-light: #9b1c30;
-
-            --ink: #1f1715;
-
-            --muted: #8a817c;
-
-            --line: #eadfe1;
-
-            --soft-maroon: #fff4f5;
-
-            --gold: #c9a04d;
-
-        }
-
-
-        /* =====================================
-           RESET
-        ===================================== */
-
-        * {
-
-            box-sizing: border-box;
-
-            margin: 0;
-
-            padding: 0;
-
-        }
-
-
-        body {
-
-            min-height: 100vh;
-
-            background:
-                radial-gradient(
-                    circle at top,
-                    var(--navy-mid) 0%,
-                    var(--navy-deep) 45%,
-                    var(--navy-edge) 100%
-                );
-
-            font-family: "Cairo", sans-serif;
-
-            color: var(--ink);
-
-            padding: 20px 14px 45px;
-
-        }
-
-
-        /* =====================================
-           NAVBAR
-        ===================================== */
-
-        .navbar {
-
-            width: 100%;
-
-            max-width: 760px;
-
-            margin: 0 auto;
-
-            background: #ffffff;
-
-            border-radius: 24px;
-
-            padding: 13px 16px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            gap: 15px;
-
-            position: relative;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 18px 45px
-                rgba(0, 0, 0, 0.28);
-
-        }
-
-
-        .navbar::before {
-
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-
-            right: 0;
-
-            left: 0;
-
-            height: 5px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--maroon-dark),
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-        }
-
-
-        .navbar-title {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            color: var(--maroon-dark);
-
-            font-family: "Amiri", serif;
-
-            font-size: 22px;
-
-            font-weight: 700;
-
-            white-space: nowrap;
-
-        }
-
-
-        .navbar-title::before {
-
-            content: "✝";
-
-            width: 39px;
-
-            height: 39px;
-
-            border-radius: 50%;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--maroon),
-                    var(--maroon-dark)
-                );
-
-            color: #ffffff;
-
-            font-family: serif;
-
-            font-size: 21px;
-
-            box-shadow:
-                0 7px 18px
-                rgba(125, 20, 36, .25);
-
-        }
-
-
-        .navbar-actions {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 9px;
-
-        }
-
-
-        .nav-home-btn,
-        .logout-btn-nav {
-
-            border-radius: 14px;
-
-            padding: 9px 14px;
-
-            min-height: 42px;
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            gap: 7px;
-
-            font-family: "Cairo", sans-serif;
-
-            font-size: 13px;
-
-            font-weight: 700;
-
-            text-decoration: none;
-
-            cursor: pointer;
-
-            transition:
-                transform .22s ease,
-                box-shadow .22s ease,
-                background .22s ease;
-
-        }
-
-
-        .nav-home-btn {
-
-            color: #ffffff;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            border: 1px solid var(--maroon);
-
-            box-shadow:
-                0 8px 18px
-                rgba(125, 20, 36, .22);
-
-        }
-
-
-        .logout-btn-nav {
-
-            color: var(--maroon-dark);
-
-            background: var(--soft-maroon);
-
-            border: 1px solid #e8c8cd;
-
-        }
-
-
-        .nav-home-btn:hover,
-        .logout-btn-nav:hover {
-
-            transform: translateY(-2px);
-
-        }
-
-
-        .nav-home-btn:hover {
-
-            box-shadow:
-                0 12px 25px
-                rgba(125, 20, 36, .30);
-
-        }
-
-
-        .logout-btn-nav:hover {
-
-            background: #ffe8eb;
-
-        }
-
-
-        /* =====================================
-           MAIN WHITE CARD
-        ===================================== */
-
-        .main-content {
-
-            width: 100%;
-
-            max-width: 760px;
-
-            margin: 22px auto 0;
-
-            background: #ffffff;
-
-            border-radius: 30px;
-
-            padding: 30px 28px 38px;
-
-            position: relative;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 25px 60px
-                rgba(0, 0, 0, .30);
-
-        }
-
-
-        .main-content::before {
-
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-
-            right: 0;
-
-            left: 0;
-
-            height: 7px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--maroon-dark),
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-        }
-
-
-        /* =====================================
-           TITLE
-        ===================================== */
-
-        .page-title {
-
-            color: var(--ink);
-
-            font-family: "Amiri", serif;
-
-            font-size: 30px;
-
-            font-weight: 700;
-
-            text-align: center;
-
-            margin: 3px 0 20px;
-
-        }
-
-
-        .page-title::after {
-
-            content: "";
-
-            display: block;
-
-            width: 55px;
-
-            height: 3px;
-
-            margin: 8px auto 0;
-
-            border-radius: 20px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--maroon-dark),
-                    var(--maroon-light)
-                );
-
-        }
-
-
-        /* =====================================
-           GRADE CARD
-        ===================================== */
-
-        .my-grade-card {
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #ffffff,
-                    #fff8f8
-                );
-
-            border: 1px solid var(--line);
-
-            border-radius: 19px;
-
-            padding: 15px 17px;
-
-            margin-bottom: 19px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 13px;
-
-            position: relative;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 8px 25px
-                rgba(42, 20, 24, .07);
-
-        }
-
-
-        .my-grade-card::before {
-
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-
-            right: 0;
-
-            width: 4px;
-
-            height: 100%;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-        }
-
-
-        .my-grade-icon {
-
-            width: 44px;
-
-            height: 44px;
-
-            flex-shrink: 0;
-
-            border-radius: 14px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            color: #ffffff;
-
-            font-size: 17px;
-
-            box-shadow:
-                0 7px 15px
-                rgba(125, 20, 36, .18);
-
-        }
-
-
-        .my-grade-info .label {
-
-            color: var(--muted);
-
-            font-size: 11px;
-
-            font-weight: 600;
-
-        }
-
-
-        .my-grade-info .value {
-
-            color: var(--maroon-dark);
-
-            font-family: "Amiri", serif;
-
-            font-size: 20px;
-
-            font-weight: 700;
-
-        }
-
-
-        /* =====================================
-           SEARCH
-        ===================================== */
-
-        .search-box {
-
-            position: relative;
-
-            margin-bottom: 20px;
-
-        }
-
-
-        .search-box input {
-
-            width: 100%;
-
-            height: 50px;
-
-            padding:
-                10px 46px
-                10px 16px;
-
-            border-radius: 15px;
-
-            border: 1px solid #e4dadd;
-
-            background: #faf9f9;
-
-            color: var(--ink);
-
-            font-family: "Cairo", sans-serif;
-
-            font-size: 13px;
-
-            outline: none;
-
-            transition: .22s;
-
-        }
-
-
-        .search-box input::placeholder {
-
-            color: #aaa19e;
-
-        }
-
-
-        .search-box input:focus {
-
-            background: #ffffff;
-
-            border-color: var(--maroon-light);
-
-            box-shadow:
-                0 0 0 4px
-                rgba(155, 28, 48, .08);
-
-        }
-
-
-        .search-box i {
-
-            position: absolute;
-
-            right: 17px;
-
-            top: 50%;
-
-            transform:
-                translateY(-50%);
-
-            color: var(--maroon);
-
-            font-size: 15px;
-
-        }
-
-
-        /* =====================================
-           SECTION HEADER
-        ===================================== */
-
-        .section-header {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 10px;
-
-            margin: 8px 2px 13px;
-
-        }
-
-
-        .section-header h2 {
-
-            color: var(--ink);
-
-            font-family: "Amiri", serif;
-
-            font-size: 21px;
-
-            font-weight: 700;
-
-        }
-
-
-        .servants-count-badge {
-
-            min-width: 35px;
-
-            height: 31px;
-
-            padding: 3px 10px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            border-radius: 20px;
-
-            background: var(--soft-maroon);
-
-            color: var(--maroon-dark);
-
-            border: 1px solid #e7cdd1;
-
-            font-size: 12px;
-
-            font-weight: 800;
-
-        }
-
-
-        /* =====================================
-           SERVANTS LIST
-        ===================================== */
-
-        .servants-list {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 10px;
-
-        }
-
-
-        .servant-card {
-
-            background: #ffffff;
-
-            border: 1px solid var(--line);
-
-            border-radius: 17px;
-
-            padding: 12px 14px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 12px;
-
-            cursor: pointer;
-
-            position: relative;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 6px 18px
-                rgba(40, 20, 25, .06);
-
-            transition:
-                transform .22s ease,
-                border-color .22s ease,
-                box-shadow .22s ease;
-
-            animation:
-                fadeUp .35s ease both;
-
-        }
-
-
-        .servant-card::before {
-
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-
-            right: 0;
-
-            width: 3px;
-
-            height: 100%;
-
-            background:
-                var(--maroon);
-
-            opacity: 0;
-
-            transition: .22s;
-
-        }
-
-
-        .servant-card:hover {
-
-            transform:
-                translateY(-2px);
-
-            border-color:
-                #dcbec3;
-
-            box-shadow:
-                0 12px 28px
-                rgba(80, 20, 30, .11);
-
-        }
-
-
-        .servant-card:hover::before {
-
-            opacity: 1;
-
-        }
-
-
-        .servant-right {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            min-width: 0;
-
-        }
-
-
-        .servant-avatar {
-
-            width: 50px;
-
-            height: 50px;
-
-            flex-shrink: 0;
-
-            border-radius: 50%;
-
-            object-fit: cover;
-
-            border: 2px solid #d9b0b7;
-
-            padding: 2px;
-
-            background: #ffffff;
-
-        }
-
-
-        .default-avatar {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            color: #ffffff;
-
-            padding: 0;
-
-            border: none;
-
-            font-size: 17px;
-
-        }
-
-
-        .servant-info {
-
-            min-width: 0;
-
-        }
-
-
-        .servant-name {
-
-            color: var(--ink);
-
-            font-family: "Amiri", serif;
-
-            font-size: 18px;
-
-            font-weight: 700;
-
-            white-space: nowrap;
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-        }
-
-
-        .servant-grade {
-
-            margin-top: 2px;
-
-            color: var(--muted);
-
-            font-size: 11px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 5px;
-
-        }
-
-
-        .servant-grade i {
-
-            color: var(--maroon);
-
-            font-size: 10px;
-
-        }
-
-
-        .servant-left {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            flex-shrink: 0;
-
-        }
-
-
-        .gift-count {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 5px;
-
-            padding: 6px 10px;
-
-            border-radius: 12px;
-
-            background: #fff8ed;
-
-            border: 1px solid #ead9bd;
-
-            color: #74520e;
-
-            font-size: 12px;
-
-            font-weight: 800;
-
-        }
-
-
-        .gift-count i {
-
-            color: var(--gold);
-
-        }
-
-
-        .arrow-box {
-
-            width: 31px;
-
-            height: 31px;
-
-            border-radius: 10px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background: #faf5f6;
-
-            color: var(--maroon);
-
-            transition: .22s;
-
-        }
-
-
-        .servant-card:hover .arrow-box {
-
-            background: var(--maroon);
-
-            color: #ffffff;
-
-            transform:
-                translateX(-2px);
-
-        }
-
-
-        /* =====================================
-           DETAILS
-        ===================================== */
-
-        .details-section {
-
-            display: none;
-
-        }
-
-
-        .back-btn {
-
-            border: none;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            color: #ffffff;
-
-            padding: 10px 16px;
-
-            border-radius: 14px;
-
-            font-family: "Cairo", sans-serif;
-
-            font-size: 13px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            margin-bottom: 16px;
-
-            box-shadow:
-                0 8px 18px
-                rgba(125, 20, 36, .20);
-
-            transition: .22s;
-
-        }
-
-
-        .back-btn:hover {
-
-            transform:
-                translateY(-2px);
-
-            box-shadow:
-                0 12px 24px
-                rgba(125, 20, 36, .27);
-
-        }
-
-
-        .stage-card {
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #ffffff,
-                    #fff8f8
-                );
-
-            border: 1px solid var(--line);
-
-            border-radius: 20px;
-
-            padding: 19px 20px;
-
-            margin-bottom: 18px;
-
-            position: relative;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 9px 25px
-                rgba(42, 20, 24, .07);
-
-        }
-
-
-        .stage-card::before {
-
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-
-            right: 0;
-
-            left: 0;
-
-            height: 4px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--maroon-dark),
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-        }
-
-
-        .stage-info {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 2px;
-
-        }
-
-
-        .stage-label {
-
-            color: var(--muted);
-
-            font-size: 12px;
-
-        }
-
-
-        .stage-name {
-
-            color: var(--maroon-dark);
-
-            font-family: "Amiri", serif;
-
-            font-size: 23px;
-
-            font-weight: 700;
-
-        }
-
-
-        /* =====================================
-           GIFTS
-        ===================================== */
-
-        .gifts-list {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 11px;
-
-        }
-
-
-        .gift-card {
-
-            background: #ffffff;
-
-            border: 1px solid var(--line);
-
-            border-radius: 17px;
-
-            padding: 13px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            position: relative;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 6px 18px
-                rgba(40, 20, 25, .06);
-
-            animation:
-                fadeUp .35s ease both;
-
-        }
-
-
-        .gift-card::before {
-
-            content: "";
-
-            position: absolute;
-
-            right: 0;
-
-            top: 0;
-
-            bottom: 0;
-
-            width: 3px;
-
-            background:
-                var(--maroon);
-
-        }
-
-
-        .gift-number {
-
-            width: 29px;
-
-            height: 29px;
-
-            flex-shrink: 0;
-
-            border-radius: 50%;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background:
-                var(--soft-maroon);
-
-            color: var(--maroon-dark);
-
-            border: 1px solid #e7cdd1;
-
-            font-size: 11px;
-
-            font-weight: 800;
-
-        }
-
-
-        .gift-img,
-        .gift-icon {
-
-            width: 62px;
-
-            height: 62px;
-
-            flex-shrink: 0;
-
-            border-radius: 14px;
-
-            object-fit: cover;
-
-            border: 1px solid #e4d0d3;
-
-            background: #fffafa;
-
-        }
-
-
-        .gift-icon {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            color: var(--maroon);
-
-            font-size: 21px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #fff5f6,
-                    #fffafa
-                );
-
-        }
-
-
-        .gift-details {
-
-            flex: 1;
-
-            min-width: 0;
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 3px;
-
-        }
-
-
-        .gift-name {
-
-            color: var(--ink);
-
-            font-family: "Amiri", serif;
-
-            font-size: 18px;
-
-            font-weight: 700;
-
-            white-space: nowrap;
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-        }
-
-
-        .gift-date,
-        .gift-msg {
-
-            color: var(--muted);
-
-            font-size: 10px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 5px;
-
-        }
-
-
-        .gift-date i {
-
-            color: var(--maroon);
-
-        }
-
-
-        .gift-msg {
-
-            color: var(--maroon);
-
-            font-weight: 600;
-
-        }
-
-
-        .gift-msg i {
-
-            font-size: 9px;
-
-        }
-
-
-        .gift-points {
-
-            min-width: 54px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding: 7px 8px;
-
-            border-radius: 12px;
-
-            background: #fff8ed;
-
-            border: 1px solid #ead9bd;
-
-            color: #74520e;
-
-            flex-shrink: 0;
-
-        }
-
-
-        .gift-points i {
-
-            color: var(--gold);
-
-            font-size: 12px;
-
-            margin-bottom: 1px;
-
-        }
-
-
-        .gift-points span {
-
-            font-size: 14px;
-
-            font-weight: 800;
-
-        }
-
-
-        .gift-points small {
-
-            color: var(--muted);
-
-            font-size: 9px;
-
-        }
-
-
-        /* =====================================
-           EMPTY / LOADING / ERROR
-        ===================================== */
-
-        .empty-box,
-        .loading-box,
-        .error-box {
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #ffffff,
-                    #fffafa
-                );
-
-            border: 1px solid var(--line);
-
-            border-radius: 20px;
-
-            padding: 38px 20px;
-
-            text-align: center;
-
-            box-shadow:
-                0 10px 30px
-                rgba(40, 20, 25, .07);
-
-            margin-top: 12px;
-
-        }
-
-
-        .empty-icon,
-        .error-icon {
-
-            width: 58px;
-
-            height: 58px;
-
-            margin: 0 auto 12px;
-
-            border-radius: 18px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background: var(--soft-maroon);
-
-            color: var(--maroon);
-
-            border: 1px solid #ead2d6;
-
-            font-size: 23px;
-
-        }
-
-
-        .loading-icon {
-
-            width: 58px;
-
-            height: 58px;
-
-            margin: 0 auto 12px;
-
-            border-radius: 18px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background: #fff8ed;
-
-            color: var(--gold);
-
-            font-size: 24px;
-
-        }
-
-
-        .empty-box h3,
-        .error-box h3 {
-
-            color: var(--maroon-dark);
-
-            font-family: "Amiri", serif;
-
-            font-size: 20px;
-
-            margin-bottom: 5px;
-
-        }
-
-
-        .empty-box p,
-        .loading-box p,
-        .error-box p {
-
-            color: var(--muted);
-
-            font-size: 12px;
-
-            line-height: 1.8;
-
-        }
-
-
-        .retry-btn {
-
-            margin-top: 15px;
-
-            border: none;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            color: #ffffff;
-
-            padding: 9px 17px;
-
-            border-radius: 12px;
-
-            font-family: "Cairo", sans-serif;
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            box-shadow:
-                0 7px 16px
-                rgba(125, 20, 36, .18);
-
-            transition: .22s;
-
-        }
-
-
-        .retry-btn:hover {
-
-            transform:
-                translateY(-2px);
-
-        }
-
-
-        /* =====================================
-           ANIMATION
-        ===================================== */
-
-        @keyframes fadeUp {
-
-            from {
-
-                opacity: 0;
-
-                transform:
-                    translateY(8px);
-
-            }
-
-            to {
-
-                opacity: 1;
-
-                transform:
-                    translateY(0);
-
-            }
-
-        }
-
-
-        /* =====================================
-           MOBILE
-        ===================================== */
-
-        @media (max-width: 600px) {
-
-            body {
-
-                padding:
-                    10px
-                    9px
-                    30px;
-
-            }
-
-
-            .navbar {
-
-                border-radius: 20px;
-
-                padding:
-                    12px;
-
-                gap: 10px;
-
-            }
-
-
-            .navbar-title {
-
-                font-size: 18px;
-
-                gap: 7px;
-
-            }
-
-
-            .navbar-title::before {
-
-                width: 34px;
-
-                height: 34px;
-
-                font-size: 18px;
-
-            }
-
-
-            .navbar-actions {
-
-                gap: 6px;
-
-            }
-
-
-            .nav-home-btn,
-            .logout-btn-nav {
-
-                min-height: 38px;
-
-                padding:
-                    8px 10px;
-
-                border-radius: 12px;
-
-                font-size: 11px;
-
-            }
-
-
-            .main-content {
-
-                margin-top: 12px;
-
-                border-radius: 23px;
-
-                padding:
-                    24px 15px
-                    28px;
-
-            }
-
-
-            .page-title {
-
-                font-size: 26px;
-
-            }
-
-
-            .my-grade-card {
-
-                padding: 13px;
-
-            }
-
-
-            .servant-card {
-
-                padding: 11px;
-
-            }
-
-
-            .servant-right {
-
-                gap: 9px;
-
-            }
-
-
-            .servant-avatar {
-
-                width: 45px;
-
-                height: 45px;
-
-            }
-
-
-            .servant-name {
-
-                font-size: 16px;
-
-            }
-
-
-            .gift-count {
-
-                padding:
-                    5px 8px;
-
-            }
-
-
-            .arrow-box {
-
-                width: 29px;
-
-                height: 29px;
-
-            }
-
-
-            .gift-card {
-
-                gap: 8px;
-
-                padding: 10px;
-
-            }
-
-
-            .gift-number {
-
-                display: none;
-
-            }
-
-
-            .gift-img,
-            .gift-icon {
-
-                width: 54px;
-
-                height: 54px;
-
-            }
-
-
-            .gift-name {
-
-                font-size: 16px;
-
-            }
-
-
-            .gift-points {
-
-                min-width: 48px;
-
-                padding:
-                    6px;
-
-            }
-
-        }
-
-
-        @media (max-width: 420px) {
-
-            .navbar-title {
-
-                font-size: 16px;
-
-            }
-
-
-            .navbar-title::before {
-
-                width: 31px;
-
-                height: 31px;
-
-                font-size: 16px;
-
-            }
-
-
-            .nav-home-btn,
-            .logout-btn-nav {
-
-                padding:
-                    7px 8px;
-
-            }
-
-
-            .nav-home-btn i,
-            .logout-btn-nav i {
-
-                margin: 0;
-
-            }
-
-
-            .servant-left {
-
-                gap: 4px;
-
-            }
-
-
-            .gift-count span {
-
-                font-size: 11px;
-
-            }
-
-        }
-
-    </style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>هدايا المخدومين</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --navy: #061d39;
+      --navy-dark: #020c19;
+      --maroon: #7d1424;
+      --maroon-dark: #5d101c;
+      --maroon-light: #a51f35;
+      --gold: #c9a24b;
+      --ink: #211918;
+      --muted: #817773;
+      --line: #eadfe0;
+      --soft: #fff7f8;
+      --green: #137333;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body {
+      min-height: 100dvh;
+      padding: 15px 12px 30px;
+      color: var(--ink);
+      font-family: "Tajawal", sans-serif;
+      background: radial-gradient(circle at top, #0a2d57 0, var(--navy) 48%, var(--navy-dark) 100%);
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar, .page {
+      width: min(900px, 100%);
+      margin-inline: auto;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: #fff;
+      font-weight: 800;
+    }
+    .topbar-title { display: flex; align-items: center; gap: 9px; }
+    .topbar-title i { color: var(--gold); }
+    .topbar-actions { display: flex; gap: 7px; }
+    .topbar-actions button {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--maroon);
+      background: #fff;
+      box-shadow: 0 7px 18px rgb(0 0 0 / 22%);
+    }
+
+    .page {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      border-radius: 27px;
+      background: #fff;
+      box-shadow: 0 30px 70px rgb(0 0 0 / 35%);
+    }
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 7px;
+      background: linear-gradient(90deg, var(--navy), var(--maroon), var(--gold), var(--maroon), var(--navy));
+    }
+    .page-head { margin-bottom: 20px; text-align: center; }
+    .page-icon {
+      width: 65px;
+      height: 65px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 27px;
+      background: linear-gradient(145deg, var(--maroon-light), var(--maroon-dark));
+    }
+    h1 { color: var(--ink); font: 700 clamp(27px, 5vw, 37px) "Amiri", serif; }
+    h1 span { color: var(--maroon); }
+    .page-head p { margin-top: 4px; color: var(--muted); font-size: 14px; }
+
+    .grade-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+      padding: 14px 16px;
+      border: 1px solid #eadbdd;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f8f0f1, #fff);
+    }
+    .grade-card i {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--maroon);
+    }
+    .grade-card small { display: block; color: var(--muted); font-size: 11px; }
+    .grade-card strong { color: var(--maroon-dark); font: 700 21px "Amiri", serif; }
+
+    .search-wrap { position: relative; margin-bottom: 16px; }
+    .search-wrap i {
+      position: absolute;
+      top: 50%;
+      right: 16px;
+      color: var(--maroon);
+      transform: translateY(-50%);
+    }
+    .search-wrap input {
+      width: 100%;
+      height: 49px;
+      padding: 9px 44px 9px 14px;
+      outline: none;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fafafa;
+    }
+    .search-wrap input:focus {
+      border-color: var(--maroon);
+      box-shadow: 0 0 0 4px rgb(125 20 36 / 8%);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 8px 2px 12px;
+    }
+    .section-head h2 { font: 700 23px "Amiri", serif; }
+    .count {
+      min-width: 34px;
+      padding: 6px 10px;
+      border: 1px solid #e7cdd1;
+      border-radius: 20px;
+      color: var(--maroon-dark);
+      text-align: center;
+      font-weight: 800;
+      background: var(--soft);
+    }
+
+    .servants-list { display: grid; gap: 10px; }
+    .servant-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgb(40 20 25 / 6%);
+      transition: .2s ease;
+    }
+    .servant-card:hover {
+      border-color: #dcbec3;
+      box-shadow: 0 12px 28px rgb(80 20 30 / 11%);
+      transform: translateY(-2px);
+    }
+    .servant-info { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .avatar {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(145deg, var(--maroon-light), var(--maroon-dark));
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .servant-text { min-width: 0; }
+    .servant-text h3 {
+      overflow: hidden;
+      font: 700 20px "Amiri", serif;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .servant-text p { margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .gift-count {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border: 1px solid #ead9bd;
+      border-radius: 11px;
+      color: #74520e;
+      font-size: 12px;
+      font-weight: 800;
+      background: #fff8ed;
+    }
+
+    .details { display: none; }
+    .back-btn, .refresh-btn {
+      min-height: 43px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 11px;
+      color: #fff;
+      font-weight: 800;
+      background: var(--maroon);
+    }
+    .back-btn:hover, .refresh-btn:hover { background: var(--maroon-dark); }
+    .details-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 15px 0;
+      padding: 15px;
+      border: 1px solid #eadbdd;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f8f0f1, #fff);
+    }
+    .details-head h2 { font: 700 24px "Amiri", serif; }
+    .details-head p { margin-top: 3px; color: var(--muted); font-size: 12px; }
+
+    .subsection { margin-top: 17px; }
+    .subsection h3 {
+      margin-bottom: 10px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid var(--line);
+      color: var(--maroon-dark);
+      font: 700 21px "Amiri", serif;
+    }
+    .gift-list { display: grid; gap: 10px; }
+    .gift-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: #fff;
+      box-shadow: 0 5px 16px rgb(40 20 25 / 5%);
+    }
+    .gift-image, .gift-icon {
+      width: 62px;
+      height: 62px;
+      min-width: 62px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid #e4d0d3;
+      border-radius: 13px;
+      color: var(--maroon);
+      font-size: 22px;
+      background: #fff7f8;
+    }
+    .gift-image { object-fit: cover; }
+    .gift-content { flex: 1; min-width: 0; }
+    .gift-content h4 {
+      overflow: hidden;
+      font: 700 19px "Amiri", serif;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .gift-content p { margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .gift-points {
+      min-width: 52px;
+      padding: 7px 6px;
+      border: 1px solid #ead9bd;
+      border-radius: 10px;
+      color: #74520e;
+      text-align: center;
+      font-weight: 800;
+      background: #fff8ed;
+    }
+    .gift-points small { display: block; color: var(--muted); font-size: 9px; }
+    .empty, .loading, .error {
+      padding: 32px 15px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: var(--muted);
+      text-align: center;
+      background: #fffafa;
+    }
+    .empty i, .loading i, .error i { display: block; margin-bottom: 9px; font-size: 28px; color: var(--maroon); }
+    .error { color: #8b2630; border-color: #efc2c5; }
+    .error i { color: #b42318; }
+
+    @media (max-width: 540px) {
+      body { padding: 9px 8px 22px; }
+      .page { padding: 23px 14px; border-radius: 22px; }
+      .details-head { align-items: stretch; flex-direction: column; }
+      .details-head button { width: 100%; }
+      .servant-text h3 { font-size: 18px; }
+      .gift-content h4 { font-size: 17px; }
+    }
+  </style>
 </head>
 
-
 <body>
+  <header class="topbar">
+    <div class="topbar-title">
+      <i class="fas fa-gift"></i>
+      <span>هدايا المخدومين</span>
+    </div>
+    <div class="topbar-actions">
+      <button id="homeBtn" type="button" title="الرئيسية"><i class="fas fa-house"></i></button>
+      <button id="reloadBtn" type="button" title="تحديث"><i class="fas fa-rotate"></i></button>
+    </div>
+  </header>
 
-
-    <!-- =========================
-         NAVBAR
-    ========================== -->
-
-    <header class="navbar">
-
-        <div class="navbar-title">
-            متجر الكنيسة
-        </div>
-
-
-        <div class="navbar-actions">
-
-            <a
-                href="home.html"
-                class="nav-home-btn"
-            >
-
-                <i class="fas fa-home"></i>
-
-                الرئيسية
-
-            </a>
-
-
-            <button
-                class="logout-btn-nav"
-                id="logoutBtn"
-            >
-
-                <i class="fas fa-sign-out-alt"></i>
-
-                خروج
-
-            </button>
-
-        </div>
-
+  <main class="page">
+    <header class="page-head">
+      <div class="page-icon"><i class="fas fa-gifts"></i></div>
+      <h1>هدايا <span>مخدومي الصف</span></h1>
+      <p>اختر مخدومًا لعرض هداياه المستلمة والهدايا المناسبة لصفه ومرحلته</p>
     </header>
 
-
-    <!-- =========================
-         MAIN
-    ========================== -->
-
-    <main class="main-content">
-
-
-        <!-- =====================
-             SERVANTS
-        ====================== -->
-
-        <div id="servantsSection">
-
-
-            <h1
-                class="page-title"
-                id="pageTitle"
-            >
-                الهدايا المستلمة
-            </h1>
-
-
-            <!-- GRADE -->
-
-            <div class="my-grade-card">
-
-                <div class="my-grade-icon">
-
-                    <i class="fas fa-book-open"></i>
-
-                </div>
-
-
-                <div class="my-grade-info">
-
-                    <div class="label">
-                        صفّك الدراسي
-                    </div>
-
-
-                    <div
-                        class="value"
-                        id="myGradeName"
-                    >
-                        جاري التحميل...
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- SEARCH -->
-
-            <div class="search-box">
-
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="ابحث باسم المخدوم في صفّك..."
-                >
-
-                <i class="fas fa-search"></i>
-
-            </div>
-
-
-            <!-- SECTION HEADER -->
-
-            <div class="section-header">
-
-                <h2 id="sectionTitle">
-                    مخدومين صفّي
-                </h2>
-
-
-                <span
-                    class="servants-count-badge"
-                    id="servantsCount"
-                >
-                    0
-                </span>
-
-            </div>
-
-
-            <!-- SERVANTS -->
-
-            <div
-                class="servants-list"
-                id="servantsContainer"
-            ></div>
-
-
+    <section id="listView">
+      <div class="grade-card">
+        <i class="fas fa-book-open"></i>
+        <div>
+          <small>صف المشرف</small>
+          <strong id="gradeName">جاري التحميل...</strong>
         </div>
+      </div>
 
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input id="searchInput" type="search" placeholder="ابحث عن مخدوم في صفك..." autocomplete="off">
+      </div>
 
-        <!-- =====================
-             DETAILS
-        ====================== -->
+      <div class="section-head">
+        <h2>مخدومي صفّي</h2>
+        <span id="servantCount" class="count">0</span>
+      </div>
+      <div id="servantsList" class="servants-list">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i>جاري تحميل مخدومي صفك...</div>
+      </div>
+    </section>
 
-        <div
-            id="detailsSection"
-            class="details-section"
-        >
+    <section id="detailsView" class="details">
+      <button id="backBtn" class="back-btn" type="button">
+        <i class="fas fa-arrow-right"></i> العودة إلى المخدومين
+      </button>
 
-
-            <!-- BACK -->
-
-            <button
-                class="back-btn"
-                onclick="backToServants()"
-            >
-
-                <i class="fas fa-arrow-right"></i>
-
-                العودة للقائمة
-
-            </button>
-
-
-            <!-- SELECTED SERVANT -->
-
-            <div class="stage-card">
-
-                <div class="stage-info">
-
-                    <div class="stage-label">
-                        سجل هدايا المخدوم
-                    </div>
-
-
-                    <div
-                        class="stage-name"
-                        id="selectedName"
-                    >
-                        ...
-                    </div>
-
-
-                    <div
-                        class="stage-label"
-                        id="selectedGrade"
-                        style="margin-top: 4px;"
-                    >
-                        ...
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- GIFTS HEADER -->
-
-            <div class="section-header">
-
-                <h2>
-                    الهدايا المستلمة وتفاصيلها
-                </h2>
-
-
-                <span
-                    class="servants-count-badge"
-                    id="selectedGiftCount"
-                >
-                    0
-                </span>
-
-            </div>
-
-
-            <!-- GIFTS -->
-
-            <div
-                class="gifts-list"
-                id="giftsContainer"
-            ></div>
-
-
+      <div class="details-head">
+        <div>
+          <h2 id="selectedName">—</h2>
+          <p id="selectedClass">—</p>
         </div>
+        <button id="refreshDetailsBtn" class="refresh-btn" type="button">
+          <i class="fas fa-rotate"></i> تحديث الهدايا
+        </button>
+      </div>
 
+      <div class="subsection">
+        <h3><i class="fas fa-gift"></i> الهدايا المستلمة لهذا المخدوم</h3>
+        <div id="receivedGifts" class="gift-list"></div>
+      </div>
 
-    </main>
+      <div class="subsection">
+        <h3><i class="fas fa-layer-group"></i> الهدايا المناسبة لصفه ومرحلته</h3>
+        <div id="availableGifts" class="gift-list"></div>
+      </div>
+    </section>
+  </main>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQPZ5p8VHykUWE",
+      authDomain: "st-mina-c01ec.firebaseapp.com",
+      databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+      projectId: "st-mina-c01ec",
+      storageBucket: "st-mina-c01ec.firebasestorage.app",
+      messagingSenderId: "792349150559",
+      appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+      measurementId: "G-XZGSBG05KR"
+    };
+
+    const db = getFirestore(initializeApp(firebaseConfig));
+    const $ = (selector) => document.querySelector(selector);
+
+    let myGrade = "";
+    let allServants = [];
+    let allNotifications = [];
+    let allGifts = [];
+    let selectedServant = null;
+
+    function normalize(value) {
+      return String(value ?? "")
+        .normalize("NFKC")
+        .replace(/[\u064B-\u065F\u0670]/g, "")
+        .replace(/ـ/g, "")
+        .replace(/[\u0000-\u001F\u007F\u00A0\u200B-\u200D\u2060\uFEFF]/g, " ")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLocaleLowerCase("ar-EG");
+    }
+
+    function clean(value) {
+      return String(value ?? "").trim().replace(/\s+/g, " ");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function firstValue(data, fields, fallback = "") {
+      for (const field of fields) {
+        if (clean(data?.[field])) return clean(data[field]);
+      }
+      return fallback;
+    }
+
+    function servantName(servant) {
+      return firstValue(servant, ["fullName", "name", "username", "userName"], servant.id);
+    }
+
+    function servantUsername(servant) {
+      return firstValue(servant, ["username", "userName", "usernameLower"], "");
+    }
+
+    function servantGrade(servant) {
+      return firstValue(servant, ["grade", "className", "servantGrade", "class"], "");
+    }
+
+    function servantStage(servant) {
+      return firstValue(servant, ["stage", "stageName", "servantStage"], "");
+    }
+
+    function dateValue(value) {
+      if (!value) return 0;
+      if (typeof value?.toDate === "function") return value.toDate().getTime();
+      if (typeof value === "object" && value.seconds !== undefined) {
+        return Number(value.seconds) * 1000;
+      }
+      const result = new Date(value).getTime();
+      return Number.isNaN(result) ? 0 : result;
+    }
+
+    function formatDate(value) {
+      const timestamp = dateValue(value);
+      return timestamp
+        ? new Date(timestamp).toLocaleString("ar-EG", {
+            year: "numeric", month: "long", day: "numeric",
+            hour: "2-digit", minute: "2-digit"
+          })
+        : "تاريخ غير محدد";
+    }
+
+    function showBox(container, type, message) {
+      const icon = type === "error" ? "fa-triangle-exclamation" : "fa-gift";
+      container.innerHTML = `
+        <div class="${type}">
+          <i class="fas ${icon}"></i>
+          ${escapeHtml(message)}
+        </div>
+      `;
+    }
+
+    function getLoginIdentifiers() {
+      const params = new URLSearchParams(location.search);
+      const values = [
+        params.get("user"),
+        params.get("admin"),
+        localStorage.getItem("userDocId"),
+        localStorage.getItem("currentUsername"),
+        localStorage.getItem("username"),
+        localStorage.getItem("adminUsername"),
+        localStorage.getItem("adminDocId")
+      ];
+
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
+        try {
+          const parsed = JSON.parse(currentUser);
+          values.push(
+            parsed?.id, parsed?.docId, parsed?.userId, parsed?.username,
+            parsed?.userName, parsed?.email, parsed?.phone
+          );
+        } catch {
+          values.push(currentUser);
+        }
+      }
+
+      return [...new Set(values.map(normalize).filter(Boolean))];
+    }
+
+    async function getMyGrade() {
+      const savedGrade = clean(localStorage.getItem("servantGrade"));
+      if (savedGrade) return savedGrade;
+
+      const identifiers = getLoginIdentifiers();
+      if (!identifiers.length) return "";
+
+      const snapshot = await getDocs(collection(db, "admin"));
+      let admin = null;
+      snapshot.forEach((item) => {
+        if (admin) return;
+        const data = item.data();
+        const values = [
+          item.id, data.username, data.usernameLower, data.fullName,
+          data.name, data.servantNumber, data.adminId
+        ].map(normalize).filter(Boolean);
+        if (identifiers.some((identifier) => values.includes(identifier))) {
+          admin = data;
+        }
+      });
+
+      return firstValue(admin, ["servantGrade", "grade", "class"], "");
+    }
+
+    async function loadData() {
+      showBox($("#servantsList"), "loading", "جاري تحميل مخدومي صفك...");
+
+      try {
+        myGrade = await getMyGrade();
+        $("#gradeName").textContent = myGrade || "غير محدد";
+
+        if (!myGrade) {
+          showBox($("#servantsList"), "error", "لم يتم تحديد صف المشرف.");
+          return;
+        }
+
+        const [usersSnapshot, notificationsSnapshot, giftsSnapshot] = await Promise.all([
+          getDocs(collection(db, "users")),
+          getDocs(collection(db, "notifications")),
+          getDocs(collection(db, "gifts"))
+        ]);
+
+        allServants = usersSnapshot.docs
+          .map((item) => ({ id: item.id, ...item.data() }))
+          .filter((user) => normalize(servantGrade(user)) === normalize(myGrade));
+
+        allNotifications = notificationsSnapshot.docs.map((item) => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+        allGifts = giftsSnapshot.docs.map((item) => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+        renderServants();
+      } catch (error) {
+        console.error("Firebase error:", error);
+        showBox($("#servantsList"), "error", error?.code === "permission-denied"
+          ? "ليس لديك صلاحية قراءة users أو notifications أو gifts."
+          : "حدث خطأ أثناء تحميل البيانات.");
+      }
+    }
+
+    function receivedFor(servant) {
+      const ids = [
+        servant.id,
+        servant.userId,
+        servant.username,
+        servantUsername(servant),
+        servant.fullName,
+        servant.name
+      ].map(normalize).filter(Boolean);
+
+      return allNotifications.filter((notification) => {
+        /*
+         * هذه الصفحة تعرض الهدايا المستلمة فقط.
+         * الطلب المرفوض أو غير المسلّم لا يظهر هنا.
+         * إذا كان المستند القديم لا يحتوي isDelivered نسمح به
+         * حتى لا تختفي البيانات القديمة.
+         */
+        if (notification.isRejected === true) return false;
+        if (
+          Object.prototype.hasOwnProperty.call(notification, "isDelivered")
+          && notification.isDelivered !== true
+        ) {
+          return false;
+        }
+
+        const notificationIds = [
+          notification.userId,
+          notification.userDocId,
+          notification.uid,
+          notification.username,
+          notification.userName,
+          notification.fullName,
+          notification.name
+        ].map(normalize).filter(Boolean);
+
+        /* المطابقة الأفضل: المعرّف أو اسم المستخدم أو الاسم الكامل */
+        if (ids.some((id) => notificationIds.includes(id))) return true;
+
+        /*
+         * احتياط للبيانات القديمة التي حفظت الاسم داخل message فقط.
+         * لا نستخدم includes عندما يكون الاسم فارغًا حتى لا تظهر
+         * هدايا كل المستخدمين عند اختيار شخص واحد.
+         */
+        const message = normalize(notification.message);
+        const names = [servantName(servant), servantUsername(servant)]
+          .map(normalize)
+          .filter((name) => name.length >= 2);
+        return names.some((name) => message.includes(name));
+      });
+    }
+
+    function getCatalogGift(notification) {
+      const giftId = normalize(notification.giftId);
+      const giftName = normalize(notification.giftName);
+
+      return allGifts.find((gift) => {
+        const sameId =
+          giftId
+          && [gift.id, gift.giftId].map(normalize).includes(giftId);
+
+        const sameName =
+          giftName
+          && normalize(firstValue(gift, ["name", "giftName", "title"], "")) === giftName;
+
+        return sameId || sameName;
+      }) || null;
+    }
+
+    function giftsForStage(servant) {
+      const grade = normalize(servantGrade(servant));
+      const stage = normalize(servantStage(servant));
+
+      return allGifts.filter((gift) => {
+        const giftGrade = normalize(firstValue(gift, ["grade", "className"], ""));
+        const giftStage = normalize(firstValue(gift, ["stage", "stageName"], ""));
+        const gradeMatches = !giftGrade || giftGrade === grade;
+        const stageMatches = !giftStage || giftStage === stage || giftStage === "عام";
+        return gradeMatches && stageMatches;
+      });
+    }
+
+    function renderServants() {
+      const term = normalize($("#searchInput").value);
+      const visible = allServants
+        .filter((servant) => {
+          const searchable = [
+            servantName(servant), servantUsername(servant),
+            servantGrade(servant), servantStage(servant)
+          ].map(normalize).join(" ");
+          return !term || searchable.includes(term);
+        })
+        .sort((a, b) => servantName(a).localeCompare(servantName(b), "ar"));
+
+      $("#servantCount").textContent = visible.length;
+
+      if (!visible.length) {
+        showBox($("#servantsList"), "empty", "لا يوجد مخدومون في صفك.");
+        return;
+      }
+
+      $("#servantsList").innerHTML = "";
+      visible.forEach((servant) => {
+        const received = receivedFor(servant);
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "servant-card";
+        const image = firstValue(servant, ["image", "photo", "photoBase64"], "");
+        card.innerHTML = `
+          <div class="servant-info">
+            <div class="avatar">
+              ${image
+                ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(servantName(servant))}">`
+                : `<i class="fas fa-user"></i>`}
+            </div>
+            <div class="servant-text">
+              <h3>${escapeHtml(servantName(servant))}</h3>
+              <p>${escapeHtml(servantStage(servant) || "مرحلة غير محددة")} • ${escapeHtml(servantGrade(servant))}</p>
+            </div>
+          </div>
+          <span class="gift-count"><i class="fas fa-gift"></i> ${received.length}</span>
+        `;
+        card.addEventListener("click", () => openServant(servant));
+        $("#servantsList").appendChild(card);
+      });
+    }
+
+    function renderReceived(servant) {
+      const container = $("#receivedGifts");
+      const gifts = receivedFor(servant).sort((a, b) =>
+        dateValue(b.deliveredAt || b.timestamp || b.createdAt)
+        - dateValue(a.deliveredAt || a.timestamp || a.createdAt)
+      );
+
+      if (!gifts.length) {
+        showBox(container, "empty", "لا توجد هدايا مستلمة مسجلة لهذا المخدوم.");
+        return;
+      }
+
+      container.innerHTML = "";
+      gifts.forEach((gift) => {
+        const card = document.createElement("article");
+        card.className = "gift-card";
+        const catalogGift = getCatalogGift(gift);
+        const image = firstValue(
+          gift,
+          ["giftImage", "image", "photo"],
+          firstValue(catalogGift, ["image", "giftImage", "photo"], "")
+        );
+        const name = firstValue(
+          gift,
+          ["giftName", "title", "name"],
+          firstValue(catalogGift, ["name", "giftName", "title"], "هدية")
+        );
+        const points = Number(
+          gift.pointsSpent ?? gift.points ?? catalogGift?.points ?? 0
+        ) || 0;
+        card.innerHTML = `
+          ${image
+            ? `<img class="gift-image" src="${escapeHtml(image)}" alt="${escapeHtml(name)}">`
+            : `<div class="gift-icon"><i class="fas fa-gift"></i></div>`}
+          <div class="gift-content">
+            <h4>${escapeHtml(name)}</h4>
+            <p><i class="fas fa-calendar"></i> ${escapeHtml(formatDate(gift.deliveredAt || gift.timestamp || gift.createdAt))}</p>
+            ${gift.message ? `<p>${escapeHtml(gift.message)}</p>` : ""}
+          </div>
+          <div class="gift-points"><i class="fas fa-star"></i><br>${points}<small>نقطة</small></div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderAvailable(servant) {
+      const container = $("#availableGifts");
+      const gifts = giftsForStage(servant);
+
+      if (!gifts.length) {
+        showBox(container, "empty", "لا توجد هدايا مسجلة لهذا الصف أو المرحلة.");
+        return;
+      }
+
+      container.innerHTML = "";
+      gifts.forEach((gift) => {
+        const card = document.createElement("article");
+        card.className = "gift-card";
+        const name = firstValue(gift, ["name", "giftName", "title"], "هدية");
+        const image = firstValue(gift, ["image", "giftImage", "photo"], "");
+        const points = Number(gift.points ?? gift.pointsRequired ?? 0) || 0;
+        const quantity = Number(gift.quantity ?? 0) || 0;
+        card.innerHTML = `
+          ${image
+            ? `<img class="gift-image" src="${escapeHtml(image)}" alt="${escapeHtml(name)}">`
+            : `<div class="gift-icon"><i class="fas fa-gift"></i></div>`}
+          <div class="gift-content">
+            <h4>${escapeHtml(name)}</h4>
+            <p>الصف: ${escapeHtml(firstValue(gift, ["grade"], servantGrade(servant)))} • المرحلة: ${escapeHtml(firstValue(gift, ["stage"], servantStage(servant)))}</p>
+          </div>
+          <div class="gift-points"><i class="fas fa-star"></i><br>${points}<small>نقطة</small></div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openServant(servant) {
+      selectedServant = servant;
+      $("#listView").style.display = "none";
+      $("#detailsView").style.display = "block";
+      $("#selectedName").textContent = servantName(servant);
+      $("#selectedClass").textContent =
+        `${servantStage(servant) || "مرحلة غير محددة"} • ${servantGrade(servant) || "صف غير محدد"}`;
+      renderReceived(servant);
+      renderAvailable(servant);
+    }
+
+    function backToList() {
+      selectedServant = null;
+      $("#detailsView").style.display = "none";
+      $("#listView").style.display = "block";
+    }
+
+    $("#searchInput").addEventListener("input", renderServants);
+    $("#backBtn").addEventListener("click", backToList);
+    $("#refreshDetailsBtn").addEventListener("click", () => {
+      if (selectedServant) {
+        renderReceived(selectedServant);
+        renderAvailable(selectedServant);
+      }
+    });
+    $("#reloadBtn").addEventListener("click", loadData);
+    $("#homeBtn").addEventListener("click", () => { location.href = "home.html"; });
+
+    loadData();
+  </script>
 </body>
-
 </html>
