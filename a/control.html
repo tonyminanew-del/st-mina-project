@@ -1,3497 +1,1010 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-    <title>مخدومين صفّي - لوحة الخادم</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --navy-deep: #041a36;
-            --navy-mid: #062348;
-            --navy-edge: #000b18;
-
-            --maroon-dark: #5d101c;
-            --maroon: #7d1424;
-            --maroon-light: #9b1c30;
-
-            --ink: #1f1715;
-            --muted: #8a817c;
-
-            --white: #ffffff;
-            --soft-white: #fafafa;
-
-            --border: #eadfe0;
-            --gold: #c9a24b;
-
-            --green: #137333;
-            --red: #b42318;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html,
-        body {
-            min-height: 100%;
-        }
-
-        body {
-            font-family: 'Tajawal', sans-serif;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    var(--navy-mid) 0%,
-                    var(--navy-deep) 48%,
-                    var(--navy-edge) 100%
-                );
-
-            color: var(--ink);
-            min-height: 100dvh;
-
-            padding:
-                max(14px, env(safe-area-inset-top))
-                15px
-                max(25px, env(safe-area-inset-bottom));
-
-            overflow-x: hidden;
-        }
-
-        .topbar {
-            width: 100%;
-            max-width: 1050px;
-            margin: 0 auto 15px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .menu-btn {
-            width: 48px;
-            height: 48px;
-
-            border: none;
-            border-radius: 14px;
-
-            background: #ffffff;
-            color: var(--maroon);
-
-            font-size: 20px;
-            cursor: pointer;
-
-            box-shadow: 0 8px 22px rgba(0, 0, .25);
-            transition: .25s;
-        }
-
-        .menu-btn:hover {
-            transform: translateY(-2px);
-            background: #fff7f8;
-        }
-
-        .class-badge {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 10px 17px;
-
-            display: flex;
-            align-items: center;
-            gap: 9px;
-
-            font-size: 14px;
-            font-weight: 700;
-
-            color: var(--navy-deep);
-
-            box-shadow: 0 8px 22px rgba(0, 0, 0, .25);
-        }
-
-        .class-badge i {
-            color: var(--maroon);
-        }
-
-        .overlay {
-            position: fixed;
-            inset: 0;
-
-            background: rgba(0, 11, 24, .72);
-            backdrop-filter: blur(5px);
-
-            opacity: 0;
-            visibility: hidden;
-
-            transition: .3s;
-            z-index: 5000;
-        }
-
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .sidebar {
-            position: fixed;
-
-            top: 0;
-            right: -350px;
-
-            width: min(330px, 88vw);
-            height: 100dvh;
-
-            background: #ffffff;
-            border-left: 5px solid var(--maroon);
-
-            padding:
-                max(20px, env(safe-area-inset-top))
-                20px
-                max(20px, env(safe-area-inset-bottom));
-
-            box-shadow: -20px 0 60px rgba(0, 0, .3);
-
-            z-index: 6000;
-
-            transition: right .35s ease;
-
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar.active {
-            right: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding-bottom: 18px;
-            border-bottom: 1px solid var(--border);
-
-            margin-bottom: 18px;
-        }
-
-        .sidebar-header h3 {
-            font-family: 'Amiri', serif;
-            color: var(--maroon);
-            font-size: 24px;
-        }
-
-        .close-btn {
-            width: 40px;
-            height: 40px;
-
-            border: none;
-            border-radius: 12px;
-
-            background: #fff2f3;
-            color: var(--maroon);
-
-            font-size: 19px;
-            cursor: pointer;
-        }
-
-        .sidebar-links {
-            list-style: none;
-
-            display: flex;
-            flex-direction: column;
-
-            gap: 9px;
-            overflow-y: auto;
-        }
-
-        .sidebar-links a,
-        .logout-link {
-            width: 100%;
-            min-height: 48px;
-
-            display: flex;
-            align-items: center;
-
-            gap: 13px;
-            padding: 11px 15px;
-
-            border-radius: 13px;
-
-            background: #faf7f7;
-            border: 1px solid #eee3e4;
-
-            color: var(--ink);
-
-            text-decoration: none;
-
-            font-family: 'Tajawal', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-
-            cursor: pointer;
-            transition: .22s;
-        }
-
-        .sidebar-links a i,
-        .logout-link i {
-            width: 22px;
-            text-align: center;
-            color: var(--maroon);
-        }
-
-        .sidebar-links a:hover {
-            transform: translateX(-4px);
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            color: white;
-            border-color: transparent;
-
-            box-shadow: 0 8px 20px rgba(125, 20, 36, .22);
-        }
-
-        .sidebar-links a:hover i {
-            color: white;
-        }
-
-        .logout-link {
-            margin-top: auto;
-
-            background: #fff5f5;
-            color: #9f1239;
-            border-color: #f2cccc;
-        }
-
-        .logout-link:hover {
-            background: #9f1239;
-            color: white;
-        }
-
-        .logout-link:hover i {
-            color: white;
-        }
-
-        .main-content {
-            width: 100%;
-            max-width: 1050px;
-
-            margin: 0 auto;
-
-            background: #ffffff;
-            border-radius: 30px;
-
-            padding: 32px;
-
-            box-shadow: 0 30px 75px rgba(0, 0, 0, .35);
-
-            position: relative;
-            overflow: hidden;
-        }
-
-        .main-content::before {
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-            right: 0;
-            left: 0;
-
-            height: 7px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--navy-deep),
-                    var(--maroon),
-                    var(--maroon-light),
-                    var(--navy-deep)
-                );
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .header-icon {
-            width: 70px;
-            height: 70px;
-
-            margin: 4px auto 15px;
-
-            border-radius: 50%;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            color: white;
-            font-size: 30px;
-
-            box-shadow: 0 12px 25px rgba(125, 20, 36, .28);
-        }
-
-        .page-header h1 {
-            font-family: 'Amiri', serif;
-
-            color: var(--ink);
-
-            font-size: clamp(28px, 6vw, 38px);
-
-            line-height: 1.5;
-            margin-bottom: 5px;
-        }
-
-        .page-header h1 span {
-            color: var(--maroon);
-        }
-
-        .page-header p {
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .class-info {
-            display: flex;
-
-            justify-content: space-between;
-            align-items: center;
-
-            gap: 15px;
-
-            padding: 17px 20px;
-
-            border-radius: 17px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #f8f1f2,
-                    #fff
-                );
-
-            border: 1px solid #eadbdd;
-            margin-bottom: 18px;
-        }
-
-        .class-title {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-
-            color: var(--navy-deep);
-
-            font-weight: 700;
-            font-size: 15px;
-        }
-
-        .class-title i {
-            color: var(--maroon);
-            font-size: 21px;
-        }
-
-        .count-pill {
-            background: white;
-
-            border: 1px solid #dfc7ca;
-
-            color: var(--maroon);
-
-            border-radius: 12px;
-
-            padding: 7px 13px;
-
-            font-size: 13px;
-            font-weight: 800;
-
-            white-space: nowrap;
-
-            box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            min-height: 52px;
-
-            padding: 12px 48px 12px 16px;
-
-            border: 1px solid #e3d8d9;
-            border-radius: 15px;
-
-            background: #fafafa;
-            color: var(--ink);
-
-            font-family: 'Tajawal', sans-serif;
-            font-size: 15px;
-
-            outline: none;
-            transition: .25s;
-        }
-
-        .search-input:focus {
-            background: white;
-
-            border-color: var(--maroon);
-
-            box-shadow:
-                0 0 0 4px rgba(125, 20, 36, .08);
-        }
-
-        .search-box::before {
-            content: "\f002";
-
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-
-            position: absolute;
-
-            right: 17px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            color: var(--maroon);
-
-            z-index: 2;
-        }
-
-        .search-input::placeholder {
-            color: #aaa2a0;
-        }
-
-        .servants-list {
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, minmax(0, 1fr));
-
-            gap: 13px;
-        }
-
-        .servant-name-card {
-            background: #ffffff;
-
-            border: 1px solid #eadfe0;
-            border-radius: 18px;
-
-            padding: 17px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 12px;
-
-            cursor: pointer;
-            transition: .25s;
-
-            box-shadow:
-                0 6px 18px rgba(31, 23, 21, .055);
-        }
-
-        .servant-name-card:hover {
-            transform: translateY(-3px);
-
-            border-color:
-                rgba(125, 20, 36, .35);
-
-            box-shadow:
-                0 14px 30px rgba(31, 23, 21, .11);
-        }
-
-        .servant-name-card.banned-card {
-            border-color: #e7a9ad;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #fff,
-                    #fff5f5
-                );
-        }
-
-        .card-info {
-            display: flex;
-            align-items: center;
-
-            gap: 12px;
-            min-width: 0;
-        }
-
-        .avatar {
-            width: 49px;
-            height: 49px;
-
-            min-width: 49px;
-
-            border-radius: 15px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            color: white;
-            font-size: 20px;
-
-            box-shadow:
-                0 7px 15px rgba(125, 20, 36, .18);
-        }
-
-        .card-text {
-            min-width: 0;
-        }
-
-        .card-info h3 {
-            font-family: 'Amiri', serif;
-
-            font-size: 21px;
-            color: var(--ink);
-
-            margin-bottom: 1px;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .card-info span {
-            display: block;
-
-            color: var(--muted);
-
-            font-size: 12px;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .btn-open-control {
-            border: none;
-
-            background: #f9f0f1;
-            color: var(--maroon);
-
-            padding: 9px 12px;
-
-            border-radius: 11px;
-
-            font-family: 'Tajawal', sans-serif;
-            font-size: 11px;
-            font-weight: 800;
-
-            white-space: nowrap;
-            cursor: pointer;
-
-            pointer-events: none;
-            transition: .2s;
-        }
-
-        .servant-name-card:hover .btn-open-control {
-            background: var(--maroon);
-            color: white;
-        }
-
-        .loading-box {
-            grid-column: 1 / -1;
-
-            padding: 55px 20px;
-
-            text-align: center;
-
-            color: var(--maroon);
-            font-size: 16px;
-        }
-
-        .loading-box i {
-            display: block;
-
-            font-size: 30px;
-            margin-bottom: 12px;
-        }
-
-        .error-box {
-            grid-column: 1 / -1;
-
-            padding: 28px;
-
-            text-align: center;
-
-            background: #fff7f7;
-
-            border: 1px solid #efc2c5;
-            border-radius: 18px;
-
-            color: #8b2630;
-        }
-
-        .error-box i {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-
-        .error-box p {
-            word-break: break-word;
-        }
-
-        .retry-btn {
-            margin-top: 17px;
-
-            padding: 10px 18px;
-
-            border: none;
-            border-radius: 11px;
-
-            background: var(--maroon);
-            color: white;
-
-            font-family: 'Tajawal', sans-serif;
-            font-weight: 700;
-
-            cursor: pointer;
-        }
-
-        .servant-modal {
-            position: fixed;
-
-            left: 50%;
-            top: 50%;
-
-            transform:
-                translate(-50%, -47%)
-                scale(.96);
-
-            width: min(900px, 94vw);
-
-            max-height: 90dvh;
-
-            overflow-y: auto;
-
-            background: #ffffff;
-
-            border-radius: 27px;
-
-            padding: 27px;
-
-            z-index: 7000;
-
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-
-            transition: .28s ease;
-
-            box-shadow:
-                0 35px 90px rgba(0, 0, .42);
-        }
-
-        .servant-modal.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-
-            transform:
-                translate(-50%, -50%)
-                scale(1);
-        }
-
-        .servant-modal::-webkit-scrollbar {
-            width: 7px;
-        }
-
-        .servant-modal::-webkit-scrollbar-thumb {
-            background: #d8c4c7;
-            border-radius: 10px;
-        }
-
-        .modal-header-custom {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 15px;
-
-            padding-bottom: 15px;
-
-            border-bottom: 1px solid #eee2e3;
-            margin-bottom: 20px;
-        }
-
-        .modal-header-custom h2 {
-            font-family: 'Amiri', serif;
-
-            color: var(--maroon);
-            font-size: 24px;
-        }
-
-        .modal-close {
-            width: 42px;
-            height: 42px;
-
-            border: none;
-            border-radius: 12px;
-
-            background: #fff2f3;
-            color: var(--maroon);
-
-            font-size: 18px;
-            cursor: pointer;
-
-            transition: .2s;
-        }
-
-        .modal-close:hover {
-            background: var(--maroon);
-            color: white;
-        }
-
-        .servant-profile-header {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 15px;
-
-            margin-bottom: 20px;
-            padding: 17px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #f8f0f1,
-                    #fff
-                );
-
-            border-radius: 17px;
-            border: 1px solid #eadbdd;
-        }
-
-        .profile-name {
-            display: flex;
-            align-items: center;
-
-            gap: 12px;
-            min-width: 0;
-        }
-
-        .profile-name-icon {
-            width: 51px;
-            height: 51px;
-
-            min-width: 51px;
-
-            border-radius: 15px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            color: white;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    var(--maroon-light),
-                    var(--maroon-dark)
-                );
-
-            font-size: 21px;
-        }
-
-        .servant-profile-header h2 {
-            font-family: 'Amiri', serif;
-
-            color: var(--ink);
-            font-size: 26px;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .grade-pill {
-            background: white;
-
-            border: 1px solid #dcc4c7;
-
-            color: var(--maroon);
-
-            padding: 7px 13px;
-
-            border-radius: 11px;
-
-            font-size: 13px;
-            font-weight: 800;
-
-            white-space: nowrap;
-        }
-
-        .control-section {
-            border: 1px solid #eadfe0;
-            border-radius: 18px;
-
-            overflow: hidden;
-            margin-bottom: 18px;
-        }
-
-        .section-title {
-            padding: 13px 17px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #f8f0f1,
-                    #fff
-                );
-
-            color: var(--maroon);
-
-            font-family: 'Amiri', serif;
-
-            font-size: 20px;
-
-            border-bottom: 1px solid #eadfe0;
-        }
-
-        .control-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 0;
-        }
-
-        .control-item {
-            padding: 18px;
-
-            min-width: 0;
-
-            border-left: 1px solid #eee5e5;
-        }
-
-        .control-item:last-child {
-            border-left: none;
-        }
-
-        .control-label {
-            color: var(--muted);
-
-            font-size: 12px;
-
-            margin-bottom: 9px;
-
-            display: block;
-        }
-
-        .points-row {
-            display: flex;
-
-            align-items: center;
-
-            flex-wrap: wrap;
-
-            gap: 6px;
-        }
-
-        .points-badge {
-            display: inline-flex;
-
-            align-items: center;
-            justify-content: center;
-
-            min-width: 95px;
-
-            padding: 8px 12px;
-
-            border-radius: 11px;
-
-            background: #fff9eb;
-
-            border: 1px solid #ead49e;
-
-            color: #8a6518;
-
-            font-weight: 800;
-            font-size: 13px;
-        }
-
-        .btn-action {
-            min-width: 38px;
-            height: 36px;
-
-            padding: 0 9px;
-
-            border-radius: 9px;
-
-            background: white;
-
-            border: 1px solid #dfd2d3;
-
-            color: var(--ink);
-
-            font-family: 'Tajawal', sans-serif;
-
-            font-weight: 800;
-
-            cursor: pointer;
-
-            transition: .2s;
-        }
-
-        .btn-action.plus:hover {
-            background: #137333;
-            color: white;
-            border-color: #137333;
-        }
-
-        .btn-action.minus:hover {
-            background: #b42318;
-            color: white;
-            border-color: #b42318;
-        }
-
-        .btn-action.save {
-            background: var(--maroon);
-            border-color: var(--maroon);
-            color: white;
-        }
-
-        .btn-action.save:hover {
-            background: var(--maroon-dark);
-        }
-
-        .custom-input {
-            width: 65px;
-            height: 36px;
-
-            border: 1px solid #dfd2d3;
-            border-radius: 9px;
-
-            text-align: center;
-
-            outline: none;
-
-            font-family: 'Tajawal', sans-serif;
-
-            font-weight: 700;
-
-            color: var(--ink);
-        }
-
-        .custom-input:focus {
-            border-color: var(--maroon);
-
-            box-shadow:
-                0 0 0 3px rgba(125, 20, 36, .08);
-        }
-
-        .btn-ban {
-            width: 100%;
-            min-height: 43px;
-
-            border-radius: 11px;
-
-            cursor: pointer;
-
-            font-family: 'Tajawal', sans-serif;
-            font-weight: 800;
-
-            transition: .2s;
-        }
-
-        .btn-ban.ban {
-            background: #fff5f5;
-
-            color: #b42318;
-
-            border: 1px solid #efc4c6;
-        }
-
-        .btn-ban.ban:hover {
-            background: #b42318;
-            color: white;
-        }
-
-        .btn-ban.unban {
-            background: #f0faf3;
-
-            color: #137333;
-
-            border: 1px solid #b9ddc2;
-        }
-
-        .btn-ban.unban:hover {
-            background: #137333;
-            color: white;
-        }
-
-        .personal-details-box {
-            border: 1px solid #eadfe0;
-            border-radius: 18px;
-            overflow: hidden;
-        }
-
-        .personal-details-box h3 {
-            padding: 13px 17px;
-            margin: 0;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #f8f0f1,
-                    #fff
-                );
-
-            color: var(--maroon);
-
-            font-family: 'Amiri', serif;
-
-            font-size: 20px;
-
-            border-bottom: 1px solid #eadfe0;
-        }
-
-        .details-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, minmax(0, 1fr));
-
-            gap: 10px;
-
-            padding: 15px;
-        }
-
-        .detail-item {
-            background: #fafafa;
-
-            border: 1px solid #eee5e5;
-
-            border-radius: 12px;
-
-            padding: 12px 14px;
-
-            display: flex;
-
-            justify-content: space-between;
-            align-items: flex-start;
-
-            gap: 10px;
-
-            font-size: 13px;
-        }
-
-        .detail-item strong {
-            color: var(--maroon);
-            white-space: nowrap;
-        }
-
-        .detail-item span {
-            color: var(--ink);
-
-            text-align: left;
-
-            word-break: break-word;
-        }
-
-        @media (max-width: 760px) {
-
-            .main-content {
-                padding: 24px 18px 25px;
-                border-radius: 25px;
-            }
-
-            .servants-list {
-                grid-template-columns: 1fr;
-            }
-
-            .control-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .control-item {
-                border-left: none;
-
-                border-bottom: 1px solid #eee5e5;
-            }
-
-            .control-item:last-child {
-                border-bottom: none;
-            }
-
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 520px) {
-
-            body {
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-
-            .topbar {
-                margin-bottom: 10px;
-            }
-
-            .class-badge {
-                font-size: 12px;
-                padding: 9px 12px;
-            }
-
-            .main-content {
-                padding: 22px 14px;
-                border-radius: 22px;
-            }
-
-            .header-icon {
-                width: 62px;
-                height: 62px;
-                font-size: 26px;
-            }
-
-            .page-header h1 {
-                font-size: 28px;
-            }
-
-            .class-info {
-                flex-direction: column;
-                align-items: stretch;
-                text-align: center;
-            }
-
-            .class-title {
-                justify-content: center;
-            }
-
-            .count-pill {
-                text-align: center;
-            }
-
-            .servant-name-card {
-                padding: 13px;
-            }
-
-            .card-info h3 {
-                font-size: 19px;
-            }
-
-            .btn-open-control {
-                padding: 8px;
-                font-size: 10px;
-            }
-
-            .servant-modal {
-                width: 96vw;
-                max-height: 94dvh;
-
-                padding: 18px;
-                border-radius: 21px;
-            }
-
-            .servant-profile-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .servant-profile-header h2 {
-                font-size: 23px;
-                max-width: 100%;
-            }
-
-            .grade-pill {
-                align-self: flex-start;
-            }
-
-            .points-row {
-                gap: 5px;
-            }
-
-            .points-badge {
-                width: 100%;
-            }
-
-            .custom-input {
-                flex: 1;
-            }
-
-            .details-grid {
-                padding: 10px;
-            }
-
-            .detail-item {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .detail-item span {
-                text-align: right;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المستخدمين</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --navy: #061d39;
+      --navy-dark: #020c19;
+      --maroon: #7d1424;
+      --maroon-dark: #5d101c;
+      --maroon-light: #a51f35;
+      --gold: #c9a24b;
+      --ink: #211918;
+      --muted: #817773;
+      --line: #eadfe0;
+      --surface: #ffffff;
+      --soft: #faf6f6;
+      --green: #137333;
+      --red: #b42318;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      min-height: 100dvh;
+      padding: 18px 14px 30px;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: "Tajawal", sans-serif;
+      background: radial-gradient(circle at top, #0a2d57 0, var(--navy) 45%, var(--navy-dark) 100%);
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      width: min(1100px, 100%);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .topbar-title {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .topbar-title i { color: var(--gold); font-size: 22px; }
+
+    .topbar-actions { display: flex; gap: 8px; }
+
+    .topbar-btn {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 13px;
+      color: var(--maroon);
+      background: #fff;
+      box-shadow: 0 8px 20px rgb(0 0 0 / 22%);
+    }
+
+    .topbar-btn:hover { transform: translateY(-2px); }
+
+    .page {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 30px 75px rgb(0 0 0 / 35%);
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 7px;
+      background: linear-gradient(90deg, var(--navy), var(--maroon), var(--gold), var(--maroon), var(--navy));
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header-icon {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 28px;
+      background: linear-gradient(145deg, var(--maroon-light), var(--maroon-dark));
+      box-shadow: 0 12px 25px rgb(125 20 36 / 28%);
+    }
+
+    h1 {
+      color: var(--ink);
+      font: 700 clamp(27px, 5vw, 38px) / 1.5 "Amiri", serif;
+    }
+
+    h1 span { color: var(--maroon); }
+
+    .page-header p {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) 190px auto;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      min-height: 48px;
+      width: 100%;
+      padding: 10px 14px;
+      outline: none;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .field:focus {
+      border-color: var(--maroon);
+      box-shadow: 0 0 0 4px rgb(125 20 36 / 9%);
+    }
+
+    .search-wrap { position: relative; }
+    .search-wrap i {
+      position: absolute;
+      top: 50%;
+      right: 16px;
+      color: var(--maroon);
+      transform: translateY(-50%);
+    }
+    .search-wrap input { padding-right: 45px; }
+
+    .primary-btn {
+      min-height: 48px;
+      padding: 0 17px;
+      border: 0;
+      border-radius: 13px;
+      color: #fff;
+      font-weight: 800;
+      background: var(--maroon);
+    }
+
+    .primary-btn:hover { background: var(--maroon-dark); }
+    .primary-btn:disabled { cursor: wait; opacity: .65; }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border: 1px solid #eadbdd;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #f8f1f2, #fff);
+    }
+
+    .status-row strong { color: var(--maroon); }
+    .status-row small { color: var(--muted); }
+
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgb(31 23 21 / 5%);
+      transition: .2s ease;
+    }
+
+    .user-card:hover {
+      border-color: rgb(125 20 36 / 35%);
+      box-shadow: 0 14px 30px rgb(31 23 21 / 11%);
+      transform: translateY(-2px);
+    }
+
+    .user-card.banned {
+      border-color: #e7a9ad;
+      background: linear-gradient(135deg, #fff, #fff5f5);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 19px;
+      background: linear-gradient(145deg, var(--maroon-light), var(--maroon-dark));
+    }
+
+    .user-text { min-width: 0; }
+    .user-text h2 {
+      overflow: hidden;
+      color: var(--ink);
+      font: 700 20px / 1.3 "Amiri", serif;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .user-text p {
+      overflow: hidden;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .manage-btn {
+      flex: 0 0 auto;
+      padding: 9px 11px;
+      border: 0;
+      border-radius: 10px;
+      color: var(--maroon);
+      font-size: 12px;
+      font-weight: 800;
+      background: #f9f0f1;
+    }
+    .manage-btn:hover { color: #fff; background: var(--maroon); }
+
+    .message {
+      grid-column: 1 / -1;
+      padding: 35px 18px;
+      color: var(--maroon);
+      text-align: center;
+    }
+    .message i { display: block; margin-bottom: 10px; font-size: 29px; }
+    .message.error {
+      color: #8b2630;
+      border: 1px solid #efc2c5;
+      border-radius: 17px;
+      background: #fff7f7;
+    }
+
+    .overlay {
+      position: fixed;
+      z-index: 20;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 15px;
+      background: rgb(0 11 24 / 72%);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      transition: .2s ease;
+    }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    .modal {
+      width: min(720px, 100%);
+      max-height: 92dvh;
+      overflow-y: auto;
+      padding: 23px;
+      border-radius: 23px;
+      background: #fff;
+      box-shadow: 0 35px 90px rgb(0 0 0 / 42%);
+      transform: translateY(10px) scale(.98);
+      transition: .2s ease;
+    }
+    .overlay.active .modal { transform: translateY(0) scale(1); }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .modal-head h2 { color: var(--maroon); font: 700 25px "Amiri", serif; }
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 11px;
+      color: var(--maroon);
+      background: #fff2f3;
+    }
+    .icon-btn:hover { color: #fff; background: var(--maroon); }
+
+    .modal-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 15px;
+      border: 1px solid #eadbdd;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f8f0f1, #fff);
+    }
+    .modal-profile .avatar { width: 52px; height: 52px; }
+    .modal-profile h3 { font: 700 24px "Amiri", serif; }
+    .modal-profile p { margin-top: 2px; color: var(--muted); font-size: 13px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .form-group { display: grid; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { color: var(--muted); font-size: 13px; font-weight: 700; }
+
+    .points-box {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .points-box .field { width: 90px; text-align: center; }
+    .small-btn {
+      min-height: 43px;
+      padding: 0 11px;
+      border: 1px solid #dfd2d3;
+      border-radius: 10px;
+      color: var(--ink);
+      background: #fff;
+      font-weight: 800;
+    }
+    .small-btn:hover { color: #fff; background: var(--maroon); border-color: var(--maroon); }
+    .small-btn.plus:hover { background: var(--green); border-color: var(--green); }
+    .small-btn.minus:hover { background: var(--red); border-color: var(--red); }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .danger-btn, .success-btn {
+      min-height: 45px;
+      padding: 0 15px;
+      border-radius: 11px;
+      font-weight: 800;
+    }
+    .danger-btn { border: 1px solid #efc4c6; color: var(--red); background: #fff5f5; }
+    .danger-btn:hover { color: #fff; background: var(--red); }
+    .danger-btn.unban { color: var(--green); border-color: #b9ddc2; background: #f0faf3; }
+    .danger-btn.unban:hover { color: #fff; background: var(--green); }
+    .success-btn { border: 0; color: #fff; background: var(--maroon); }
+    .success-btn:hover { background: var(--maroon-dark); }
+
+    .toast {
+      position: fixed;
+      z-index: 50;
+      right: 18px;
+      bottom: 18px;
+      max-width: min(420px, calc(100vw - 36px));
+      padding: 13px 16px;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--navy);
+      box-shadow: 0 12px 30px rgb(0 0 0 / 25%);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: .2s ease;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateY(0); }
+    .toast.error { background: var(--red); }
+
+    @media (max-width: 700px) {
+      .page { padding: 25px 16px; border-radius: 23px; }
+      .toolbar { grid-template-columns: 1fr; }
+      .users-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      body { padding: 10px 8px 20px; }
+      .topbar-title { font-size: 14px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: auto; }
+      .actions { flex-direction: column; }
+      .actions button { width: 100%; }
+      .user-card { padding: 12px; }
+      .user-text h2 { font-size: 18px; }
+      .manage-btn { padding: 8px; font-size: 11px; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="topbar">
+    <div class="topbar-title">
+      <i class="fas fa-shield-halved"></i>
+      <span>لوحة التحكم</span>
+    </div>
+    <div class="topbar-actions">
+      <button id="homeBtn" class="topbar-btn" type="button" title="الرئيسية">
+        <i class="fas fa-house"></i>
+      </button>
+      <button id="refreshBtn" class="topbar-btn" type="button" title="تحديث">
+        <i class="fas fa-rotate"></i>
+      </button>
+    </div>
+  </div>
 
-    <div id="overlay" class="overlay"></div>
+  <main class="page">
+    <header class="page-header">
+      <div class="header-icon"><i class="fas fa-users-gear"></i></div>
+      <h1>إدارة <span>مخدومي صفّي</span></h1>
+      <p>تعديل بيانات ونقاط مخدومي الصف الذي تخدمه فقط</p>
+    </header>
 
-    <aside id="sidebar" class="sidebar">
+    <section class="toolbar" aria-label="أدوات البحث">
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input id="searchInput" class="field" type="search"
+               placeholder="ابحث في مخدومي صفك بالاسم أو الهاتف..." autocomplete="off">
+      </div>
 
-        <div class="sidebar-header">
+      <select id="scopeSelect" class="field" aria-label="نطاق المستخدمين">
+        <option value="grade">مستخدمو صفي فقط</option>
+      </select>
 
-            <h3>
-                قائمة الخادم
-            </h3>
+      <button id="loadBtn" class="primary-btn" type="button">
+        <i class="fas fa-cloud-arrow-down"></i>
+        تحميل المستخدمين
+      </button>
+    </section>
 
-            <button id="closeBtn" class="close-btn" type="button">
-                <i class="fas fa-times"></i>
-            </button>
-
-        </div>
-
-        <ul class="sidebar-links">
-
-            <li>
-                <a href="home.html">
-                    <i class="fas fa-home"></i>
-                    الرئيسية
-                </a>
-            </li>
-
-            <li>
-                <a href="profile.html">
-                    <i class="fas fa-user-circle"></i>
-                    البروفايل
-                </a>
-            </li>
-
-            <li>
-                <a href="gifts.html">
-                    <i class="fas fa-gift"></i>
-                    معرض الهدايا
-                </a>
-            </li>
-
-            <li>
-                <a href="admin_dashboard.html">
-                    <i class="fas fa-cogs"></i>
-                    الإدارة
-                </a>
-            </li>
-
-            <li>
-                <a href="cart.html">
-                    <i class="fas fa-shopping-cart"></i>
-                    السلة
-                </a>
-            </li>
-
-            <li>
-                <a href="../notifications/index.html">
-                    <i class="fas fa-bell"></i>
-                    الإشعارات
-                </a>
-            </li>
-
-        </ul>
-
-        <button id="logoutBtn" class="logout-link" type="button">
-
-            <i class="fas fa-sign-out-alt"></i>
-
-            تسجيل خروج
-
-        </button>
-
-    </aside>
-
-
-    <div class="topbar">
-
-        <button id="menuBtn" class="menu-btn" type="button">
-
-            <i class="fas fa-bars"></i>
-
-        </button>
-
-        <div class="class-badge">
-
-            <i class="fas fa-graduation-cap"></i>
-
-            <span>
-                صفّك:
-            </span>
-
-            <strong id="currentServantGradeBadge">
-                جاري التحميل...
-            </strong>
-
-        </div>
-
+    <div class="status-row">
+      <div>
+        <strong id="countLabel">0 مستخدم</strong>
+        <small id="currentUserLabel">جاري التحقق من الحساب...</small>
+      </div>
+      <small id="gradeLabel">الصف: —</small>
     </div>
 
+    <section id="usersGrid" class="users-grid">
+      <div class="message">
+        <i class="fas fa-spinner fa-spin"></i>
+        جاري تحميل المستخدمين...
+      </div>
+    </section>
+  </main>
 
-    <main class="main-content">
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h2 id="modalTitle"><i class="fas fa-user-pen"></i> إدارة المستخدم</h2>
+        <button id="closeModalBtn" class="icon-btn" type="button" aria-label="إغلاق">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
 
-        <header class="page-header">
+      <div id="modalBody"></div>
+    </section>
+  </div>
 
-            <div class="header-icon">
-                <i class="fas fa-users"></i>
-            </div>
+  <div id="toast" class="toast" role="status"></div>
 
-            <h1 id="rosterTitle">
-                إدارة مخدومي صفّي
-            </h1>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      doc,
+      runTransaction,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-            <p>
-                متابعة وإدارة مخدومي صفك بسهولة
-            </p>
+    /*
+     * نفس إعدادات مشروع Firebase الموجود في الكود المرسل.
+     * لا تضع Service Account أو أي مفتاح سري داخل HTML.
+     */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+      authDomain: "st-mina-c01ec.firebaseapp.com",
+      databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+      projectId: "st-mina-c01ec",
+      storageBucket: "st-mina-c01ec.firebasestorage.app",
+      messagingSenderId: "792349150559",
+      appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+      measurementId: "G-XZGSBG05KR"
+    };
 
-        </header>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
+    const $ = (selector) => document.querySelector(selector);
+    const usersGrid = $("#usersGrid");
+    const searchInput = $("#searchInput");
+    const scopeSelect = $("#scopeSelect");
+    const countLabel = $("#countLabel");
+    const currentUserLabel = $("#currentUserLabel");
+    const gradeLabel = $("#gradeLabel");
+    const overlay = $("#overlay");
+    const modalBody = $("#modalBody");
+    const toast = $("#toast");
 
-        <div class="class-info">
+    let allUsers = [];
+    let currentUser = null;
+    let selectedUser = null;
+    let toastTimer = null;
 
-            <div class="class-title">
+    function text(value) {
+      return String(value ?? "")
+        .replace(/[\u0000-\u001F\u007F\u00A0\u200B-\u200D\u2060\uFEFF\u202A-\u202E]/g, " ")
+        .trim()
+        .replace(/\s+/g, " ");
+    }
 
-                <i class="fas fa-school"></i>
+    function key(value) {
+      return text(value).toLocaleLowerCase("ar-EG");
+    }
 
-                <span>
-                    المخدومون الموجودون في صفك فقط
-                </span>
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-            </div>
+    function userName(user) {
+      return text(user.fullName || user.name || user.username || user.userName || "بدون اسم");
+    }
 
-            <div class="count-pill">
+    function userGrade(user) {
+      return text(user.grade || user.servantGrade || user.class || user.stage || "غير محدد");
+    }
 
-                <span id="countPill">
-                    0
-                </span>
+    function userPoints(user) {
+      const value = Number(user.points ?? 0);
+      return Number.isFinite(value) && value >= 0 ? value : 0;
+    }
 
-                مخدوم
+    function isBanned(user) {
+      return user.banned === true || user.isBanned === true;
+    }
 
-            </div>
+    function showToast(message, isError = false) {
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.className = `toast show${isError ? " error" : ""}`;
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
+    }
 
+    function getSessionIdentifiers() {
+      const params = new URLSearchParams(location.search);
+      const adminParam = params.get("admin");
+      const adminIdentifier = adminParam
+        && !["1", "true", "yes", "on"].includes(key(adminParam))
+        ? adminParam
+        : null;
+
+      const values = [
+        params.get("user"),
+        adminIdentifier,
+        params.get("adminId"),
+        localStorage.getItem("userDocId"),
+        localStorage.getItem("adminDocId"),
+        localStorage.getItem("adminId"),
+        localStorage.getItem("currentAdminId"),
+        localStorage.getItem("adminUsername"),
+        localStorage.getItem("servantNumber"),
+        localStorage.getItem("currentAdmin"),
+        localStorage.getItem("currentUsername"),
+        localStorage.getItem("username"),
+        localStorage.getItem("currentUserId"),
+        localStorage.getItem("userId"),
+        localStorage.getItem("phone"),
+        localStorage.getItem("mobile")
+      ];
+
+      const stored = localStorage.getItem("currentUser");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed === "object") {
+            values.push(
+              parsed.id, parsed.docId, parsed.userId, parsed.username,
+              parsed.userName, parsed.email, parsed.phone, parsed.mobile,
+              parsed.servantNumber
+            );
+          } else {
+            values.push(parsed);
+          }
+        } catch {
+          values.push(stored);
+        }
+      }
+
+      return [...new Set(values.map(key).filter(Boolean))];
+    }
+
+    function isAdminMode() {
+      const params = new URLSearchParams(location.search);
+      const adminValue = params.get("admin");
+      return adminValue !== null && adminValue !== "" && adminValue !== "false";
+    }
+
+    async function findCurrentUser() {
+      const identifiers = getSessionIdentifiers();
+      if (!identifiers.length) {
+        throw new Error("لا توجد جلسة دخول. افتح الصفحة بعد تسجيل الدخول.");
+      }
+
+      const snapshot = await getDocs(collection(db, "users"));
+      let found = null;
+
+      snapshot.forEach((item) => {
+        if (found) return;
+        const data = item.data();
+        const possibleValues = [
+          item.id, data.usernameLower, data.username, data.userName,
+          data.userId, data.email, data.fullName, data.name,
+          data.phone, data.mobile
+        ].map(key).filter(Boolean);
+
+        if (identifiers.some((identifier) => possibleValues.includes(identifier))) {
+          found = { id: item.id, ...data };
+        }
+      });
+
+      if (!found) {
+        throw new Error("لم يتم العثور على حساب المستخدم الحالي في مجموعة users.");
+      }
+
+      return found;
+    }
+
+    async function findCurrentAdmin() {
+      const identifiers = getSessionIdentifiers();
+      if (!identifiers.length) {
+        throw new Error("لا توجد بيانات تعريف للمشرف.");
+      }
+
+      /*
+       * اسم المجموعة في Firebase عندك هو admin بالمفرد.
+       * لا تغيّره إلى admins إلا إذا أنشأت مجموعة جديدة بهذا الاسم.
+       */
+      const snapshot = await getDocs(collection(db, "admin"));
+      let found = null;
+
+      snapshot.forEach((item) => {
+        if (found) return;
+
+        const data = item.data();
+        const possibleValues = [
+          item.id,
+          data.uid,
+          data.id,
+          data.docId,
+          data.adminId,
+          data.adminUsername,
+          data.usernameLower,
+          data.username,
+          data.userName,
+          data.email,
+          data.fullName,
+          data.name,
+          data.servantNumber,
+          data.phone,
+          data.mobile
+        ].map(key).filter(Boolean);
+
+        if (identifiers.some((identifier) => possibleValues.includes(identifier))) {
+          found = { id: item.id, ...data, isAdmin: true };
+        }
+      });
+
+      if (!found) {
+        throw new Error("لم يتم العثور على حساب المشرف داخل مجموعة admin.");
+      }
+
+      return found;
+    }
+
+    function formatDate(value) {
+      if (!value) return "غير متوفر";
+      try {
+        if (typeof value?.toDate === "function") {
+          return value.toDate().toLocaleDateString("ar-EG");
+        }
+        if (typeof value === "object" && value.seconds !== undefined) {
+          return new Date(Number(value.seconds) * 1000).toLocaleDateString("ar-EG");
+        }
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? text(value) : date.toLocaleDateString("ar-EG");
+      } catch {
+        return text(value) || "غير متوفر";
+      }
+    }
+
+    function renderMessage(message, error = false) {
+      usersGrid.innerHTML = `
+        <div class="message${error ? " error" : ""}">
+          <i class="fas ${error ? "fa-triangle-exclamation" : "fa-users-slash"}"></i>
+          <p>${escapeHtml(message)}</p>
+          ${error ? '<button id="retryBtn" class="primary-btn" style="margin-top:14px">إعادة المحاولة</button>' : ""}
         </div>
-
-
-        <div class="search-box">
-
-            <input
-                type="text"
-                id="searchInput"
-                class="search-input"
-                placeholder="ابحث عن مخدوم بالاسم..."
-                autocomplete="off">
-
-        </div>
-
-
-        <div id="servantsListContainer" class="servants-list">
-
-            <div class="loading-box">
-
-                <i class="fas fa-spinner fa-spin"></i>
-
-                جاري تحميل قائمة المخدومين...
-
-            </div>
-
-        </div>
-
-    </main>
-
-
-    <div id="servantModal" class="servant-modal">
-
-        <div class="modal-header-custom">
-
-            <h2>
-
-                <i class="fas fa-user-shield"></i>
-
-                لوحة تحكم المخدوم
-
-            </h2>
-
-            <button id="closeModalBtn" class="modal-close" type="button">
-
-                <i class="fas fa-times"></i>
-
-            </button>
-
-        </div>
-
-        <div id="modalServantContent"></div>
-
-    </div>
-
-
-    <script type="module">
-
-        if (window.location.protocol === "file:") {
-            console.warn(
-                "افتح المشروع من localhost وليس بالنقر المزدوج على الملف. Firebase يحتاج إلى HTTP/HTTPS."
-            );
-        }
-
-
-        /* =====================================================
-           FIREBASE IMPORTS
-        ===================================================== */
-
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-        import {
-            getFirestore,
-            collection,
-            getDocs,
-            doc,
-            updateDoc
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-
-        /* =====================================================
-           FIREBASE CONFIG
-        ===================================================== */
-
-        const firebaseConfig = {
-
-            apiKey:
-                "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-
-            authDomain:
-                "st-mina-c01ec.firebaseapp.com",
-
-            databaseURL:
-                "https://st-mina-c01ec-default-rtdb.firebaseio.com",
-
-            projectId:
-                "st-mina-c01ec",
-
-            storageBucket:
-                "st-mina-c01ec.firebasestorage.app",
-
-            messagingSenderId:
-                "792349150559",
-
-            appId:
-                "1:792349150559:web:8a86bbf57c2c7e351f3aea",
-
-            measurementId:
-                "G-XZGSBG05KR"
-        };
-
-
-        const app =
-            initializeApp(firebaseConfig);
-
-        const db =
-            getFirestore(app);
-
-
-        /* =====================================================
-           DOM
-        ===================================================== */
-
-        const menuBtn =
-            document.getElementById("menuBtn");
-
-        const closeBtn =
-            document.getElementById("closeBtn");
-
-        const sidebar =
-            document.getElementById("sidebar");
-
-        const overlay =
-            document.getElementById("overlay");
-
-        const logoutBtn =
-            document.getElementById("logoutBtn");
-
-        const servantModal =
-            document.getElementById("servantModal");
-
-        const closeModalBtn =
-            document.getElementById("closeModalBtn");
-
-        const servantsListContainer =
-            document.getElementById("servantsListContainer");
-
-        const searchInput =
-            document.getElementById("searchInput");
-
-        const countPill =
-            document.getElementById("countPill");
-
-        const gradeBadge =
-            document.getElementById("currentServantGradeBadge");
-
-        const rosterTitle =
-            document.getElementById("rosterTitle");
-
-
-        /* =====================================================
-           STATE
-        ===================================================== */
-
-        let myGrade = "";
-
-        let myServants = [];
-
-        let allUsers = [];
-
-        let currentUserDocId = "";
-
-        let currentUserData = null;
-
-
-        /* =====================================================
-           SIDEBAR
-        ===================================================== */
-
-        function openSidebar() {
-
-            sidebar.classList.add("active");
-
-            overlay.classList.add("active");
-        }
-
-
-        function closeSidebar() {
-
-            sidebar.classList.remove("active");
-
-            if (!servantModal.classList.contains("active")) {
-
-                overlay.classList.remove("active");
-            }
-        }
-
-
-        function closeServantModal() {
-
-            servantModal.classList.remove("active");
-
-            if (!sidebar.classList.contains("active")) {
-
-                overlay.classList.remove("active");
-            }
-        }
-
-
-        menuBtn.addEventListener(
-            "click",
-            openSidebar
-        );
-
-
-        closeBtn.addEventListener(
-            "click",
-            closeSidebar
-        );
-
-
-        closeModalBtn.addEventListener(
-            "click",
-            closeServantModal
-        );
-
-
-        overlay.addEventListener(
-            "click",
-            () => {
-
-                closeSidebar();
-
-                closeServantModal();
-
-            }
-        );
-
-
-        /* =====================================================
-           LOGOUT
-        ===================================================== */
-
-        logoutBtn.addEventListener(
-            "click",
-            () => {
-
-                if (
-                    confirm(
-                        "هل تريد تسجيل الخروج حقاً؟"
-                    )
-                ) {
-
-                    localStorage.clear();
-
-                    const currentPath =
-                        window.location.pathname;
-
-                    if (
-                        currentPath.includes("/user/")
-                    ) {
-
-                        window.location.href =
-                            "../index.html";
-
-                    } else {
-
-                        window.location.href =
-                            "index.html";
-                    }
-                }
-            }
-        );
-
-
-        /* =====================================================
-           NORMALIZE TEXT
-        ===================================================== */
-
-        function normalizeText(value) {
-
-            return String(value ?? "")
-                .replace(/[\u0000-\u001F\u007F\u00A0\u200B-\u200D\u2060\uFEFF\u202A-\u202E]/g, " ")
-                .trim()
-                .replace(/\s+/g, " ");
-        }
-
-
-        function normalizeKey(value) {
-
-            return normalizeText(value)
-                .toLowerCase();
-        }
-
-
-        /* =====================================================
-           ESCAPE HTML
-        ===================================================== */
-
-        function escapeHtml(value) {
-
-            return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-
-        /* =====================================================
-           SAFE JS VALUE
-        ===================================================== */
-
-        function safeJs(value) {
-
-            return String(value ?? "")
-                .replace(/\\/g, "\\\\")
-                .replace(/'/g, "\\'")
-                .replace(/"/g, '\\"')
-                .replace(/\n/g, "\\n")
-                .replace(/\r/g, "\\r");
-        }
-
-
-        /* =====================================================
-           LOGIN IDENTIFIER
-        ===================================================== */
-
-        function getLoginIdentifiers() {
-
-            const values = [
-                new URLSearchParams(window.location.search).get("user"),
-                localStorage.getItem("userDocId"),
-                localStorage.getItem("currentUsername"),
-                localStorage.getItem("username"),
-                localStorage.getItem("currentUserId"),
-                localStorage.getItem("userId"),
-                localStorage.getItem("phone"),
-                localStorage.getItem("mobile")
-            ];
-
-            const storedCurrentUser =
-                localStorage.getItem("currentUser");
-
-            if (storedCurrentUser) {
-                try {
-                    const parsed =
-                        JSON.parse(storedCurrentUser);
-
-                    if (parsed && typeof parsed === "object") {
-                        values.push(
-                            parsed.id,
-                            parsed.docId,
-                            parsed.userId,
-                            parsed.username,
-                            parsed.userName,
-                            parsed.email,
-                            parsed.phone,
-                            parsed.mobile
-                        );
-                    } else {
-                        values.push(parsed);
-                    }
-                } catch {
-                    values.push(storedCurrentUser);
-                }
-            }
-
-            const identifiers = [
-                ...new Set(
-                    values
-                        .map(normalizeKey)
-                        .filter(Boolean)
-                )
-            ];
-
-            console.log(
-                "👤 معرّفات تسجيل الدخول:",
-                identifiers
-            );
-
-            return identifiers;
-        }
-
-
-        /* =====================================================
-           FIND CURRENT USER
-           
-           IMPORTANT:
-           هنا لا نعتمد على Document ID فقط.
-           نقرأ users مرة واحدة ونبحث في:
-           
-           1 - Document ID
-           2 - usernameLower
-           3 - username
-           4 - userId
-        ===================================================== */
-
-        async function findCurrentUser() {
-
-            const identifiers =
-                getLoginIdentifiers();
-
-            if (identifiers.length === 0) {
-
-                throw new Error(
-                    "لم يتم العثور على بيانات تسجيل الدخول في localStorage."
-                );
-            }
-
-
-            console.log(
-                "🔎 البحث عن الحسابات باستخدام:",
-                identifiers
-            );
-
-
-            const usersRef =
-                collection(
-                    db,
-                    "users"
-                );
-
-
-            const snapshot =
-                await getDocs(
-                    usersRef
-                );
-
-
-            console.log(
-                "👥 عدد مستندات users:",
-                snapshot.size
-            );
-
-
-            if (snapshot.empty) {
-
-                throw new Error(
-                    "مجموعة users فارغة في Firestore."
-                );
-            }
-
-
-            let foundUser = null;
-
-
-            snapshot.forEach(
-                (docSnap) => {
-
-                    if (foundUser) {
-                        return;
-                    }
-
-
-                    const data =
-                        docSnap.data();
-
-
-                    const docId =
-                        normalizeKey(
-                            docSnap.id
-                        );
-
-
-                    const usernameLower =
-                        normalizeKey(
-                            data.usernameLower
-                        );
-
-
-                    const username =
-                        normalizeKey(
-                            data.username
-                        );
-
-
-                    const userName =
-                        normalizeKey(
-                            data.userName
-                        );
-
-
-                    const userId =
-                        normalizeKey(
-                            data.userId
-                        );
-
-
-                    const email =
-                        normalizeKey(
-                            data.email
-                        );
-
-
-                    const fullName =
-                        normalizeKey(
-                            data.fullName
-                        );
-
-                    const name =
-                        normalizeKey(
-                            data.name
-                        );
-
-                    const phone =
-                        normalizeKey(
-                            data.phone
-                        );
-
-                    const mobile =
-                        normalizeKey(
-                            data.mobile
-                        );
-
-
-                    console.log(
-                        "🔍 فحص:",
-                        {
-                            docId,
-                            usernameLower,
-                            username,
-                            userName,
-                            userId,
-                            email,
-                            fullName,
-                            name,
-                            phone,
-                            mobile
-                        }
-                    );
-
-                    const documentValues = [
-                        docId,
-                        usernameLower,
-                        username,
-                        userName,
-                        userId,
-                        email,
-                        fullName,
-                        name,
-                        phone,
-                        mobile
-                    ].filter(Boolean);
-
-                    if (
-                        identifiers.some(
-                            (identifier) =>
-                                documentValues.includes(
-                                    identifier
-                                )
-                        )
-                    ) {
-
-                        foundUser = {
-
-                            id:
-                                docSnap.id,
-
-                            data:
-                                data
-
-                        };
-                    }
-                }
-            );
-
-
-            if (!foundUser) {
-
-                console.error(
-                    "❌ لم يتم العثور على الحساب:",
-                    identifiers
-                );
-
-
-                throw new Error(
-                    `لم يتم العثور على حساب يطابق: ${identifiers.join(", ")}`
-                );
-            }
-
-
-            currentUserDocId =
-                foundUser.id;
-
-
-            currentUserData =
-                foundUser.data;
-
-            localStorage.setItem(
-                "userDocId",
-                currentUserDocId
-            );
-
-            const canonicalUsername =
-                currentUserData.username ||
-                currentUserData.userName ||
-                currentUserData.usernameLower ||
-                "";
-
-            if (canonicalUsername) {
-                localStorage.setItem(
-                    "username",
-                    canonicalUsername
-                );
-                localStorage.setItem(
-                    "currentUsername",
-                    canonicalUsername
-                );
-            }
-
-
-            console.log(
-                "✅ تم العثور على الحساب بنجاح!"
-            );
-
-
-            console.log(
-                "🆔 Document ID:",
-                currentUserDocId
-            );
-
-
-            console.log(
-                "👤 بيانات الحساب:",
-                currentUserData
-            );
-
-
-            return foundUser;
-        }
-
-
-        /* =====================================================
-           FETCH MY GRADE
-        ===================================================== */
-
-        async function fetchMyGrade() {
-
-            const user =
-                await findCurrentUser();
-
-
-            const userData =
-                user.data;
-
-
-            /*
-             * الأولوية:
-             *
-             * grade
-             * servantGrade
-             * class
-             * ثم localStorage
-             */
-
-            myGrade =
-                normalizeText(
-                    userData.grade
-                );
-
-
-            if (!myGrade) {
-
-                myGrade =
-                    normalizeText(
-                        userData.servantGrade
-                    );
-            }
-
-
-            if (!myGrade) {
-
-                myGrade =
-                    normalizeText(
-                        userData.class
-                    );
-            }
-
-
-            if (!myGrade) {
-
-                myGrade =
-                    normalizeText(
-                        localStorage.getItem(
-                            "servantGrade"
-                        )
-                    );
-            }
-
-
-            if (!myGrade) {
-
-                myGrade =
-                    normalizeText(
-                        localStorage.getItem(
-                            "grade"
-                        )
-                    );
-            }
-
-
-            if (!myGrade) {
-
-                throw new Error(
-                    "تم العثور على حسابك، لكن الصف الدراسي غير محفوظ في Firebase."
-                );
-            }
-
-
-            localStorage.setItem(
-                "servantGrade",
-                myGrade
-            );
-
-
-            localStorage.setItem(
-                "grade",
-                myGrade
-            );
-
-
-            gradeBadge.innerText =
-                myGrade;
-
-
-            rosterTitle.innerHTML =
-                `إدارة مخدومي <span>${escapeHtml(myGrade)}</span>`;
-
-
-            console.log(
-                "🎓 صف الخادم:",
-                myGrade
-            );
-
-
-            console.log(
-                "🆔 Document ID:",
-                currentUserDocId
-            );
-        }
-
-
-        /* =====================================================
-           FETCH ALL USERS
-        ===================================================== */
-
-        async function fetchAllUsers() {
-
-            console.log(
-                "📥 جاري تحميل users..."
-            );
-
-
-            const usersSnapshot =
-                await getDocs(
-                    collection(
-                        db,
-                        "users"
-                    )
-                );
-
-
-            allUsers = [];
-
-
-            usersSnapshot.forEach(
-                (docSnap) => {
-
-                    allUsers.push({
-
-                        id:
-                            docSnap.id,
-
-                        ...docSnap.data()
-
-                    });
-                }
-            );
-
-
-            console.log(
-                "👥 إجمالي المستخدمين:",
-                allUsers.length
-            );
-
-
-            return allUsers;
-        }
-
-
-        /* =====================================================
-           FETCH SERVANTS
-        ===================================================== */
-
-        async function fetchServants() {
-
-            servantsListContainer.innerHTML = `
-
-                <div class="loading-box">
-
-                    <i class="fas fa-spinner fa-spin"></i>
-
-                    جاري تحميل مخدومي صفك...
-
-                </div>
-
-            `;
-
-
-            try {
-
-                /*
-                 * أولاً:
-                 * نحدد الخادم الحالي وصفه
-                 */
-
-                await fetchMyGrade();
-
-
-                /*
-                 * ثانياً:
-                 * نجيب users
-                 */
-
-                await fetchAllUsers();
-
-
-                /*
-                 * ثالثاً:
-                 * فلترة نفس الصف
-                 */
-
-                myServants =
-                    allUsers.filter(
-                        (person) => {
-
-                            const personGrade =
-                                normalizeText(
-                                    person.grade ||
-                                    person.servantGrade ||
-                                    person.class ||
-                                    ""
-                                );
-
-
-                            return (
-                                normalizeKey(
-                                    personGrade
-                                ) ===
-                                normalizeKey(
-                                    myGrade
-                                )
-                            );
-                        }
-                    );
-
-
-                /*
-                 * لو مش عايز الخادم نفسه يظهر
-                 * في قائمة مخدوميه، نستبعده
-                 */
-
-                myServants =
-                    myServants.filter(
-                        (person) =>
-                            person.id !==
-                            currentUserDocId
-                    );
-
-
-                console.log(
-                    "🎓 الصف المطلوب:",
-                    myGrade
-                );
-
-
-                console.log(
-                    "👥 مخدومو الصف:",
-                    myServants
-                );
-
-
-                renderNamesList(
-                    myServants
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "🔥 FIREBASE ERROR:",
-                    error
-                );
-
-
-                let message =
-                    error.message ||
-                    "حدث خطأ غير معروف.";
-
-
-                if (
-                    error.code ===
-                    "permission-denied"
-                ) {
-
-                    message =
-                        "ليس لديك صلاحية قراءة بيانات users من Firebase.";
-                }
-
-
-                if (
-                    error.code ===
-                    "failed-precondition"
-                ) {
-
-                    message =
-                        "يوجد شرط أو إعداد في Firestore يحتاج إلى مراجعة.";
-                }
-
-
-                servantsListContainer.innerHTML = `
-
-                    <div class="error-box">
-
-                        <i class="fas fa-triangle-exclamation"></i>
-
-                        <h3>
-                            تعذر تحميل البيانات
-                        </h3>
-
-                        <p style="margin-top:10px;">
-                            ${escapeHtml(message)}
-                        </p>
-
-                        <p style="
-                            margin-top:8px;
-                            direction:ltr;
-                            color:#b42318;
-                        ">
-                            ${escapeHtml(
-                                error.code ||
-                                "unknown-error"
-                            )}
-                        </p>
-
-                        <button
-                            class="retry-btn"
-                            onclick="location.reload()">
-
-                            <i class="fas fa-rotate-right"></i>
-
-                            إعادة المحاولة
-
-                        </button>
-
-                    </div>
-
-                `;
-
-
-                countPill.innerText =
-                    "0";
-            }
-        }
-
-
-        /* =====================================================
-           RENDER NAMES LIST
-        ===================================================== */
-
-        function renderNamesList(dataList) {
-
-            servantsListContainer.innerHTML =
-                "";
-
-
-            countPill.innerText =
-                dataList.length;
-
-
-            if (
-                dataList.length === 0
-            ) {
-
-                servantsListContainer.innerHTML = `
-
-                    <div class="loading-box">
-
-                        <i class="fas fa-users-slash"></i>
-
-                        لا يوجد مخدومون في صفك حالياً.
-
-                    </div>
-
-                `;
-
-                return;
-            }
-
-
-            dataList.forEach(
-                (person) => {
-
-                    const name =
-                        person.fullName ||
-                        person.name ||
-                        person.username ||
-                        "بدون اسم";
-
-
-                    const grade =
-                        person.grade ||
-                        person.servantGrade ||
-                        person.stage ||
-                        "غير محدد";
-
-
-                    const points =
-                        Number(
-                            person.points ?? 0
-                        );
-
-
-                    const isBanned =
-                        person.banned === true ||
-                        person.isBanned === true;
-
-
-                    const card =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    card.className =
-                        `servant-name-card ${
-                            isBanned
-                                ? "banned-card"
-                                : ""
-                        }`;
-
-
-                    card.innerHTML = `
-
-                        <div class="card-info">
-
-                            <div class="avatar">
-
-                                <i class="fas fa-user"></i>
-
-                            </div>
-
-                            <div class="card-text">
-
-                                <h3>
-                                    ${escapeHtml(name)}
-                                </h3>
-
-                                <span>
-
-                                    ${escapeHtml(grade)}
-
-                                    • ${points} نقطة
-
-                                    ${
-                                        isBanned
-                                            ? " • محظور"
-                                            : ""
-                                    }
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="btn-open-control"
-                            type="button">
-
-                            إدارة
-
-                            <i class="fas fa-arrow-left"></i>
-
-                        </button>
-
-                    `;
-
-
-                    card.addEventListener(
-                        "click",
-                        () => {
-
-                            openServantDetails(
-                                person
-                            );
-                        }
-                    );
-
-
-                    servantsListContainer.appendChild(
-                        card
-                    );
-                }
-            );
-        }
-
-
-        /* =====================================================
-           OPEN SERVANT DETAILS
-        ===================================================== */
-
-        function openServantDetails(person) {
-
-            const modalContent =
-                document.getElementById(
-                    "modalServantContent"
-                );
-
-
-            const name =
-                person.fullName ||
-                person.name ||
-                person.username ||
-                "بدون اسم";
-
-
-            const grade =
-                person.grade ||
-                person.servantGrade ||
-                person.stage ||
-                "غير محدد";
-
-
-            const points =
-                Number(
-                    person.points ?? 0
-                );
-
-
-            const isBanned =
-                person.banned === true ||
-                person.isBanned === true;
-
-
-            const phone =
-                person.userPhone ||
-                person.phone ||
-                "غير متوفر";
-
-
-            const createdAt =
-                formatDate(
-                    person.createdAt
-                );
-
-
-            const personId =
-                String(
-                    person.id ?? ""
-                );
-
-
-            modalContent.innerHTML = `
-
-                <div class="servant-profile-header">
-
-                    <div class="profile-name">
-
-                        <div class="profile-name-icon">
-
-                            <i class="fas fa-user"></i>
-
-                        </div>
-
-                        <h2>
-                            ${escapeHtml(name)}
-                        </h2>
-
-                    </div>
-
-                    <span class="grade-pill">
-
-                        <i class="fas fa-graduation-cap"></i>
-
-                        ${escapeHtml(grade)}
-
-                    </span>
-
-                </div>
-
-
-                <div class="control-section">
-
-                    <div class="section-title">
-
-                        <i class="fas fa-sliders"></i>
-
-                        التحكم في المخدوم
-
-                    </div>
-
-
-                    <div class="control-grid">
-
-
-                        <div class="control-item">
-
-                            <span class="control-label">
-                                النقاط الحالية
-                            </span>
-
-                            <span
-                                id="points-${escapeHtml(personId)}"
-                                class="points-badge">
-
-                                ${points} نقطة
-
-                            </span>
-
-                        </div>
-
-
-                        <div class="control-item">
-
-                            <span class="control-label">
-                                تعديل النقاط
-                            </span>
-
-
-                            <div class="points-row">
-
-                                <button
-                                    class="btn-action minus"
-                                    onclick="updatePoints('${safeJs(personId)}', -5)">
-
-                                    -5
-
-                                </button>
-
-
-                                <button
-                                    class="btn-action minus"
-                                    onclick="updatePoints('${safeJs(personId)}', -1)">
-
-                                    -1
-
-                                </button>
-
-
-                                <input
-                                    type="number"
-                                    id="custom-points-${escapeHtml(personId)}"
-                                    class="custom-input"
-                                    placeholder="رقم"
-                                    min="0">
-
-
-                                <button
-                                    class="btn-action plus"
-                                    onclick="updatePoints('${safeJs(personId)}', 1)">
-
-                                    +1
-
-                                </button>
-
-
-                                <button
-                                    class="btn-action plus"
-                                    onclick="updatePoints('${safeJs(personId)}', 5)">
-
-                                    +5
-
-                                </button>
-
-
-                                <button
-                                    class="btn-action save"
-                                    onclick="saveCustomPoints('${safeJs(personId)}')">
-
-                                    <i class="fas fa-check"></i>
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="control-item">
-
-                            <span class="control-label">
-                                حالة الحساب
-                            </span>
-
-
-                            <button
-                                class="btn-ban ${
-                                    isBanned
-                                        ? "unban"
-                                        : "ban"
-                                }"
-                                onclick="toggleBan('${safeJs(personId)}', ${isBanned})">
-
-                                ${
-                                    isBanned
-
-                                        ? `
-                                            <i class="fas fa-unlock"></i>
-                                            إلغاء الحظر
-                                          `
-
-                                        : `
-                                            <i class="fas fa-lock"></i>
-                                            حظر المخدوم
-                                          `
-                                }
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="personal-details-box">
-
-                    <h3>
-
-                        <i class="fas fa-id-card"></i>
-
-                        البيانات الشخصية
-
-                    </h3>
-
-
-                    <div class="details-grid">
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                اسم المستخدم
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    person.username ||
-                                    person.usernameLower ||
-                                    "غير متوفر"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                رقم الهاتف
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(phone)}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                هاتف الأب
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    person.fatherPhone ||
-                                    "غير متوفر"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                هاتف الأم
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    person.motherPhone ||
-                                    "غير متوفر"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                العنوان
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    person.address ||
-                                    "غير متوفر"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                تاريخ الميلاد
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    person.birthDate ||
-                                    person.birthdate ||
-                                    "غير متوفر"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                المرحلة
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    person.stage ||
-                                    "غير محدد"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                الصف
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    person.grade ||
-                                    person.servantGrade ||
-                                    "غير محدد"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                النقاط
-                            </strong>
-
-                            <span>
-                                ${points} نقطة
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <strong>
-                                تاريخ التسجيل
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(createdAt)}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `;
-
-
-            servantModal.classList.add(
-                "active"
-            );
-
-
-            overlay.classList.add(
-                "active"
-            );
-        }
-
-
-        /* =====================================================
-           FORMAT DATE
-        ===================================================== */
-
-        function formatDate(value) {
-
-            if (!value) {
-
-                return "غير متوفر";
-            }
-
-
-            try {
-
-                /*
-                 * Firebase Timestamp
-                 */
-
-                if (
-                    typeof value === "object" &&
-                    typeof value.toDate === "function"
-                ) {
-
-                    return value
-                        .toDate()
-                        .toLocaleDateString(
-                            "ar-EG"
-                        );
-                }
-
-
-                /*
-                 * Firestore Timestamp-like
-                 */
-
-                if (
-                    typeof value === "object" &&
-                    value.seconds !== undefined
-                ) {
-
-                    return new Date(
-                        Number(value.seconds) * 1000
-                    ).toLocaleDateString(
-                        "ar-EG"
-                    );
-                }
-
-
-                const date =
-                    new Date(value);
-
-
-                if (
-                    !isNaN(
-                        date.getTime()
-                    )
-                ) {
-
-                    return date.toLocaleDateString(
-                        "ar-EG"
-                    );
-                }
-
-            } catch (error) {
-
-                console.warn(
-                    "⚠️ تعذر تنسيق التاريخ:",
-                    error
-                );
-            }
-
-
-            return String(value);
-        }
-
-
-        /* =====================================================
-           SEARCH
-        ===================================================== */
-
-        searchInput.addEventListener(
-            "input",
-            (e) => {
-
-                const term =
-                    normalizeKey(
-                        e.target.value
-                    );
-
-
-                const filtered =
-                    myServants.filter(
-                        (person) => {
-
-                            const name =
-                                normalizeKey(
-                                    person.fullName ||
-                                    person.name ||
-                                    person.username ||
-                                    ""
-                                );
-
-
-                            return name.includes(
-                                term
-                            );
-                        }
-                    );
-
-
-                renderNamesList(
-                    filtered
-                );
-            }
-        );
-
-
-        /* =====================================================
-           UPDATE POINTS
-        ===================================================== */
-
-        window.updatePoints =
-            async function (
-                docId,
-                amount
-            ) {
-
-                const person =
-                    myServants.find(
-                        p =>
-                            p.id ===
-                            docId
-                    );
-
-
-                if (!person) {
-
-                    alert(
-                        "لم يتم العثور على المخدوم."
-                    );
-
-                    return;
-                }
-
-
-                const currentPoints =
-                    Number(
-                        person.points ?? 0
-                    );
-
-
-                let newPoints =
-                    currentPoints +
-                    Number(amount);
-
-
-                if (newPoints < 0) {
-
-                    newPoints = 0;
-                }
-
-
-                try {
-
-                    const docRef =
-                        doc(
-                            db,
-                            "users",
-                            docId
-                        );
-
-
-                    await updateDoc(
-                        docRef,
-                        {
-                            points:
-                                newPoints
-                        }
-                    );
-
-
-                    person.points =
-                        newPoints;
-
-
-                    /*
-                     * تحديث القائمة
-                     */
-
-                    renderNamesList(
-                        getCurrentDisplayedList()
-                    );
-
-
-                    /*
-                     * تحديث المودال
-                     */
-
-                    openServantDetails(
-                        person
-                    );
-
-
-                    console.log(
-                        "✅ تم تحديث النقاط:",
-                        newPoints
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "❌ خطأ في تحديث النقاط:",
-                        error
-                    );
-
-
-                    alert(
-                        "تعذر تحديث النقاط.\n\n" +
-                        (
-                            error.code ||
-                            error.message ||
-                            ""
-                        )
-                    );
-                }
-            };
-
-
-        /* =====================================================
-           CUSTOM POINTS
-        ===================================================== */
-
-        window.saveCustomPoints =
-            async function (
-                docId
-            ) {
-
-                const inputEl =
-                    document.getElementById(
-                        `custom-points-${docId}`
-                    );
-
-
-                if (!inputEl) {
-
-                    return;
-                }
-
-
-                const val =
-                    parseInt(
-                        inputEl.value,
-                        10
-                    );
-
-
-                if (
-                    isNaN(val) ||
-                    val < 0
-                ) {
-
-                    alert(
-                        "يرجى كتابة رقم صحيح أكبر من أو يساوي صفر."
-                    );
-
-                    return;
-                }
-
-
-                const person =
-                    myServants.find(
-                        p =>
-                            p.id ===
-                            docId
-                    );
-
-
-                if (!person) {
-
-                    alert(
-                        "لم يتم العثور على المخدوم."
-                    );
-
-                    return;
-                }
-
-
-                try {
-
-                    const docRef =
-                        doc(
-                            db,
-                            "users",
-                            docId
-                        );
-
-
-                    await updateDoc(
-                        docRef,
-                        {
-                            points:
-                                val
-                        }
-                    );
-
-
-                    person.points =
-                        val;
-
-
-                    renderNamesList(
-                        getCurrentDisplayedList()
-                    );
-
-
-                    openServantDetails(
-                        person
-                    );
-
-
-                    console.log(
-                        "✅ تم حفظ النقاط:",
-                        val
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "❌ خطأ في حفظ النقاط:",
-                        error
-                    );
-
-
-                    alert(
-                        "تعذر حفظ النقاط.\n\n" +
-                        (
-                            error.code ||
-                            error.message ||
-                            ""
-                        )
-                    );
-                }
-            };
-
-
-        /* =====================================================
-           BAN / UNBAN
-        ===================================================== */
-
-        window.toggleBan =
-            async function (
-                docId,
-                currentBanStatus
-            ) {
-
-                const newStatus =
-                    !currentBanStatus;
-
-
-                const actionText =
-                    newStatus
-                        ? "حظر"
-                        : "فك الحظر";
-
-
-                if (
-                    !confirm(
-                        `هل أنت متأكد من رغبتك في ${actionText} هذا المخدوم؟`
-                    )
-                ) {
-
-                    return;
-                }
-
-
-                const person =
-                    myServants.find(
-                        p =>
-                            p.id ===
-                            docId
-                    );
-
-
-                if (!person) {
-
-                    alert(
-                        "لم يتم العثور على المخدوم."
-                    );
-
-                    return;
-                }
-
-
-                try {
-
-                    const docRef =
-                        doc(
-                            db,
-                            "users",
-                            docId
-                        );
-
-
-                    /*
-                     * نحفظ الاثنين حتى تكون
-                     * الصفحات القديمة والجديدة متوافقة
-                     */
-
-                    await updateDoc(
-                        docRef,
-                        {
-                            banned:
-                                newStatus,
-
-                            isBanned:
-                                newStatus
-                        }
-                    );
-
-
-                    person.banned =
-                        newStatus;
-
-
-                    person.isBanned =
-                        newStatus;
-
-
-                    renderNamesList(
-                        getCurrentDisplayedList()
-                    );
-
-
-                    openServantDetails(
-                        person
-                    );
-
-
-                    console.log(
-                        newStatus
-                            ? "🔒 تم حظر المستخدم"
-                            : "🔓 تم فك الحظر"
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "❌ خطأ في الحظر:",
-                        error
-                    );
-
-
-                    alert(
-                        "حدث خطأ أثناء التنفيذ.\n\n" +
-                        (
-                            error.code ||
-                            error.message ||
-                            ""
-                        )
-                    );
-                }
-            };
-
-
-        /* =====================================================
-           CURRENT DISPLAYED LIST
-        ===================================================== */
-
-        function getCurrentDisplayedList() {
-
-            const term =
-                normalizeKey(
-                    searchInput.value
-                );
-
-
-            if (!term) {
-
-                return myServants;
-            }
-
-
-            return myServants.filter(
-                (person) => {
-
-                    const name =
-                        normalizeKey(
-                            person.fullName ||
-                            person.name ||
-                            person.username ||
-                            ""
-                        );
-
-
-                    return name.includes(
-                        term
-                    );
-                }
-            );
-        }
-
-
-        /* =====================================================
-           ESC KEY
-        ===================================================== */
-
-        document.addEventListener(
-            "keydown",
-            (event) => {
-
-                if (
-                    event.key ===
-                    "Escape"
-                ) {
-
-                    closeServantModal();
-
-                    closeSidebar();
-                }
-            }
-        );
-
-
-        /* =====================================================
-           START
-        ===================================================== */
-
-        console.log(
-            "🚀 control.html بدأ التشغيل"
-        );
-
-
-        console.log(
-            "💾 localStorage.currentUsername =",
-            localStorage.getItem(
-                "currentUsername"
-            )
-        );
-
-
-        console.log(
-            "💾 localStorage.username =",
-            localStorage.getItem(
-                "username"
-            )
-        );
-
-
-        console.log(
-            "💾 localStorage.userDocId =",
-            localStorage.getItem(
-                "userDocId"
-            )
-        );
-
-
+      `;
+      $("#retryBtn")?.addEventListener("click", loadPage);
+    }
+
+    function getVisibleUsers() {
+      const term = key(searchInput.value);
+      return allUsers.filter((user) => {
         /*
-         * تشغيل الصفحة
+         * نفس فكرة صفحة الهدايا:
+         * نعرض المستخدمين الذين يساوي grade الخاص بهم
+         * servantGrade الخاص بالمشرف الحالي فقط.
          */
+        const myGrade = userGrade(currentUser);
+        const sameGrade = myGrade !== "غير محدد"
+          && key(userGrade(user)) === key(myGrade);
+        const searchable = [
+          userName(user), user.username, user.userName, user.phone,
+          user.mobile, user.email, userGrade(user)
+        ].map(key).join(" ");
+        return sameGrade && (!term || searchable.includes(term));
+      });
+    }
 
-        fetchServants();
+    function renderUsers() {
+      const visibleUsers = getVisibleUsers();
+      countLabel.textContent = `${visibleUsers.length} مستخدم`;
 
-    </script>
+      if (!visibleUsers.length) {
+        renderMessage("لا يوجد مستخدمون مطابقون للبحث أو للنطاق المحدد.");
+        return;
+      }
+
+      usersGrid.innerHTML = "";
+      visibleUsers.forEach((user) => {
+        const card = document.createElement("article");
+        card.className = `user-card${isBanned(user) ? " banned" : ""}`;
+        card.innerHTML = `
+          <div class="user-info">
+            <div class="avatar"><i class="fas fa-user"></i></div>
+            <div class="user-text">
+              <h2>${escapeHtml(userName(user))}</h2>
+              <p>${escapeHtml(userGrade(user))} • ${userPoints(user)} نقطة${isBanned(user) ? " • محظور" : ""}</p>
+            </div>
+          </div>
+          <button class="manage-btn" type="button" data-user-id="${escapeHtml(user.id)}">
+            إدارة <i class="fas fa-arrow-left"></i>
+          </button>
+        `;
+        card.querySelector(".manage-btn").addEventListener("click", () => openModal(user.id));
+        usersGrid.appendChild(card);
+      });
+    }
+
+    async function loadPage() {
+      usersGrid.innerHTML = `
+        <div class="message">
+          <i class="fas fa-spinner fa-spin"></i>
+          جاري تحميل المستخدمين...
+        </div>
+      `;
+
+      try {
+        /*
+         * هذه الصفحة صفحة إدارة، لذلك لا نبحث عن الحساب الحالي
+         * داخل users نهائياً.
+         *
+         * الحساب الحالي يجب أن يكون داخل مجموعة admin،
+         * وبعد نجاح التحقق فقط نقرأ قائمة الأشخاص من users.
+         *
+         * يعمل هذا سواء فتحت:
+         * control.html
+         * أو control.html?admin=Tonmi
+         */
+        currentUser = await findCurrentAdmin();
+        currentUserLabel.textContent = `المشرف الحالي: ${userName(currentUser)}`;
+        gradeLabel.textContent = `صف المشرف: ${userGrade(currentUser)} • المصدر: admin`;
+
+        const snapshot = await getDocs(collection(db, "users"));
+        allUsers = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+        renderUsers();
+      } catch (error) {
+        console.error("Firebase error:", error);
+        currentUserLabel.textContent = "تعذر التحقق من الحساب";
+        gradeLabel.textContent = "الصف: —";
+        const message = error?.code === "permission-denied"
+          ? "ليس لديك صلاحية قراءة مجموعة users من Firestore."
+          : (error?.message || "حدث خطأ أثناء تحميل المستخدمين.");
+        renderMessage(message, true);
+      }
+    }
+
+    function openModal(userId) {
+      selectedUser = allUsers.find((user) => user.id === userId);
+      if (!selectedUser) return;
+
+      const banned = isBanned(selectedUser);
+      modalBody.innerHTML = `
+        <div class="modal-profile">
+          <div class="avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <h3>${escapeHtml(userName(selectedUser))}</h3>
+            <p>معرّف المستند: ${escapeHtml(selectedUser.id)}</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editName">الاسم الكامل</label>
+            <input id="editName" class="field" value="${escapeHtml(userName(selectedUser))}">
+          </div>
+          <div class="form-group">
+            <label for="editGrade">الصف / الفصل</label>
+            <input id="editGrade" class="field" value="${escapeHtml(userGrade(selectedUser))}">
+          </div>
+          <div class="form-group full">
+            <label>النقاط</label>
+            <div class="points-box">
+              <button class="small-btn minus" type="button" data-points="-5">−5</button>
+              <button class="small-btn minus" type="button" data-points="-1">−1</button>
+              <input id="editPoints" class="field" type="number" min="0" step="1" value="${userPoints(selectedUser)}">
+              <button class="small-btn plus" type="button" data-points="1">+1</button>
+              <button class="small-btn plus" type="button" data-points="5">+5</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="toggleBanBtn" class="danger-btn${banned ? " unban" : ""}" type="button">
+            <i class="fas ${banned ? "fa-unlock" : "fa-lock"}"></i>
+            ${banned ? "إلغاء الحظر" : "حظر المستخدم"}
+          </button>
+          <button id="saveUserBtn" class="success-btn" type="button">
+            <i class="fas fa-floppy-disk"></i>
+            حفظ التعديلات
+          </button>
+        </div>
+      `;
+
+      $("#saveUserBtn").addEventListener("click", saveUser);
+      $("#toggleBanBtn").addEventListener("click", toggleBan);
+      overlay.classList.add("active");
+      overlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      overlay.classList.remove("active");
+      overlay.setAttribute("aria-hidden", "true");
+      selectedUser = null;
+    }
+
+    async function saveUser() {
+      if (!selectedUser) return;
+      const name = text($("#editName").value);
+      const grade = text($("#editGrade").value);
+      const points = Number($("#editPoints").value);
+
+      if (!name) return showToast("اكتب اسم المستخدم أولاً.", true);
+      if (!grade) return showToast("اكتب الصف أولاً.", true);
+      if (!Number.isInteger(points) || points < 0) {
+        return showToast("النقاط يجب أن تكون رقماً صحيحاً أكبر من أو يساوي صفر.", true);
+      }
+
+      const saveButton = $("#saveUserBtn");
+      saveButton.disabled = true;
+      try {
+        await updateDoc(doc(db, "users", selectedUser.id), {
+          fullName: name,
+          name,
+          grade,
+          servantGrade: grade,
+          points
+        });
+
+        Object.assign(selectedUser, { fullName: name, name, grade, servantGrade: grade, points });
+        allUsers = allUsers.map((user) => user.id === selectedUser.id ? selectedUser : user);
+        closeModal();
+        renderUsers();
+        showToast("تم حفظ تعديلات المستخدم بنجاح.");
+      } catch (error) {
+        console.error("Save user error:", error);
+        showToast(error?.code === "permission-denied"
+          ? "تم رفض التعديل. راجع صلاحيات Firestore."
+          : "تعذر حفظ التعديلات.", true);
+      } finally {
+        saveButton.disabled = false;
+      }
+    }
+
+    async function changePoints(amount) {
+      if (!selectedUser) return;
+      try {
+        const updated = await runTransaction(db, async (transaction) => {
+          const reference = doc(db, "users", selectedUser.id);
+          const snapshot = await transaction.get(reference);
+          if (!snapshot.exists()) throw new Error("المستخدم غير موجود.");
+          const nextPoints = Math.max(0, userPoints(snapshot.data()) + amount);
+          transaction.update(reference, { points: nextPoints });
+          return nextPoints;
+        });
+
+        selectedUser.points = updated;
+        allUsers = allUsers.map((user) => user.id === selectedUser.id ? selectedUser : user);
+        openModal(selectedUser.id);
+        renderUsers();
+        showToast("تم تحديث النقاط.");
+      } catch (error) {
+        console.error("Points error:", error);
+        showToast(error?.code === "permission-denied"
+          ? "تم رفض تحديث النقاط. راجع صلاحيات Firestore."
+          : "تعذر تحديث النقاط.", true);
+      }
+    }
+
+    async function toggleBan() {
+      if (!selectedUser) return;
+      const nextStatus = !isBanned(selectedUser);
+      const action = nextStatus ? "حظر" : "إلغاء الحظر";
+      if (!confirm(`هل أنت متأكد من ${action} هذا المستخدم؟`)) return;
+
+      try {
+        await updateDoc(doc(db, "users", selectedUser.id), {
+          banned: nextStatus,
+          isBanned: nextStatus
+        });
+        selectedUser.banned = nextStatus;
+        selectedUser.isBanned = nextStatus;
+        allUsers = allUsers.map((user) => user.id === selectedUser.id ? selectedUser : user);
+        closeModal();
+        renderUsers();
+        showToast(nextStatus ? "تم حظر المستخدم." : "تم إلغاء حظر المستخدم.");
+      } catch (error) {
+        console.error("Ban error:", error);
+        showToast(error?.code === "permission-denied"
+          ? "تم رفض تغيير حالة الحساب. راجع صلاحيات Firestore."
+          : "تعذر تغيير حالة الحساب.", true);
+      }
+    }
+
+    searchInput.addEventListener("input", renderUsers);
+    scopeSelect.addEventListener("change", renderUsers);
+    $("#loadBtn").addEventListener("click", loadPage);
+    $("#refreshBtn").addEventListener("click", loadPage);
+    $("#homeBtn").addEventListener("click", () => { location.href = "home.html"; });
+    $("#closeModalBtn").addEventListener("click", closeModal);
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) closeModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeModal();
+    });
+
+    /*
+     * أزرار تعديل النقاط تعمل من داخل المودال بعد إنشائه.
+     * نستخدم event delegation لأن الأزرار لا تكون موجودة عند بداية الصفحة.
+     */
+    modalBody.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-points]");
+      if (button) changePoints(Number(button.dataset.points));
+    });
+
+    loadPage();
+  </script>
 </body>
-
 </html>
