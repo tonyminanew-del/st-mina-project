@@ -1,372 +1,1331 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
-    <body>
-       <!-- زر رجوع أنيق -->
-        <form action="../a/home.html" method="get">
-<a href="#" id="backButton" class="back-btn" title="رجوع">
-    <button type="submit">للرئيسيه</button>
-    <i class="fas fa-arrow-right"></i>
-    <span>رجوع</span>
-</a>
-</form>
-
-<style>
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: linear-gradient(135deg, var(--primary, #7c1b28), #5a121d);
-        color: var(--white, #ffffff);
-        padding: 10px 18px;
-        border-radius: 30px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 14px;
-        box-shadow: 0 4px 12px rgba(124, 27, 40, 0.25);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        cursor: pointer;
-        margin-bottom: 15px;
-    }
-
-    .back-btn i {
-        transition: transform 0.3s ease;
-    }
-
-    .back-btn:hover {
-        background: linear-gradient(135deg, #5a121d, var(--primary, #7c1b28));
-        box-shadow: 0 6px 16px rgba(124, 27, 40, 0.35);
-        transform: translateY(-2px);
-    }
-
-    .back-btn:hover i {
-        transform: translateX(4px); /* حركة خفيفة للأيقونة لليمين لأن الموقع لغة عربية */
-    }
-
-    .back-btn:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 8px rgba(124, 27, 40, 0.2);
-    }
-</style>
-    </body>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>St. Mina - لوحة إعلانات الكنيسة والطلبات</title>
+    <title>St. Mina - لوحة الإعلانات والطلبات</title>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&display=swap"
         rel="stylesheet">
 
-    <link
-        rel="stylesheet"
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        :root {
+            --navy-deep: #041a36;
+            --navy-mid: #062348;
+            --navy-edge: #000b18;
+
+            --maroon-dark: #5d101c;
+            --maroon: #7d1424;
+            --maroon-light: #9b1c30;
+
+            --gold: #c9a04d;
+            --gold-light: #e6c878;
+
+            --ink: #1f1715;
+            --muted: #8a817c;
+
+            --paper: #f8f5f0;
+            --white: #ffffff;
+            --line: #eadfe1;
+
+            --green: #237a4b;
+            --red: #b3261e;
+            --blue: #2463a6;
+        }
+
         * {
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background: #f4f6f8;
-            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+
+            font-family: "Cairo", sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    var(--navy-mid) 0%,
+                    var(--navy-deep) 45%,
+                    var(--navy-edge) 100%
+                );
+
+            color: var(--ink);
+        }
+
+        button,
+        input,
+        textarea {
+            font-family: "Cairo", sans-serif;
+        }
+
+        button {
+            border: none;
+        }
+
+        /* =========================
+           TOP HEADER
+        ========================= */
+
+        .top-header {
+            width: calc(100% - 32px);
+            max-width: 1100px;
+
+            margin: 18px auto 0;
+
+            background: rgba(255, 255, 255, 0.98);
+
+            border-radius: 24px;
+
+            padding: 14px 18px;
+
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            box-shadow:
+                0 18px 45px rgba(0, 0, 0, 0.25);
+
+            position: sticky;
+            top: 12px;
+
+            z-index: 1000;
+
+            overflow: hidden;
         }
 
-        .header {
-            background: #232f3e;
-            color: #febd69;
-            width: 100%;
-            max-width: 600px;
-            padding: 15px;
-            text-align: center;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 15px;
+        .top-header::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            right: 0;
+            left: 0;
+
+            height: 5px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--maroon-dark),
+                    var(--gold),
+                    var(--maroon-light),
+                    var(--gold),
+                    var(--maroon-dark)
+                );
         }
 
-        .notification-status {
-            width: 100%;
-            max-width: 600px;
-            background: white;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
+        .header-title {
             display: flex;
             align-items: center;
-            gap: 10px;
+
+            gap: 11px;
+
+            color: var(--maroon-dark);
+
+            font-family: "Amiri", serif;
+
+            font-size: 22px;
+
+            font-weight: 700;
         }
 
-        .status-enabled {
-            color: #137333;
+        .header-title-icon {
+            width: 43px;
+            height: 43px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            color: var(--gold-light);
+
+            box-shadow:
+                0 8px 18px rgba(125, 20, 36, 0.22);
         }
 
-        .status-disabled {
-            color: #b3261e;
+        .header-title small {
+            display: block;
+
+            font-family: "Cairo", sans-serif;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            margin-top: -3px;
         }
 
-        /* شريط يوضح صف الخادم الحالي (مسحوب من البروفايل) */
+        /* =========================
+           BACK BUTTON
+        ========================= */
+
+        .back-btn {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            color: white;
+
+            padding: 10px 16px;
+
+            border-radius: 14px;
+
+            text-decoration: none;
+
+            font-weight: 800;
+
+            font-size: 12px;
+
+            box-shadow:
+                0 7px 17px rgba(125, 20, 36, 0.22);
+
+            transition: 0.25s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 11px 24px rgba(125, 20, 36, 0.3);
+        }
+
+        .back-btn i {
+            transition: 0.25s;
+        }
+
+        .back-btn:hover i {
+            transform: translateX(4px);
+        }
+
+        /* =========================
+           MAIN SHELL
+        ========================= */
+
+        .page-shell {
+            width: calc(100% - 32px);
+            max-width: 1100px;
+
+            margin: 28px auto 60px;
+
+            background: rgba(255, 255, 255, 0.98);
+
+            border-radius: 30px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.25);
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .page-shell::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            right: 0;
+            left: 0;
+
+            height: 6px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--maroon-dark),
+                    var(--gold),
+                    var(--maroon-light),
+                    var(--gold),
+                    var(--maroon-dark)
+                );
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-dark),
+                    var(--maroon),
+                    #8d1b2d
+                );
+
+            color: white;
+
+            border-radius: 23px;
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 18px;
+
+            flex-wrap: wrap;
+
+            position: relative;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 15px 30px rgba(93, 16, 28, 0.22);
+        }
+
+        .hero::before {
+            content: "✦";
+
+            position: absolute;
+
+            left: 20px;
+            top: -25px;
+
+            color: rgba(230, 200, 120, 0.15);
+
+            font-size: 120px;
+
+            transform: rotate(20deg);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            margin: 0 0 5px;
+
+            font-family: "Amiri", serif;
+
+            font-size: 29px;
+        }
+
+        .hero p {
+            margin: 0;
+
+            font-size: 12px;
+
+            color: rgba(255, 255, 255, 0.82);
+
+            line-height: 1.8;
+        }
+
+        .hero-icon {
+            width: 62px;
+            height: 62px;
+
+            border-radius: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255,255,255,0.12);
+
+            border: 1px solid rgba(255,255,255,0.18);
+
+            color: var(--gold-light);
+
+            font-size: 28px;
+
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =========================
+           GRADE
+        ========================= */
+
         .grade-banner {
             width: 100%;
-            max-width: 600px;
-            background: #fff8e6;
-            border: 1px solid #f0d789;
-            padding: 10px 15px;
-            border-radius: 8px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #fffaf0,
+                    #fff5dc
+                );
+
+            border: 1px solid #ead49b;
+
+            padding: 13px 16px;
+
+            border-radius: 16px;
+
             margin-bottom: 15px;
-            font-size: 13px;
+
+            font-size: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            color: var(--maroon);
+
+            font-weight: 800;
+
+            box-shadow:
+                0 7px 18px rgba(31, 23, 21, 0.05);
+        }
+
+        .grade-banner i {
+            width: 33px;
+            height: 33px;
+
+            border-radius: 10px;
+
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #7c1b28;
-            font-weight: bold;
+            justify-content: center;
+
+            background: var(--maroon);
+
+            color: var(--gold-light);
+
+            flex-shrink: 0;
         }
 
         .grade-banner.grade-missing {
-            background: #fdeceb;
-            border-color: #f3b3ae;
-            color: #b3261e;
+            background: #fff1f2;
+
+            border-color: #edcdd1;
+
+            color: var(--red);
         }
 
-        .control-panel {
+        .grade-banner.grade-missing i {
+            background: var(--red);
+
+            color: white;
+        }
+
+        /* =========================
+           NOTIFICATION STATUS
+        ========================= */
+
+        .notification-status {
             width: 100%;
-            max-width: 600px;
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
+
+            background: #f8f5f0;
+
+            border: 1px solid var(--line);
+
+            padding: 12px 15px;
+
+            border-radius: 16px;
+
+            margin-bottom: 18px;
+
+            font-size: 12px;
+
             display: flex;
-            flex-direction: column;
+
+            align-items: center;
+
             gap: 10px;
+
+            font-weight: 800;
+        }
+
+        .notification-status i {
+            width: 33px;
+            height: 33px;
+
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-enabled {
+            color: var(--green);
+
+            background: #eef8f2;
+
+            border-color: #cce7d6;
+        }
+
+        .status-enabled i {
+            background: #dff1e6;
+            color: var(--green);
+        }
+
+        .status-disabled {
+            color: var(--red);
+
+            background: #fff1f2;
+
+            border-color: #edcdd1;
+        }
+
+        .status-disabled i {
+            background: #fbe0e2;
+            color: var(--red);
+        }
+
+        /* =========================
+           CONTROL PANEL
+        ========================= */
+
+        .control-panel {
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #fbf7f2
+                );
+
+            border: 1px solid var(--line);
+
+            border-radius: 22px;
+
+            padding: 21px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 10px 28px rgba(31, 23, 21, 0.07);
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .control-panel::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            right: 0;
+            left: 0;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--maroon),
+                    var(--gold),
+                    var(--maroon)
+                );
+        }
+
+        .control-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin: 0 0 15px;
+
+            color: var(--maroon-dark);
+
+            font-family: "Amiri", serif;
+
+            font-size: 21px;
+        }
+
+        .control-title i {
+            color: var(--gold);
+        }
+
+        .input-group {
+            margin-bottom: 11px;
+        }
+
+        .input-label {
+            display: block;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            color: var(--muted);
+
+            margin-bottom: 6px;
         }
 
         .control-panel input,
         .control-panel textarea {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
+            width: 100%;
+
+            padding: 12px 14px;
+
+            border: 1px solid #e2d8d5;
+
+            border-radius: 13px;
+
+            font-family: "Cairo", sans-serif;
+
+            font-size: 13px;
+
+            color: var(--ink);
+
+            background: white;
+
             outline: none;
+
+            transition: 0.2s;
+
+            resize: vertical;
         }
 
-        .control-panel button {
-            background: #232f3e;
-            color: #febd69;
-            border: none;
-            padding: 10px;
-            border-radius: 6px;
-            font-weight: bold;
+        .control-panel input:focus,
+        .control-panel textarea:focus {
+            border-color: var(--maroon);
+
+            box-shadow:
+                0 0 0 3px rgba(125, 20, 36, 0.08);
+        }
+
+        .send-btn {
+            width: 100%;
+
+            margin-top: 4px;
+
+            padding: 12px;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            color: white;
+
+            font-weight: 800;
+
+            font-size: 13px;
+
             cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
+
+            transition: 0.25s;
+
+            box-shadow:
+                0 8px 18px rgba(125, 20, 36, 0.2);
         }
 
-        .control-panel button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .send-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 24px rgba(125, 20, 36, 0.27);
         }
+
+        .send-btn:disabled {
+            opacity: 0.55;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+            box-shadow: none;
+        }
+
+        /* =========================
+           LIST
+        ========================= */
 
         .list {
             width: 100%;
-            max-width: 600px;
+
             display: flex;
+
             flex-direction: column;
-            gap: 12px;
+
+            gap: 14px;
         }
 
+        /* =========================
+           CARD
+        ========================= */
+
         .card {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #fbf7f2
+                );
+
+            border: 1px solid var(--line);
+
+            border-radius: 21px;
+
+            padding: 18px;
+
             display: flex;
+
             flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+            gap: 13px;
+
+            box-shadow:
+                0 9px 25px rgba(31, 23, 21, 0.07);
+
+            position: relative;
+
+            overflow: hidden;
+
+            transition: 0.25s;
+        }
+
+        .card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            right: 0;
+            left: 0;
+
+            height: 3px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--maroon-dark),
+                    var(--gold),
+                    var(--maroon-light)
+                );
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 15px 32px rgba(93, 16, 28, 0.12);
         }
 
         .card.unread {
-            border-right: 5px solid #febd69;
-            background: #fffdf5;
+            border-right: 5px solid var(--gold);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #fffdf8,
+                    #fff8ea
+                );
         }
 
         .card-top {
             display: flex;
-            align-items: center;
-            gap: 15px;
+
+            align-items: flex-start;
+
+            gap: 14px;
         }
 
         .icon-container {
-            width: 45px;
-            height: 45px;
-            min-width: 45px;
-            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+
+            min-width: 56px;
+
+            border-radius: 17px;
+
             overflow: hidden;
-            background: #e8f0fe;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff4f5,
+                    #f8e7e9
+                );
+
+            border: 1px solid #edd7da;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
         }
 
         .icon-container img {
             width: 100%;
             height: 100%;
+
             object-fit: cover;
         }
 
         .icon-container i {
-            color: #1a73e8;
-            font-size: 18px;
+            color: var(--maroon);
+
+            font-size: 22px;
         }
 
         .details {
             flex: 1;
+
+            min-width: 0;
         }
 
         .details h3 {
-            font-size: 15px;
-            margin: 0 0 5px 0;
-            color: #111;
+            font-family: "Amiri", serif;
+
+            font-size: 20px;
+
+            margin: 0 0 5px;
+
+            color: var(--maroon-dark);
+
+            line-height: 1.4;
         }
 
         .details p {
-            font-size: 13px;
+            font-size: 12px;
+
             margin: 0;
-            color: #555;
-            line-height: 1.7;
+
+            color: #5f5854;
+
+            line-height: 1.8;
         }
 
-        .order-actions {
+        .order-meta {
             display: flex;
-            gap: 8px;
-            margin-top: 5px;
+
+            align-items: center;
+
             flex-wrap: wrap;
+
+            gap: 7px;
+
+            margin-top: 9px;
+        }
+
+        .meta-pill {
+            background: #f8f1ed;
+
+            color: var(--muted);
+
+            border: 1px solid var(--line);
+
+            padding: 5px 9px;
+
+            border-radius: 9px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+        .meta-pill i {
+            color: var(--gold);
+
+            margin-left: 3px;
+        }
+
+        /* =========================
+           ACTIONS
+        ========================= */
+
+        .order-actions {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 9px;
+
+            margin-top: 3px;
+        }
+
+        .accept-btn,
+        .reject-btn,
+        .deliver-btn {
+            border: none;
+
+            padding: 11px;
+
+            border-radius: 13px;
+
+            font-family: "Cairo", sans-serif;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            transition: 0.22s;
         }
 
         .accept-btn {
-            flex: 1;
-            background: #137333;
+            background:
+                linear-gradient(
+                    135deg,
+                    #2f8c5a,
+                    #19633d
+                );
+
             color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 6px;
-            font-family: 'Cairo', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
+
+            box-shadow:
+                0 6px 15px rgba(35, 122, 75, 0.18);
         }
 
         .reject-btn {
-            flex: 1;
-            background: #b3261e;
+            background:
+                linear-gradient(
+                    135deg,
+                    #c0392b,
+                    #8f2019
+                );
+
             color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 6px;
-            font-family: 'Cairo', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
+
+            box-shadow:
+                0 6px 15px rgba(179, 38, 30, 0.17);
         }
 
         .deliver-btn {
             width: 100%;
-            background: #1a73e8;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #326fae,
+                    #1e4f82
+                );
+
             color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 6px;
-            font-family: 'Cairo', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-            margin-top: 5px;
+
+            box-shadow:
+                0 7px 17px rgba(36, 99, 166, 0.18);
         }
 
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .accept-btn:hover,
+        .reject-btn:hover,
+        .deliver-btn:hover {
+            transform: translateY(-2px);
         }
+
+        .status-message {
+            padding: 10px 12px;
+
+            border-radius: 12px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+        }
+
+        .status-accepted {
+            background: #edf8f1;
+
+            border: 1px solid #cde7d6;
+
+            color: var(--green);
+        }
+
+        .status-delivered {
+            background: #edf5fc;
+
+            border: 1px solid #cbddec;
+
+            color: var(--blue);
+        }
+
+        .status-rejected {
+            background: #fff0f1;
+
+            border: 1px solid #edcdd1;
+
+            color: var(--red);
+        }
+
+        /* =========================
+           EMPTY
+        ========================= */
 
         .no-data {
-            background: #fff;
-            padding: 30px;
-            text-align: center;
-            border-radius: 8px;
-            color: #777;
             width: 100%;
-            max-width: 600px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #fbf7f2
+                );
+
+            border: 1px solid var(--line);
+
+            padding: 45px 25px;
+
+            text-align: center;
+
+            border-radius: 22px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            box-shadow:
+                0 10px 28px rgba(31, 23, 21, 0.06);
         }
+
+        .no-data::before {
+            content: "🔔";
+
+            display: block;
+
+            font-size: 42px;
+
+            margin-bottom: 12px;
+        }
+
+        /* =========================
+           NOTIFICATION POPUP
+        ========================= */
 
         .notification-overlay {
             position: fixed;
+
             inset: 0;
-            background: rgba(0, 0, 0, 0.65);
+
+            background:
+                rgba(0, 11, 24, 0.72);
+
+            backdrop-filter: blur(6px);
+
             display: none;
+
             align-items: center;
+
             justify-content: center;
+
             z-index: 99999;
+
             padding: 20px;
         }
 
         .notification-box {
             width: 100%;
-            max-width: 420px;
-            background: white;
-            border-radius: 20px;
+
+            max-width: 430px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #fbf7f2
+                );
+
+            border-radius: 26px;
+
             padding: 30px 25px;
+
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.4);
+
+            border: 1px solid var(--line);
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .notification-box::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            right: 0;
+            left: 0;
+
+            height: 5px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--maroon-dark),
+                    var(--gold),
+                    var(--maroon-light)
+                );
         }
 
         .notification-icon {
-            width: 80px;
-            height: 80px;
-            background: #fff4d8;
-            color: #f59e0b;
-            border-radius: 50%;
+            width: 82px;
+            height: 82px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff4d8,
+                    #f8e4a8
+                );
+
+            color: var(--maroon);
+
+            border: 1px solid #ead49b;
+
+            border-radius: 24px;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 35px;
+
+            margin: 0 auto 18px;
+
+            font-size: 34px;
+
+            box-shadow:
+                0 9px 22px rgba(201,160,77,0.16);
+        }
+
+        .notification-box h2 {
+            margin: 0 0 8px;
+
+            color: var(--maroon-dark);
+
+            font-family: "Amiri", serif;
+
+            font-size: 26px;
+        }
+
+        .notification-box p {
+            color: var(--muted);
+
+            font-size: 12px;
+
+            line-height: 1.9;
+
+            margin-bottom: 20px;
         }
 
         .allow-btn,
         .later-btn {
             border: none;
-            padding: 13px;
-            border-radius: 10px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 15px;
-            font-weight: bold;
+
+            padding: 12px;
+
+            border-radius: 13px;
+
+            font-family: "Cairo", sans-serif;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
             cursor: pointer;
+
             width: 100%;
+
+            transition: 0.22s;
         }
 
         .allow-btn {
-            background: #232f3e;
-            color: #febd69;
-            margin-bottom: 10px;
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            color: white;
+
+            margin-bottom: 9px;
+
+            box-shadow:
+                0 8px 18px rgba(125, 20, 36, 0.2);
         }
 
         .later-btn {
-            background: #eeeeee;
-            color: #555;
+            background: #eeeae7;
+
+            color: #615b57;
+        }
+
+        .allow-btn:hover,
+        .later-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .top-header {
+                width: calc(100% - 20px);
+
+                margin-top: 10px;
+
+                padding: 12px;
+            }
+
+            .header-title {
+                font-size: 18px;
+            }
+
+            .header-title-icon {
+                width: 38px;
+                height: 38px;
+
+                border-radius: 12px;
+            }
+
+            .header-title small {
+                display: none;
+            }
+
+            .back-btn {
+                padding: 9px 11px;
+
+                font-size: 11px;
+            }
+
+            .back-btn span {
+                display: none;
+            }
+
+            .page-shell {
+                width: calc(100% - 20px);
+
+                margin-top: 20px;
+
+                padding: 17px;
+
+                border-radius: 23px;
+            }
+
+            .hero {
+                padding: 20px;
+
+                border-radius: 19px;
+            }
+
+            .hero h1 {
+                font-size: 23px;
+            }
+
+            .hero p {
+                font-size: 11px;
+            }
+
+            .hero-icon {
+                display: none;
+            }
+
+            .control-panel {
+                padding: 17px;
+            }
+
+            .order-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .details h3 {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 430px) {
+
+            .page-shell {
+                padding: 13px;
+            }
+
+            .header-title {
+                font-size: 16px;
+            }
+
+            .header-title-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+            .grade-banner {
+                font-size: 10px;
+            }
+
+            .notification-status {
+                font-size: 10px;
+            }
         }
     </style>
 </head>
 
+
 <body>
+
+    <!-- =====================================================
+         SOUND
+    ====================================================== -->
 
     <audio
         id="notifSound"
@@ -374,88 +1333,255 @@
         preload="auto">
     </audio>
 
-    <div id="notificationOverlay" class="notification-overlay">
+
+    <!-- =====================================================
+         NOTIFICATION PERMISSION
+    ====================================================== -->
+
+    <div
+        id="notificationOverlay"
+        class="notification-overlay">
+
         <div class="notification-box">
 
             <div class="notification-icon">
                 <i class="fas fa-bell"></i>
             </div>
 
-            <h2>تفعيل الإشعارات 🔔</h2>
+            <h2>
+                تفعيل الإشعارات 🔔
+            </h2>
 
             <p>
                 هل تريد السماح لموقع
                 <strong>St. Mina</strong>
-                بإرسال التنبيهات؟
+                بإرسال التنبيهات عند وصول طلبات أو إعلانات جديدة؟
             </p>
 
-            <button id="allowNotificationsBtn" class="allow-btn">
-                السماح
+            <button
+                id="allowNotificationsBtn"
+                class="allow-btn">
+
+                <i class="fas fa-bell"></i>
+
+                السماح بالإشعارات
+
             </button>
 
-            <button id="laterNotificationsBtn" class="later-btn">
+            <button
+                id="laterNotificationsBtn"
+                class="later-btn">
+
                 رفض
+
             </button>
 
         </div>
-    </div>
-
-    <div class="header">
-        <i class="fas fa-church"></i>
-        لوحة الإعلانات والطلبات - St. Mina
-    </div>
-
-    <!-- شريط يوضح صف الخادم الحالي المسحوب من البروفايل (servantGrade) -->
-    <div id="gradeBanner" class="grade-banner">
-        <i class="fas fa-graduation-cap"></i>
-        <span id="gradeBannerText">جاري تحديد صفك...</span>
-    </div>
-
-    <div id="notificationStatus" class="notification-status">
-        <i class="fas fa-spinner fa-spin"></i>
-        جاري فحص الإشعارات...
-    </div>
-
-    <div class="control-panel">
-
-        <h3 style="margin: 0 0 5px 0; font-size: 14px; color: #333;">
-            <i class="fas fa-bullhorn"></i>
-            نشر إعلان أو قداس جديد لصفك فقط
-        </h3>
-
-        <input
-            type="text"
-            id="notifTitle"
-            value="قداس إلهي غداً 🙏">
-
-        <input
-            type="text"
-            id="notifImage"
-            value="https://cdn-icons-png.flaticon.com/512/3233/3233483.png">
-
-        <textarea
-            id="notifMessage"
-            rows="2">نحيطكم علماً بأن القداس الإلهي سيبدأ غداً.</textarea>
-
-        <button id="sendAnnouncementBtn">
-            <i class="fas fa-paper-plane"></i>
-            نشر الإعلان لصفي
-        </button>
 
     </div>
 
-    <div id="notificationsContainer" class="list">
-        <div class="no-data">
-            جاري التحميل...
+
+    <!-- =====================================================
+         TOP HEADER
+    ====================================================== -->
+
+    <header class="top-header">
+
+        <div class="header-title">
+
+            <div class="header-title-icon">
+
+                <i class="fas fa-church"></i>
+
+            </div>
+
+            <div>
+
+                لوحة الإعلانات والطلبات
+
+                <small>
+                    St. Mina
+                </small>
+
+            </div>
+
         </div>
-    </div>
 
+
+        <a
+            href="../a/home.html"
+            class="back-btn"
+            title="العودة للرئيسية">
+
+            <i class="fas fa-arrow-right"></i>
+
+            <span>
+                الرئيسية
+            </span>
+
+        </a>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="page-shell">
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <h1>
+                    لوحة الكنيسة 🔔
+                </h1>
+
+                <p>
+                    الإعلانات وطلبات الهدايا الخاصة بصفك فقط.
+                </p>
+
+            </div>
+
+
+            <div class="hero-icon">
+
+                <i class="fas fa-bullhorn"></i>
+
+            </div>
+
+        </section>
+
+
+        <!-- GRADE -->
+
+        <div
+            id="gradeBanner"
+            class="grade-banner">
+
+            <i class="fas fa-graduation-cap"></i>
+
+            <span id="gradeBannerText">
+                جاري تحديد صفك...
+            </span>
+
+        </div>
+
+
+        <!-- NOTIFICATION STATUS -->
+
+        <div
+            id="notificationStatus"
+            class="notification-status">
+
+            <i class="fas fa-spinner fa-spin"></i>
+
+            جاري فحص الإشعارات...
+
+        </div>
+
+
+        <!-- =================================================
+             ANNOUNCEMENT
+        ================================================== -->
+
+        <section class="control-panel">
+
+            <h3 class="control-title">
+
+                <i class="fas fa-bullhorn"></i>
+
+                نشر إعلان جديد لصفك
+
+            </h3>
+
+
+            <div class="input-group">
+
+                <label class="input-label">
+                    عنوان الإعلان
+                </label>
+
+                <input
+                    type="text"
+                    id="notifTitle"
+                    value="قداس إلهي غداً 🙏">
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label class="input-label">
+                    رابط صورة الإعلان
+                </label>
+
+                <input
+                    type="text"
+                    id="notifImage"
+                    value="https://cdn-icons-png.flaticon.com/512/3233/3233483.png">
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label class="input-label">
+                    محتوى الإعلان
+                </label>
+
+                <textarea
+                    id="notifMessage"
+                    rows="3">نحيطكم علماً بأن القداس الإلهي سيبدأ غداً.</textarea>
+
+            </div>
+
+
+            <button
+                id="sendAnnouncementBtn"
+                class="send-btn">
+
+                <i class="fas fa-paper-plane"></i>
+
+                نشر الإعلان لصفي
+
+            </button>
+
+        </section>
+
+
+        <!-- =================================================
+             NOTIFICATIONS
+        ================================================== -->
+
+        <div
+            id="notificationsContainer"
+            class="list">
+
+            <div class="no-data">
+                جاري تحميل إشعارات صفك...
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         FIREBASE
+    ====================================================== -->
 
     <script type="module">
 
         import {
             initializeApp
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        } from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
 
         import {
             getFirestore,
@@ -469,23 +1595,27 @@
             getDocs,
             runTransaction,
             serverTimestamp
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        } from
+        "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 
-        /* =========================
-           FIREBASE
-        ========================= */
+        /* =====================================================
+           FIREBASE CONFIG
+        ===================================================== */
 
         const firebaseConfig = {
 
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            apiKey:
+                "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
 
-            authDomain: "st-mina-c01ec.firebaseapp.com",
+            authDomain:
+                "st-mina-c01ec.firebaseapp.com",
 
             databaseURL:
                 "https://st-mina-c01ec-default-rtdb.firebaseio.com",
 
-            projectId: "st-mina-c01ec",
+            projectId:
+                "st-mina-c01ec",
 
             storageBucket:
                 "st-mina-c01ec.firebasestorage.app",
@@ -501,76 +1631,116 @@
         };
 
 
-        const app = initializeApp(firebaseConfig);
+        const app =
+            initializeApp(firebaseConfig);
 
-        const db = getFirestore(app);
+
+        const db =
+            getFirestore(app);
 
 
-        /* =========================
-           صف الخادم الحالي (من البروفايل)
-           نفس المفتاح المستخدم في profile.html: servantGrade
-        ========================= */
+        /* =====================================================
+           CURRENT GRADE
+        ===================================================== */
 
         const myGrade =
-            (localStorage.getItem("servantGrade") || "").trim();
+            (
+                localStorage.getItem(
+                    "servantGrade"
+                ) || ""
+            ).trim();
+
 
         const gradeBanner =
-            document.getElementById("gradeBanner");
+            document.getElementById(
+                "gradeBanner"
+            );
+
 
         const gradeBannerText =
-            document.getElementById("gradeBannerText");
+            document.getElementById(
+                "gradeBannerText"
+            );
+
 
         if (myGrade) {
 
             gradeBannerText.innerText =
-                `صفك الحالي: ${myGrade} — سيتم نشر إعلاناتك وعرض طلبات هذا الصف فقط`;
+                `صفك الحالي: ${myGrade} — سيتم عرض إشعارات صفك فقط`;
 
         } else {
 
-            gradeBanner.classList.add("grade-missing");
+            gradeBanner.classList.add(
+                "grade-missing"
+            );
 
             gradeBannerText.innerText =
                 "لم يتم العثور على صفك في البروفايل، برجاء تحديث بياناتك أولاً";
+
         }
 
 
-        /* =========================
+        /* =====================================================
            ELEMENTS
-        ========================= */
+        ===================================================== */
 
         const overlay =
-            document.getElementById("notificationOverlay");
+            document.getElementById(
+                "notificationOverlay"
+            );
+
 
         const allowBtn =
-            document.getElementById("allowNotificationsBtn");
+            document.getElementById(
+                "allowNotificationsBtn"
+            );
+
 
         const laterBtn =
-            document.getElementById("laterNotificationsBtn");
+            document.getElementById(
+                "laterNotificationsBtn"
+            );
+
 
         const status =
-            document.getElementById("notificationStatus");
+            document.getElementById(
+                "notificationStatus"
+            );
+
 
         const container =
-            document.getElementById("notificationsContainer");
+            document.getElementById(
+                "notificationsContainer"
+            );
+
 
         const sound =
-            document.getElementById("notifSound");
+            document.getElementById(
+                "notifSound"
+            );
+
 
         const sendAnnouncementBtn =
-            document.getElementById("sendAnnouncementBtn");
+            document.getElementById(
+                "sendAnnouncementBtn"
+            );
 
 
-        /* لو مفيش صف محدد، نمنع النشر لحد ما يحدث بياناته */
+        /* =====================================================
+           DISABLE SEND WITHOUT GRADE
+        ===================================================== */
 
         if (!myGrade) {
 
-            sendAnnouncementBtn.disabled = true;
+            sendAnnouncementBtn.disabled =
+                true;
+
         }
 
 
-        /* =========================
-           NOTIFICATIONS STATUS
-        ========================= */
+        /* =====================================================
+           NOTIFICATION STATUS
+        ===================================================== */
 
         function updateNotificationStatus() {
 
@@ -579,34 +1749,46 @@
                 status.className =
                     "notification-status status-disabled";
 
-                status.innerHTML =
-                    `<i class="fas fa-bell-slash"></i>
-                     المتصفح لا يدعم الإشعارات`;
+                status.innerHTML = `
+                    <i class="fas fa-bell-slash"></i>
+                    المتصفح لا يدعم الإشعارات
+                `;
 
                 return;
             }
 
 
-            if (Notification.permission === "granted") {
+            if (
+                Notification.permission ===
+                "granted"
+            ) {
 
                 status.className =
                     "notification-status status-enabled";
 
-                status.innerHTML =
-                    `<i class="fas fa-bell"></i>
-                     الإشعارات مفعلة`;
+                status.innerHTML = `
+                    <i class="fas fa-bell"></i>
+                    الإشعارات مفعلة
+                `;
 
             } else {
 
                 status.className =
                     "notification-status status-disabled";
 
-                status.innerHTML =
-                    `<i class="fas fa-bell-slash"></i>
-                     الإشعارات غير مفعلة`;
+                status.innerHTML = `
+                    <i class="fas fa-bell-slash"></i>
+                    الإشعارات غير مفعلة
+                `;
+
             }
+
         }
 
+
+        /* =====================================================
+           ALLOW
+        ===================================================== */
 
         allowBtn.addEventListener(
             "click",
@@ -616,27 +1798,39 @@
 
                     await Notification.requestPermission();
 
-                } catch (e) {
+                } catch (error) {
 
-                    console.error(e);
+                    console.error(error);
+
                 }
 
                 updateNotificationStatus();
 
-                overlay.style.display = "none";
+                overlay.style.display =
+                    "none";
+
             }
         );
 
+
+        /* =====================================================
+           REJECT
+        ===================================================== */
 
         laterBtn.addEventListener(
             "click",
             () => {
 
-                overlay.style.display = "none";
+                overlay.style.display =
+                    "none";
 
             }
         );
 
+
+        /* =====================================================
+           DOM LOADED
+        ===================================================== */
 
         document.addEventListener(
             "DOMContentLoaded",
@@ -644,34 +1838,45 @@
 
                 updateNotificationStatus();
 
+
                 if (
                     "Notification" in window &&
-                    Notification.permission === "default"
+                    Notification.permission ===
+                    "default"
                 ) {
 
-                    overlay.style.display = "flex";
+                    overlay.style.display =
+                        "flex";
+
                 }
+
             }
         );
 
 
-        /* =========================
-           QUERY
-        ========================= */
+        /* =====================================================
+           FIRESTORE QUERY
+        ===================================================== */
 
         const q =
             query(
-                collection(db, "notifications"),
-                orderBy("timestamp", "desc")
+                collection(
+                    db,
+                    "notifications"
+                ),
+                orderBy(
+                    "timestamp",
+                    "desc"
+                )
             );
 
 
         let firstLoad = true;
 
 
-        /* =========================
-           ANNOUNCEMENT (مقيّد بصف الخادم الحالي)
-        ========================= */
+        /* =====================================================
+           SEND ANNOUNCEMENT
+        ===================================================== */
 
         sendAnnouncementBtn.addEventListener(
             "click",
@@ -680,63 +1885,82 @@
                 if (!myGrade) {
 
                     alert(
-                        "لا يمكن النشر: صفك غير معروف من البروفايل."
+                        "لا يمكن النشر لأن صفك غير موجود في البروفايل."
                     );
 
                     return;
+
                 }
 
 
                 const title =
                     document
-                        .getElementById("notifTitle")
+                        .getElementById(
+                            "notifTitle"
+                        )
                         .value
                         .trim();
+
 
                 const imageUrl =
                     document
-                        .getElementById("notifImage")
+                        .getElementById(
+                            "notifImage"
+                        )
                         .value
                         .trim();
 
+
                 const message =
                     document
-                        .getElementById("notifMessage")
+                        .getElementById(
+                            "notifMessage"
+                        )
                         .value
                         .trim();
 
 
                 if (!message) {
 
-                    alert("يرجى كتابة محتوى الإعلان!");
+                    alert(
+                        "يرجى كتابة محتوى الإعلان!"
+                    );
 
                     return;
+
                 }
 
 
                 try {
 
                     await addDoc(
-                        collection(db, "notifications"),
+                        collection(
+                            db,
+                            "notifications"
+                        ),
                         {
-                            type: "announcement",
 
-                            title: title,
+                            type:
+                                "announcement",
 
-                            message: message,
+                            title:
+                                title,
 
-                            imageUrl: imageUrl,
+                            message:
+                                message,
 
-                            /*
-                             * تقييد الإعلان على صف الخادم الحالي فقط
-                             * بحيث يظهر فقط عند من كان في نفس الصف
-                             */
+                            imageUrl:
+                                imageUrl,
 
-                            targetGrade: myGrade,
+                            targetGrade:
+                                myGrade,
 
-                            timestamp: serverTimestamp(),
+                            timestamp:
+                                serverTimestamp(),
 
-                            isRead: false
+                            isRead:
+                                false
+
                         }
                     );
 
@@ -745,45 +1969,48 @@
                         `تم نشر الإعلان بنجاح لصف "${myGrade}" فقط!`
                     );
 
-                } catch (e) {
 
-                    console.error(e);
+                } catch (error) {
+
+                    console.error(error);
 
                     alert(
-                        "حدث خطأ أثناء نشر الإعلان: " +
-                        e.message
+                        "حدث خطأ أثناء نشر الإعلان:\n" +
+                        error.message
                     );
+
                 }
+
             }
         );
 
 
         /* =====================================================
-           قبول الطلب
-           ===================================================== */
+           ACCEPT
+        ===================================================== */
 
         window.acceptOrder =
-            async function (docId) {
+            async function(docId) {
 
                 try {
 
-                    const docRef =
+                    await updateDoc(
                         doc(
                             db,
                             "notifications",
                             docId
-                        );
-
-
-                    await updateDoc(
-                        docRef,
+                        ),
                         {
-                            status: "accepted",
 
-                            isRead: true,
+                            status:
+                                "accepted",
+
+                            isRead:
+                                true,
 
                             acceptedAt:
                                 serverTimestamp()
+
                         }
                     );
 
@@ -792,44 +2019,47 @@
                         "تم قبول الطلب، وهو الآن في انتظار تسليمه للمخدوم ✅"
                     );
 
-                } catch (e) {
 
-                    console.error(e);
+                } catch (error) {
+
+                    console.error(error);
 
                     alert(
-                        "حدث خطأ أثناء قبول الطلب: " +
-                        e.message
+                        "حدث خطأ أثناء قبول الطلب:\n" +
+                        error.message
                     );
+
                 }
+
             };
 
 
         /* =====================================================
-           تسليم الطلب
-           ===================================================== */
+           DELIVER
+        ===================================================== */
 
         window.deliverOrder =
-            async function (docId) {
+            async function(docId) {
 
                 try {
 
-                    const docRef =
+                    await updateDoc(
                         doc(
                             db,
                             "notifications",
                             docId
-                        );
-
-
-                    await updateDoc(
-                        docRef,
+                        ),
                         {
-                            status: "delivered",
 
-                            isRead: true,
+                            status:
+                                "delivered",
+
+                            isRead:
+                                true,
 
                             deliveredAt:
                                 serverTimestamp()
+
                         }
                     );
 
@@ -838,30 +2068,37 @@
                         "تم تسجيل تسليم الهدية للمخدوم بنجاح ✅"
                     );
 
-                } catch (e) {
 
-                    console.error(e);
+                } catch (error) {
+
+                    console.error(error);
 
                     alert(
-                        "حدث خطأ أثناء تسجيل التسليم: " +
-                        e.message
+                        "حدث خطأ أثناء تسجيل التسليم:\n" +
+                        error.message
                     );
+
                 }
+
             };
 
 
         /* =====================================================
-           البحث عن المستخدم
-           ===================================================== */
+           FIND USER
+        ===================================================== */
 
-        async function findUserByUsername(username) {
+        async function findUserByUsername(
+            username
+        ) {
 
             if (!username) {
+
                 return null;
+
             }
 
 
-            const usernameClean =
+            const cleanUsername =
                 String(username)
                     .trim()
                     .toLowerCase();
@@ -869,74 +2106,102 @@
 
             const usersSnap =
                 await getDocs(
-                    collection(db, "users")
+                    collection(
+                        db,
+                        "users"
+                    )
                 );
 
 
-            for (const userDoc of usersSnap.docs) {
+            for (
+                const userDoc
+                of usersSnap.docs
+            ) {
 
                 const data =
                     userDoc.data();
 
 
                 const docId =
-                    String(userDoc.id)
+                    String(
+                        userDoc.id
+                    )
                         .trim()
                         .toLowerCase();
 
 
                 const dataUsername =
                     data.username
-                        ? String(data.username)
+                        ? String(
+                            data.username
+                        )
                             .trim()
                             .toLowerCase()
                         : "";
 
 
                 if (
-                    docId === usernameClean ||
-                    dataUsername === usernameClean
+                    docId ===
+                    cleanUsername ||
+
+                    dataUsername ===
+                    cleanUsername
                 ) {
 
                     return userDoc;
+
                 }
+
             }
 
 
             return null;
+
         }
 
 
-        /*
-         * كاش بسيط لصفوف المستخدمين
-         * لتقليل عدد القراءات من Firestore
-         * أثناء فلترة القائمة كل مرة يتغير فيها السناب شوت
-         */
+        /* =====================================================
+           USER GRADE CACHE
+        ===================================================== */
 
-        const userGradeCache = new Map();
+        const userGradeCache =
+            new Map();
 
 
-        async function getUserGrade(username) {
+        async function getUserGrade(
+            username
+        ) {
 
             if (!username) {
+
                 return null;
+
             }
 
 
-            const usernameClean =
+            const cleanUsername =
                 String(username)
                     .trim()
                     .toLowerCase();
 
 
-            if (userGradeCache.has(usernameClean)) {
+            if (
+                userGradeCache.has(
+                    cleanUsername
+                )
+            ) {
 
-                return userGradeCache.get(usernameClean);
+                return userGradeCache.get(
+                    cleanUsername
+                );
+
             }
 
 
             const userDoc =
-                await findUserByUsername(username);
+                await findUserByUsername(
+                    username
+                );
 
 
             let grade = null;
@@ -947,43 +2212,44 @@
                 const data =
                     userDoc.data();
 
-                /*
-                 * ملاحظة: بنفترض إن حقل الصف في Firestore
-                 * اسمه "servantGrade" نفس اسمه في localStorage
-                 * (صفحة profile.html). لو الحقل في قاعدة البيانات
-                 * اسمه مختلف، غيّر الاسم هنا.
-                 */
 
                 grade =
                     data.servantGrade ||
                     data.grade ||
                     null;
 
+
                 if (grade) {
 
                     grade =
-                        String(grade).trim();
+                        String(
+                            grade
+                        ).trim();
+
                 }
+
             }
 
 
-            userGradeCache.set(usernameClean, grade);
+            userGradeCache.set(
+                cleanUsername,
+                grade
+            );
 
 
             return grade;
+
         }
 
 
         /* =====================================================
-           البحث عن الهدية
-           ===================================================== */
+           FIND GIFT
+        ===================================================== */
 
-        async function findGift(giftId, giftName) {
-
-            /*
-             * أول اختيار:
-             * giftId
-             */
+        async function findGift(
+            giftId,
+            giftName
+        ) {
 
             if (giftId) {
 
@@ -992,32 +2258,36 @@
                     "gifts",
                     giftId
                 );
+
             }
 
 
-            /*
-             * لو الطلب قديم ومفيهوش giftId
-             * نبحث بالاسم
-             */
-
             if (!giftName) {
+
                 return null;
+
             }
 
 
             const giftsSnap =
                 await getDocs(
-                    collection(db, "gifts")
+                    collection(
+                        db,
+                        "gifts"
+                    )
                 );
 
 
-            const giftNameClean =
+            const cleanGiftName =
                 String(giftName)
                     .trim()
                     .toLowerCase();
 
 
-            for (const giftDoc of giftsSnap.docs) {
+            for (
+                const giftDoc
+                of giftsSnap.docs
+            ) {
 
                 const data =
                     giftDoc.data();
@@ -1025,26 +2295,33 @@
 
                 if (
                     data.name &&
-                    String(data.name)
+
+                    String(
+                        data.name
+                    )
                         .trim()
-                        .toLowerCase() === giftNameClean
+                        .toLowerCase() ===
+                    cleanGiftName
                 ) {
 
                     return giftDoc.ref;
+
                 }
+
             }
 
 
             return null;
+
         }
 
 
         /* =====================================================
-           رفض الطلب
-           ===================================================== */
+           REJECT ORDER
+        ===================================================== */
 
         window.rejectOrder =
-            async function (
+            async function(
                 docId,
                 username,
                 giftName,
@@ -1059,6 +2336,7 @@
                 ) {
 
                     return;
+
                 }
 
 
@@ -1071,10 +2349,6 @@
                             docId
                         );
 
-
-                    /*
-                     * الحصول على المستخدم والهدية
-                     */
 
                     const userDoc =
                         await findUserByUsername(
@@ -1095,6 +2369,7 @@
                             "لم يتم العثور على حساب المخدوم: " +
                             username
                         );
+
                     }
 
 
@@ -1104,19 +2379,13 @@
                             "لم يتم العثور على الهدية: " +
                             giftName
                         );
+
                     }
 
 
-                    /*
-                     * Transaction
-                     *
-                     * تمنع إرجاع الهدية والنقاط
-                     * أكثر من مرة.
-                     */
-
                     await runTransaction(
                         db,
-                        async (transaction) => {
+                        async(transaction) => {
 
                             const orderSnap =
                                 await transaction.get(
@@ -1124,11 +2393,14 @@
                                 );
 
 
-                            if (!orderSnap.exists()) {
+                            if (
+                                !orderSnap.exists()
+                            ) {
 
                                 throw new Error(
                                     "الطلب غير موجود."
                                 );
+
                             }
 
 
@@ -1136,13 +2408,10 @@
                                 orderSnap.data();
 
 
-                            /*
-                             * لو تم رفض الطلب من قبل
-                             */
-
                             if (
                                 orderData.status ===
                                 "rejected" ||
+
                                 orderData.refundProcessed ===
                                 true
                             ) {
@@ -1150,17 +2419,14 @@
                                 throw new Error(
                                     "هذا الطلب تم رفضه وإرجاع الهدية والنقاط بالفعل."
                                 );
+
                             }
 
-
-                            /*
-                             * لو تم قبوله أو تسليمه
-                             * لا نسمح بإرجاع المخزون
-                             */
 
                             if (
                                 orderData.status ===
                                 "accepted" ||
+
                                 orderData.status ===
                                 "delivered"
                             ) {
@@ -1168,6 +2434,7 @@
                                 throw new Error(
                                     "لا يمكن رفض طلب تم قبوله أو تسليمه بالفعل."
                                 );
+
                             }
 
 
@@ -1183,24 +2450,31 @@
                                 );
 
 
-                            if (!userSnap.exists()) {
+                            if (
+                                !userSnap.exists()
+                            ) {
 
                                 throw new Error(
                                     "حساب المخدوم غير موجود."
                                 );
+
                             }
 
 
-                            if (!giftSnap.exists()) {
+                            if (
+                                !giftSnap.exists()
+                            ) {
 
                                 throw new Error(
                                     "الهدية غير موجودة."
                                 );
+
                             }
 
 
                             const userData =
                                 userSnap.data();
+
 
                             const giftData =
                                 giftSnap.data();
@@ -1208,7 +2482,8 @@
 
                             const oldPoints =
                                 Number(
-                                    userData.points || 0
+                                    userData.points ||
+                                    0
                                 );
 
 
@@ -1222,13 +2497,12 @@
 
                             const oldQuantity =
                                 Number(
-                                    giftData.quantity || 0
+                                    giftData.quantity ||
+                                    0
                                 );
 
 
-                            /*
-                             * 1️⃣ إرجاع النقاط
-                             */
+                            /* إرجاع النقاط */
 
                             transaction.update(
                                 userDoc.ref,
@@ -1240,36 +2514,35 @@
                             );
 
 
-                            /*
-                             * 2️⃣ إرجاع الهدية للمعرض
-                             *
-                             * مهم:
-                             * نستخدم quantity وليس stock
-                             */
+                            /* إرجاع الهدية */
 
                             transaction.update(
                                 giftRef,
                                 {
                                     quantity:
-                                        oldQuantity + 1
+                                        oldQuantity +
+                                        1
                                 }
                             );
 
 
-                            /*
-                             * 3️⃣ تغيير حالة الطلب
-                             */
+                            /* تحديث الطلب */
 
                             transaction.update(
                                 orderRef,
                                 {
-                                    status: "rejected",
 
-                                    isRejected: true,
+                                    status:
+                                        "rejected",
 
-                                    refundProcessed: true,
+                                    isRejected:
+                                        true,
 
-                                    isRead: true,
+                                    refundProcessed:
+                                        true,
+
+                                    isRead:
+                                        true,
 
                                     rejectedAt:
                                         serverTimestamp(),
@@ -1279,21 +2552,38 @@
 
                                     inventoryReturned:
                                         true
+
                                 }
                             );
+
                         }
                     );
 
 
-                    /*
-                     * بعد نجاح الـ Transaction
-                     * نرسل إشعار للمخدوم
-                     */
+                    /* =================================================
+                       GET USER GRADE
+                    ================================================== */
+
+                    const rejectedUserGrade =
+                        await getUserGrade(
+                            username
+                        );
+
+
+                    /* =================================================
+                       REJECTION NOTIFICATION
+                       مربوطة بالصف
+                    ================================================== */
 
                     await addDoc(
-                        collection(db, "notifications"),
+                        collection(
+                            db,
+                            "notifications"
+                        ),
                         {
-                            type: "gift_rejected",
+
+                            type:
+                                "gift_rejected",
 
                             title:
                                 "تم رفض طلب الهدية ❌",
@@ -1311,25 +2601,33 @@
                                 giftId || "",
 
                             pointsSpent:
-                                Number(pointsToReturn || 0),
+                                Number(
+                                    pointsToReturn || 0
+                                ),
 
                             pointsRefunded:
-                                Number(pointsToReturn || 0),
+                                Number(
+                                    pointsToReturn || 0
+                                ),
+
+                            targetGrade:
+                                rejectedUserGrade,
 
                             timestamp:
                                 serverTimestamp(),
 
                             isRead:
                                 false
+
                         }
                     );
 
 
-                    /*
-                     * صوت للمخدوم/الصفحة الحالية
-                     */
-
-                    sound.play().catch(() => {});
+                    sound
+                        .play()
+                        .catch(
+                            () => {}
+                        );
 
 
                     alert(
@@ -1339,132 +2637,267 @@
                     );
 
 
-                } catch (e) {
+                } catch (error) {
 
                     console.error(
                         "Reject Error:",
-                        e
+                        error
                     );
 
 
                     alert(
                         "حدث خطأ أثناء رفض الطلب:\n\n" +
-                        e.message
+                        error.message
                     );
+
                 }
+
             };
 
 
         /* =====================================================
-           عرض الطلبات (مقيّد بصف الخادم الحالي فقط)
-           ===================================================== */
+           ESCAPE HTML
+        ===================================================== */
+
+        function escapeHtml(text) {
+
+            return String(text)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        function escapeHtmlAttribute(text) {
+
+            return String(text)
+
+                .replace(
+                    /\\/g,
+                    "\\\\"
+                )
+
+                .replace(
+                    /'/g,
+                    "\\'"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /\n/g,
+                    " "
+                )
+
+                .replace(
+                    /\r/g,
+                    " "
+                );
+
+        }
+
+
+        /* =====================================================
+           SNAPSHOT
+        ===================================================== */
 
         onSnapshot(
             q,
+
             async (snapshot) => {
 
                 container.innerHTML = "";
 
 
-                if (snapshot.empty) {
-
-                    container.innerHTML =
-                        `<div class="no-data">
-                            لا توجد إشعارات حالياً
-                        </div>`;
-
-                    firstLoad = false;
-
-                    return;
-                }
-
-
-                let isFirst = true;
-
-                let renderedAny = false;
+                let renderedAny =
+                    false;
 
 
                 /*
-                 * بنستخدم for...of (وليس forEach) لأننا
-                 * محتاجين نستخدم await جوه اللوب لجلب
-                 * صف كل مخدوم صاحب الطلب
+                 * مهم:
+                 * لن نعرض أي إشعار إلا لو كان
+                 * تابعًا للصف الحالي.
                  */
 
-                for (const docSnap of snapshot.docs) {
+                for (
+                    const docSnap
+                    of snapshot.docs
+                ) {
 
                     const item =
                         docSnap.data();
+
 
                     const docId =
                         docSnap.id;
 
 
-                    /*
-                     * معرفة هل الإشعار طلب هدية
-                     */
+                    /* =================================================
+                       IDENTIFY GIFT
+                    ================================================= */
 
                     const isGift =
-                        item.type === "gift_order" ||
+                        item.type ===
+                            "gift_order"
+
+                        ||
+
                         (
                             item.giftName &&
                             item.username &&
-                            item.pointsSpent
-                        ) ||
+                            item.pointsSpent !==
+                                undefined
+                        )
+
+                        ||
+
                         (
                             item.message &&
-                            item.message.includes("بشراء")
+                            item.message.includes(
+                                "بشراء"
+                            )
                         );
 
 
-                    /* =====================================
-                       فلترة الصف: نعرض بس اللي يخص صفي
-                       ===================================== */
+                    /* =================================================
+                       STRICT GRADE FILTER
+                    ================================================= */
 
-                    if (myGrade) {
+                    if (!myGrade) {
 
-                        if (item.type === "announcement") {
+                        continue;
 
-                            /*
-                             * إعلان: يظهر فقط لو نفس الصف المستهدف
-                             */
-
-                            if (item.targetGrade !== myGrade) {
-
-                                continue;
-                            }
-
-                        } else if (isGift) {
-
-                            /*
-                             * طلب هدية: نجيب صف المخدوم صاحب الطلب
-                             * ونعرضه بس لو نفس صفي
-                             */
-
-                            const orderGrade =
-                                await getUserGrade(
-                                    item.username
-                                );
-
-
-                            if (orderGrade !== myGrade) {
-
-                                continue;
-                            }
-                        }
-
-                        /*
-                         * أنواع أخرى (زي gift_rejected) بتفضل
-                         * تظهر عادي لأنها موجّهة لمخدوم بعينه
-                         * وليست إعلان أو طلب عام
-                         */
                     }
 
 
-                    renderedAny = true;
+                    const currentGrade =
+                        String(
+                            myGrade
+                        )
+                            .trim()
+                            .toLowerCase();
 
+
+                    /* =================================================
+                       ANNOUNCEMENT
+                    ================================================= */
+
+                    if (
+                        item.type ===
+                        "announcement"
+                    ) {
+
+                        const targetGrade =
+                            String(
+                                item.targetGrade ||
+                                ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            targetGrade !==
+                            currentGrade
+                        ) {
+
+                            continue;
+
+                        }
+
+                    }
+
+
+                    /* =================================================
+                       GIFT ORDER
+                    ================================================= */
+
+                    else if (isGift) {
+
+                        const orderGrade =
+                            await getUserGrade(
+                                item.username
+                            );
+
+
+                        if (!orderGrade) {
+
+                            continue;
+
+                        }
+
+
+                        if (
+                            String(
+                                orderGrade
+                            )
+                                .trim()
+                                .toLowerCase() !==
+                            currentGrade
+                        ) {
+
+                            continue;
+
+                        }
+
+                    }
+
+
+                    /* =================================================
+                       ANY OTHER TYPE
+                       مش هيتعرض
+                    ================================================= */
+
+                    else {
+
+                        continue;
+
+                    }
+
+
+                    /* =================================================
+                       HERE:
+                       الإشعار تابع للصف
+                    ================================================= */
+
+                    renderedAny =
+                        true;
+
+
+                    /* =================================================
+                       NEW CARD
+                    ================================================= */
 
                     const card =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
 
 
                     card.className =
@@ -1475,151 +2908,9 @@
                         }`;
 
 
-                    let actionsHTML = "";
-
-
-                    /* =========================
-                       طلب جديد
-                    ========================= */
-
-                    if (isGift) {
-
-                        if (
-                            !item.status ||
-                            item.status === "pending"
-                        ) {
-
-                            actionsHTML = `
-
-                                <div class="order-actions">
-
-                                    <button
-                                        class="accept-btn"
-                                        onclick="acceptOrder('${docId}')">
-
-                                        <i class="fas fa-check"></i>
-
-                                        قبول الطلب
-
-                                    </button>
-
-
-                                    <button
-                                        class="reject-btn"
-                                        onclick="rejectOrder(
-                                            '${docId}',
-                                            '${escapeHtmlAttribute(item.username || "")}',
-                                            '${escapeHtmlAttribute(item.giftName || "")}',
-                                            ${Number(item.pointsSpent || 0)},
-                                            '${escapeHtmlAttribute(item.giftId || "")}'
-                                        )">
-
-                                        <i class="fas fa-times"></i>
-
-                                        رفض وإرجاع الهدية
-
-                                    </button>
-
-                                </div>
-                            `;
-
-                        }
-
-
-                        /* =========================
-                           مقبول
-                        ========================= */
-
-                        else if (
-                            item.status ===
-                            "accepted"
-                        ) {
-
-                            actionsHTML = `
-
-                                <p style="
-                                    font-weight:bold;
-                                    color:#137333;
-                                    margin-top:5px;
-                                    font-size:13px;
-                                ">
-
-                                    حالة الطلب:
-                                    مقبول
-                                    (في انتظار التسليم ⏳)
-
-                                </p>
-
-
-                                <button
-                                    class="deliver-btn"
-                                    onclick="deliverOrder('${docId}')">
-
-                                    <i class="fas fa-gift"></i>
-
-                                    تأكيد تسليم الهدية للمخدوم
-
-                                </button>
-                            `;
-                        }
-
-
-                        /* =========================
-                           تم التسليم
-                        ========================= */
-
-                        else if (
-                            item.status ===
-                            "delivered"
-                        ) {
-
-                            actionsHTML = `
-
-                                <p style="
-                                    font-weight:bold;
-                                    color:#1a73e8;
-                                    margin-top:5px;
-                                    font-size:13px;
-                                ">
-
-                                    حالة الطلب:
-                                    تم تسليم الهدية بنجاح للمخدوم ✅
-
-                                </p>
-                            `;
-                        }
-
-
-                        /* =========================
-                           مرفوض
-                        ========================= */
-
-                        else if (
-                            item.status ===
-                            "rejected"
-                        ) {
-
-                            actionsHTML = `
-
-                                <p style="
-                                    font-weight:bold;
-                                    color:#b3261e;
-                                    margin-top:5px;
-                                    font-size:13px;
-                                ">
-
-                                    حالة الطلب:
-                                    تم الرفض وإرجاع الهدية والنقاط ❌
-
-                                </p>
-                            `;
-                        }
-                    }
-
-
-                    /*
-                     * بناء الكارت
-                     */
+                    /* =================================================
+                       SAFE DATA
+                    ================================================= */
 
                     const safeTitle =
                         escapeHtml(
@@ -1649,22 +2940,235 @@
                         );
 
 
+                    /* =================================================
+                       IMAGE
+                    ================================================= */
+
                     const imageHTML =
                         item.imageUrl
 
                             ? `
+
                                 <img
                                     src="${escapeHtmlAttribute(item.imageUrl)}"
-                                    alt="notification">
+                                    alt="notification"
+                                    onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=&quot;fas fa-bell&quot;></i>';"
+                                >
+
                               `
 
                             : `
-                                <i
-                                    class="fas fa-gift"
-                                    style="color:#f59e0b;">
-                                </i>
+
+                                <i class="fas fa-gift"></i>
+
                               `;
 
+
+                    /* =================================================
+                       META
+                    ================================================= */
+
+                    let metaHTML =
+                        "";
+
+
+                    if (isGift) {
+
+                        metaHTML = `
+
+                            <div class="order-meta">
+
+                                ${
+                                    item.username
+                                        ? `
+                                            <span class="meta-pill">
+
+                                                <i class="fas fa-user"></i>
+
+                                                المخدوم:
+                                                ${safeUsername}
+
+                                            </span>
+                                          `
+                                        : ""
+                                }
+
+
+                                ${
+                                    item.giftName
+                                        ? `
+                                            <span class="meta-pill">
+
+                                                <i class="fas fa-gift"></i>
+
+                                                ${safeGiftName}
+
+                                            </span>
+                                          `
+                                        : ""
+                                }
+
+
+                                ${
+                                    item.pointsSpent !== undefined
+                                        ? `
+                                            <span class="meta-pill">
+
+                                                <i class="fas fa-star"></i>
+
+                                                ${Number(
+                                                    item.pointsSpent ||
+                                                    0
+                                                )}
+
+                                                نقطة
+
+                                            </span>
+                                          `
+                                        : ""
+                                }
+
+                            </div>
+
+                        `;
+
+                    }
+
+
+                    /* =================================================
+                       ACTIONS
+                    ================================================== */
+
+                    let actionsHTML =
+                        "";
+
+
+                    if (isGift) {
+
+
+                        /* PENDING */
+
+                        if (
+                            !item.status ||
+                            item.status ===
+                            "pending"
+                        ) {
+
+                            actionsHTML = `
+
+                                <div class="order-actions">
+
+                                    <button
+                                        class="accept-btn"
+                                        data-action="accept">
+
+                                        <i class="fas fa-check"></i>
+
+                                        قبول الطلب
+
+                                    </button>
+
+
+                                    <button
+                                        class="reject-btn"
+                                        data-action="reject">
+
+                                        <i class="fas fa-rotate-left"></i>
+
+                                        رفض وإرجاع الهدية
+
+                                    </button>
+
+                                </div>
+
+                            `;
+
+                        }
+
+
+                        /* ACCEPTED */
+
+                        else if (
+                            item.status ===
+                            "accepted"
+                        ) {
+
+                            actionsHTML = `
+
+                                <div class="status-message status-accepted">
+
+                                    <i class="fas fa-clock"></i>
+
+                                    حالة الطلب:
+                                    مقبول وفي انتظار التسليم
+
+                                </div>
+
+
+                                <button
+                                    class="deliver-btn"
+                                    data-action="deliver">
+
+                                    <i class="fas fa-gift"></i>
+
+                                    تأكيد تسليم الهدية للمخدوم
+
+                                </button>
+
+                            `;
+
+                        }
+
+
+                        /* DELIVERED */
+
+                        else if (
+                            item.status ===
+                            "delivered"
+                        ) {
+
+                            actionsHTML = `
+
+                                <div class="status-message status-delivered">
+
+                                    <i class="fas fa-circle-check"></i>
+
+                                    تم تسليم الهدية بنجاح للمخدوم
+
+                                </div>
+
+                            `;
+
+                        }
+
+
+                        /* REJECTED */
+
+                        else if (
+                            item.status ===
+                            "rejected"
+                        ) {
+
+                            actionsHTML = `
+
+                                <div class="status-message status-rejected">
+
+                                    <i class="fas fa-circle-xmark"></i>
+
+                                    تم الرفض وإرجاع الهدية والنقاط
+
+                                </div>
+
+                            `;
+
+                        }
+
+                    }
+
+
+                    /* =================================================
+                       CARD
+                    ================================================== */
 
                     card.innerHTML = `
 
@@ -1689,36 +3193,7 @@
                                 </p>
 
 
-                                ${
-                                    isGift &&
-                                    item.username
-
-                                        ? `
-                                            <p
-                                                style="
-                                                    color:#888;
-                                                    font-size:11px;
-                                                    margin-top:2px;
-                                                ">
-
-                                                المخدوم:
-                                                ${safeUsername}
-
-                                                |
-
-                                                الهدية:
-                                                ${safeGiftName}
-
-                                                (
-                                                ${Number(item.pointsSpent || 0)}
-                                                نقطة
-                                                )
-
-                                            </p>
-                                          `
-
-                                        : ""
-                                }
+                                ${metaHTML}
 
                             </div>
 
@@ -1730,98 +3205,203 @@
                     `;
 
 
-                    container.appendChild(card);
+                    container.appendChild(
+                        card
+                    );
 
 
-                    /*
-                     * إشعار جديد
-                     */
+                    /* =================================================
+                       ACCEPT BUTTON
+                    ================================================== */
+
+                    const acceptButton =
+                        card.querySelector(
+                            '[data-action="accept"]'
+                        );
+
+
+                    if (acceptButton) {
+
+                        acceptButton.addEventListener(
+                            "click",
+                            () => {
+
+                                window.acceptOrder(
+                                    docId
+                                );
+
+                            }
+                        );
+
+                    }
+
+
+                    /* =================================================
+                       DELIVER BUTTON
+                    ================================================== */
+
+                    const deliverButton =
+                        card.querySelector(
+                            '[data-action="deliver"]'
+                        );
+
+
+                    if (deliverButton) {
+
+                        deliverButton.addEventListener(
+                            "click",
+                            () => {
+
+                                window.deliverOrder(
+                                    docId
+                                );
+
+                            }
+                        );
+
+                    }
+
+
+                    /* =================================================
+                       REJECT BUTTON
+                    ================================================== */
+
+                    const rejectButton =
+                        card.querySelector(
+                            '[data-action="reject"]'
+                        );
+
+
+                    if (rejectButton) {
+
+                        rejectButton.addEventListener(
+                            "click",
+                            () => {
+
+                                window.rejectOrder(
+
+                                    docId,
+
+                                    item.username ||
+                                        "",
+
+                                    item.giftName ||
+                                        "",
+
+                                    Number(
+                                        item.pointsSpent ||
+                                        0
+                                    ),
+
+                                    item.giftId ||
+                                        ""
+
+                                );
+
+                            }
+                        );
+
+                    }
+
+
+                    /* =================================================
+                       NEW NOTIFICATION SOUND
+                    ================================================= */
 
                     if (
                         !firstLoad &&
-                        isFirst &&
                         !item.isRead
                     ) {
 
                         sound
                             .play()
-                            .catch(() => {});
+                            .catch(
+                                () => {}
+                            );
 
 
                         if (
-                            "Notification" in window &&
+                            "Notification"
+                                in window &&
+
                             Notification.permission ===
-                            "granted"
+                                "granted"
                         ) {
 
                             new Notification(
+
                                 item.title ||
                                 "تنبيه جديد",
+
                                 {
                                     body:
                                         item.message ||
                                         ""
                                 }
+
                             );
+
                         }
+
                     }
 
-
-                    isFirst = false;
                 }
 
+
+                /* =================================================
+                   NOTHING FOR MY GRADE
+                ================================================= */
 
                 if (!renderedAny) {
 
                     container.innerHTML =
-                        `<div class="no-data">
-                            لا توجد إشعارات أو طلبات خاصة بصفك حالياً
-                        </div>`;
+                        `
+
+                        <div class="no-data">
+
+                            لا توجد إشعارات أو طلبات
+                            خاصة بصفك حالياً
+
+                        </div>
+
+                        `;
+
                 }
 
 
-                firstLoad = false;
+                firstLoad =
+                    false;
+
             },
+
 
             (error) => {
 
-                console.error(error);
+                console.error(
+                    "Firestore Error:",
+                    error
+                );
+
 
                 container.innerHTML =
-                    `<div class="no-data">
-                        حدث خطأ أثناء تحميل الطلبات
-                    </div>`;
+                    `
+
+                    <div class="no-data">
+
+                        حدث خطأ أثناء تحميل
+                        إشعارات صفك
+
+                    </div>
+
+                    `;
+
             }
+
         );
 
-
-        /* =====================================================
-           حماية النصوص داخل HTML
-           ===================================================== */
-
-        function escapeHtml(text) {
-
-            return String(text)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-
-        function escapeHtmlAttribute(text) {
-
-            return String(text)
-                .replace(/\\/g, "\\\\")
-                .replace(/'/g, "\\'")
-                .replace(/"/g, "&quot;")
-                .replace(/\n/g, " ");
-        }
- 
     </script>
-     <form action="../u/home.html" method="post">
-     </form>
+
 </body>
 
 </html>
+```
