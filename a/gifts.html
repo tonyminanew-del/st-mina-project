@@ -1,646 +1,2287 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>هدايا صفّي - لوحة الخادم</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- ربط مكتبات فايربيس -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-            authDomain: "st-mina-c01ec.firebaseapp.com",
-            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
-            projectId: "st-mina-c01ec",
-            storageBucket: "st-mina-c01ec.firebasestorage.app",
-            messagingSenderId: "792349150559",
-            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
-            measurementId: "G-XZGSBG05KR"
-        };
+    <title>هدايا صفّي - كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</title>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Tajawal:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
-        /*
-         * فتح وإغلاق نافذة تكبير صورة الهدية (Modal)
-         * بنعرّفهم على window عشان يبقوا متاحين
-         * من onclick جوه الـ innerHTML
-         */
-        window.openGiftModal = function(imgSrc, name, quantity, points) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImg');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalDetails = document.getElementById('modalDetails');
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-            if (modal && modalImg) {
-                modalImg.src = imgSrc;
-                modalTitle.innerText = name || 'هدية';
+    <style>
 
-                if (modalDetails) {
-                    modalDetails.innerHTML = `
-                        <span><i class="fas fa-boxes"></i> الكمية: ${quantity}</span>
-                        <span><i class="fas fa-star"></i> النقاط: ${points}</span>
-                    `;
-                }
+        :root {
 
-                modal.style.display = 'flex';
+            --navy-deep: #041a36;
+            --navy-mid: #062348;
+            --navy-edge: #000b18;
+
+            --maroon-dark: #5d101c;
+            --maroon: #7d1424;
+            --maroon-light: #9b1c30;
+
+            --paper: #f8f6f3;
+            --card: #ffffff;
+            --ink: #1f1715;
+            --muted: #8a817c;
+            --line: #eadde0;
+
+        }
+
+
+        * {
+
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+
+        }
+
+
+        html,
+        body {
+
+            min-height: 100%;
+
+        }
+
+
+        body {
+
+            font-family: 'Tajawal', sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    var(--navy-mid) 0%,
+                    var(--navy-deep) 45%,
+                    var(--navy-edge) 100%
+                );
+
+            color: var(--ink);
+
+            min-height: 100dvh;
+
+            padding:
+                max(12px, env(safe-area-inset-top))
+                12px
+                max(20px, env(safe-area-inset-bottom));
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: flex-start;
+
+        }
+
+
+        /* =====================================================
+           الصندوق الرئيسي
+        ===================================================== */
+
+        .welcome-box {
+
+            width: 100%;
+
+            max-width: 900px;
+
+            background: #ffffff;
+
+            border-radius: 30px;
+
+            box-shadow:
+                0 30px 70px rgba(0, 0, 0, 0.5);
+
+            overflow: hidden;
+
+            margin: 0 auto;
+
+            position: relative;
+
+        }
+
+
+        /* =====================================================
+           شريط الرجوع الجديد
+        ===================================================== */
+
+        .top-bar {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+            width: 100%;
+
+            min-height: 72px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                max(10px, env(safe-area-inset-top))
+                18px
+                10px;
+
+            background:
+                rgba(255, 255, 255, 0.94);
+
+            backdrop-filter: blur(16px);
+
+            -webkit-backdrop-filter: blur(16px);
+
+            border-bottom: 1px solid #f0e3e5;
+
+            box-shadow:
+                0 6px 20px rgba(0, 0, 0, 0.06);
+
+        }
+
+
+        /* زر الرجوع */
+
+        .back-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            min-width: 116px;
+
+            height: 48px;
+
+            padding: 0 17px;
+
+            border-radius: 16px;
+
+            text-decoration: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 8px 20px rgba(125, 20, 36, 0.28);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+
+        }
+
+
+        .back-btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 26px rgba(125, 20, 36, 0.38);
+
+        }
+
+
+        .back-btn:active {
+
+            transform: scale(0.96);
+
+        }
+
+
+        .back-btn i {
+
+            font-size: 17px;
+
+        }
+
+
+        .back-text {
+
+            white-space: nowrap;
+
+        }
+
+
+        /* عنوان صغير في منتصف الشريط */
+
+        .top-title {
+
+            position: absolute;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            font-family: 'Amiri', serif;
+
+            color: var(--maroon);
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+        }
+
+
+        .top-icon {
+
+            width: 46px;
+
+            height: 46px;
+
+            border-radius: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #fff7f8;
+
+            border: 1px solid #ead2d6;
+
+            color: var(--maroon);
+
+            font-size: 18px;
+
+        }
+
+
+        /* =====================================================
+           جسم الصفحة
+        ===================================================== */
+
+        .box-body {
+
+            padding:
+                28px 30px 45px;
+
+            text-align: center;
+
+        }
+
+
+        /* =====================================================
+           اللوجو
+        ===================================================== */
+
+        .logo-container {
+
+            width: 100%;
+
+            display: flex;
+
+            justify-content: center;
+
+            margin-top: 4px;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .church-logo {
+
+            width: 82px;
+
+            height: 82px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    150deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: white;
+
+            font-size: 36px;
+
+            box-shadow:
+                0 12px 26px rgba(125, 20, 36, 0.35);
+
+        }
+
+
+        .page-title {
+
+            font-family: 'Amiri', serif;
+
+            font-weight: 700;
+
+            font-size: clamp(28px, 6vw, 36px);
+
+            color: var(--ink);
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .page-subtitle {
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.8;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        /* =====================================================
+           بادج الصف
+        ===================================================== */
+
+        .servant-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 9px;
+
+            background: #fff8f8;
+
+            border: 1px solid #ead2d6;
+
+            border-radius: 15px;
+
+            padding: 12px 20px;
+
+            margin-bottom: 25px;
+
+            color: var(--maroon);
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 5px 15px rgba(125, 20, 36, 0.08);
+
+        }
+
+
+        .servant-badge i {
+
+            color: var(--maroon-light);
+
+        }
+
+
+        /* =====================================================
+           رسالة عدم وجود صف
+        ===================================================== */
+
+        .no-grade-box {
+
+            display: none;
+
+            background: #fffafa;
+
+            border: 1px dashed var(--maroon-light);
+
+            border-radius: 22px;
+
+            padding: 42px 20px;
+
+            text-align: center;
+
+        }
+
+
+        .no-grade-box i {
+
+            display: block;
+
+            font-size: 40px;
+
+            color: var(--maroon-light);
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .no-grade-box h3 {
+
+            font-family: 'Amiri', serif;
+
+            font-size: 23px;
+
+            color: var(--maroon);
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .no-grade-box p {
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.9;
+
+        }
+
+
+        /* =====================================================
+           صندوق إضافة هدية
+        ===================================================== */
+
+        .add-gift-box {
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffffff,
+                    var(--paper)
+                );
+
+            border: 1px solid #eee4e5;
+
+            border-radius: 24px;
+
+            padding: 24px;
+
+            margin-bottom: 30px;
+
+            text-align: right;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.04);
+
+        }
+
+
+        .add-gift-box h3 {
+
+            color: var(--maroon);
+
+            font-size: 18px;
+
+            margin-bottom: 18px;
+
+            font-weight: 800;
+
+        }
+
+
+        .small-note {
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            font-weight: 500;
+
+        }
+
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 11px;
+
+            margin-bottom: 13px;
+
+        }
+
+
+        .form-control {
+
+            width: 100%;
+
+            border:
+                1px solid #e7dfe0;
+
+            background: white;
+
+            color: var(--ink);
+
+            padding:
+                14px;
+
+            border-radius: 14px;
+
+            font-family: 'Tajawal', sans-serif;
+
+            font-size: 14px;
+
+            transition: all 0.25s ease;
+
+        }
+
+
+        .form-control::placeholder {
+
+            color: #aaa1a1;
+
+        }
+
+
+        .form-control:focus {
+
+            outline: none;
+
+            border-color:
+                var(--maroon-light);
+
+            box-shadow:
+                0 0 0 4px
+                rgba(155, 28, 48, 0.08);
+
+        }
+
+
+        /* =====================================================
+           اختيار الصورة
+        ===================================================== */
+
+        .file-upload-wrapper {
+
+            background: white;
+
+            border:
+                1px dashed var(--maroon-light);
+
+            border-radius: 14px;
+
+            min-height: 54px;
+
+            padding:
+                12px 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 9px;
+
+            color: var(--maroon);
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            margin-bottom: 15px;
+
+            transition: all 0.25s ease;
+
+        }
+
+
+        .file-upload-wrapper:hover {
+
+            background: #fff7f8;
+
+        }
+
+
+        .file-upload-wrapper input {
+
+            display: none;
+
+        }
+
+
+        /* =====================================================
+           زر إضافة الهدية
+        ===================================================== */
+
+        .btn-add {
+
+            width: 100%;
+
+            min-height: 54px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-light),
+                    var(--maroon-dark)
+                );
+
+            color: white;
+
+            font-family: 'Tajawal', sans-serif;
+
+            font-weight: 800;
+
+            font-size: 15px;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 10px 22px
+                rgba(125, 20, 36, 0.25);
+
+            transition: all 0.25s ease;
+
+        }
+
+
+        .btn-add:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 14px 28px
+                rgba(125, 20, 36, 0.35);
+
+        }
+
+
+        .btn-add:active {
+
+            transform: translateY(1px);
+
+        }
+
+
+        .btn-add:disabled {
+
+            opacity: 0.7;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+        }
+
+
+        /* =====================================================
+           عنوان الهدايا
+        ===================================================== */
+
+        .section-title {
+
+            text-align: right;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .section-title h2 {
+
+            font-family: 'Amiri', serif;
+
+            font-size: 25px;
+
+            color: var(--ink);
+
+        }
+
+
+        /* =====================================================
+           شبكة الهدايا
+        ===================================================== */
+
+        .gifts-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(220px, 1fr));
+
+            gap: 18px;
+
+            text-align: right;
+
+        }
+
+
+        .gift-card {
+
+            background: white;
+
+            border:
+                1px solid #eee4e5;
+
+            border-radius: 21px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 20px
+                rgba(0, 0, 0, 0.06);
+
+            transition: all 0.3s ease;
+
+        }
+
+
+        .gift-card:hover {
+
+            transform: translateY(-4px);
+
+            border-color:
+                #d9b6bc;
+
+            box-shadow:
+                0 15px 30px
+                rgba(125, 20, 36, 0.13);
+
+        }
+
+
+        .gift-img-wrapper {
+
+            position: relative;
+
+            cursor: pointer;
+
+            overflow: hidden;
+
+        }
+
+
+        .gift-img {
+
+            width: 100%;
+
+            height: 180px;
+
+            object-fit: cover;
+
+            display: block;
+
+            background: var(--paper);
+
+            transition:
+                transform 0.35s ease;
+
+        }
+
+
+        .gift-card:hover .gift-img {
+
+            transform: scale(1.04);
+
+        }
+
+
+        .zoom-badge {
+
+            position: absolute;
+
+            bottom: 9px;
+
+            left: 9px;
+
+            background:
+                rgba(0, 0, 0, 0.65);
+
+            color: white;
+
+            font-size: 10px;
+
+            padding: 6px 9px;
+
+            border-radius: 9px;
+
+        }
+
+
+        .gift-details {
+
+            padding: 16px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+        }
+
+
+        .gift-title {
+
+            font-family: 'Amiri', serif;
+
+            color: var(--maroon);
+
+            font-size: 21px;
+
+            font-weight: 700;
+
+        }
+
+
+        .gift-info {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 13px;
+
+            color: var(--muted);
+
+        }
+
+
+        .gift-info strong {
+
+            color: var(--maroon);
+
+        }
+
+
+        .no-gifts {
+
+            grid-column: 1 / -1;
+
+            background: var(--paper);
+
+            border:
+                1px dashed #d9c9cc;
+
+            border-radius: 18px;
+
+            padding: 34px 20px;
+
+            text-align: center;
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.8;
+
+        }
+
+
+        /* =====================================================
+           نافذة الصورة
+        ===================================================== */
+
+        .image-modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 2000;
+
+            background:
+                rgba(0, 0, 0, 0.84);
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-direction: column;
+
+            padding: 20px;
+
+        }
+
+
+        .modal-content {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            text-align: center;
+
+        }
+
+
+        .image-modal img {
+
+            width: 100%;
+
+            max-height: 62vh;
+
+            object-fit: contain;
+
+            border-radius: 20px;
+
+            background: white;
+
+            box-shadow:
+                0 20px 50px
+                rgba(0, 0, 0, 0.5);
+
+        }
+
+
+        .close-modal {
+
+            position: absolute;
+
+            top: 20px;
+
+            left: 20px;
+
+            width: 46px;
+
+            height: 46px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255, 255, 255, 0.15);
+
+            color: white;
+
+            font-size: 24px;
+
+            cursor: pointer;
+
+        }
+
+
+        .image-modal h3 {
+
+            color: white;
+
+            margin-top: 16px;
+
+            font-family: 'Amiri', serif;
+
+            font-size: 25px;
+
+        }
+
+
+        .modal-details {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            margin-top: 10px;
+
+        }
+
+
+        .modal-details span {
+
+            background:
+                rgba(255, 255, 255, 0.12);
+
+            color: #fff;
+
+            padding: 8px 12px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+           موبايل
+        ===================================================== */
+
+        @media (max-width: 650px) {
+
+            body {
+
+                padding:
+                    max(7px, env(safe-area-inset-top))
+                    7px
+                    max(15px, env(safe-area-inset-bottom));
+
             }
-        };
 
-        window.closeGiftModal = function() {
-            const modal = document.getElementById('imageModal');
-            if (modal) {
-                modal.style.display = 'none';
+
+            .welcome-box {
+
+                border-radius: 24px;
+
             }
+
+
+            .top-bar {
+
+                min-height: 66px;
+
+                padding:
+                    8px 12px;
+
+            }
+
+
+            .back-btn {
+
+                min-width: 48px;
+
+                width: 48px;
+
+                height: 46px;
+
+                padding: 0;
+
+                border-radius: 15px;
+
+            }
+
+
+            .back-text {
+
+                display: none;
+
+            }
+
+
+            .top-title {
+
+                font-size: 18px;
+
+            }
+
+
+            .top-icon {
+
+                width: 42px;
+
+                height: 42px;
+
+                border-radius: 14px;
+
+            }
+
+
+            .box-body {
+
+                padding:
+                    22px 15px 32px;
+
+            }
+
+
+            .church-logo {
+
+                width: 70px;
+
+                height: 70px;
+
+                font-size: 30px;
+
+            }
+
+
+            .page-title {
+
+                font-size: 29px;
+
+            }
+
+
+            .page-subtitle {
+
+                font-size: 13px;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .add-gift-box {
+
+                padding: 18px;
+
+            }
+
+
+            .gifts-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        /* شاشات صغيرة جدًا */
+
+        @media (max-width: 380px) {
+
+            .top-title {
+
+                display: none;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<main class="welcome-box">
+
+
+    <!-- =====================================================
+         شريط الرجوع
+    ===================================================== -->
+
+    <div class="top-bar">
+
+
+        <a
+            href="home.html"
+            class="back-btn"
+            title="العودة للرئيسية">
+
+            <i class="fas fa-arrow-right"></i>
+
+            <span class="back-text">
+                الرئيسية
+            </span>
+
+        </a>
+
+
+        <div class="top-title">
+
+            هدايا صفّي
+
+        </div>
+
+
+        <div class="top-icon">
+
+            <i class="fas fa-gift"></i>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         جسم الصفحة
+    ===================================================== -->
+
+    <div class="box-body">
+
+
+        <!-- اللوجو -->
+
+        <div class="logo-container">
+
+            <div class="church-logo">
+
+                <i class="fas fa-cross"></i>
+
+            </div>
+
+        </div>
+
+
+        <h1 class="page-title">
+
+            هدايا صفّي
+
+        </h1>
+
+
+        <p class="page-subtitle">
+
+            إضافة ومتابعة الهدايا الخاصة بالصف الذي تخدمه
+
+        </p>
+
+
+        <!-- =================================================
+             رسالة عدم وجود صف
+        ================================================= -->
+
+        <div
+            id="noGradeBox"
+            class="no-grade-box">
+
+            <i class="fas fa-triangle-exclamation"></i>
+
+            <h3>
+                لم يتم تحديد صفّك بعد
+            </h3>
+
+            <p>
+                يرجى إكمال بيانات ملفك الشخصي وتحديد الصف الذي تخدمه
+                قبل إضافة أو عرض الهدايا.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             محتوى الصفحة
+        ================================================= -->
+
+        <div id="pageContent">
+
+
+            <!-- بادج الصف -->
+
+            <div>
+
+                <div class="servant-badge">
+
+                    <i class="fas fa-book-open"></i>
+
+                    <span>
+
+                        صفّك:
+
+                        <span id="currentServantGradeBadge">
+                            جاري التحميل...
+                        </span>
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 إضافة هدية
+            ================================================= -->
+
+            <section class="add-gift-box">
+
+
+                <h3>
+
+                    <i class="fas fa-gift"></i>
+
+                    إضافة هدية جديدة
+
+                    <span class="small-note">
+
+                        (تُضاف لصفّك فقط)
+
+                    </span>
+
+                </h3>
+
+
+                <form id="giftForm">
+
+
+                    <div class="form-grid">
+
+
+                        <input
+                            type="text"
+                            id="giftName"
+                            class="form-control"
+                            placeholder="اسم الهدية"
+                            required>
+
+
+                        <input
+                            type="number"
+                            id="giftQuantity"
+                            class="form-control"
+                            placeholder="الكمية المتاحة"
+                            min="1"
+                            required>
+
+
+                        <input
+                            type="number"
+                            id="giftPoints"
+                            class="form-control"
+                            placeholder="النقاط المطلوبة"
+                            min="1"
+                            required>
+
+
+                    </div>
+
+
+                    <label class="file-upload-wrapper">
+
+
+                        <i class="fas fa-image"></i>
+
+
+                        <span id="fileLabelText">
+
+                            اختر صورة الهدية من الجاليري
+
+                        </span>
+
+
+                        <input
+                            type="file"
+                            id="giftImageInput"
+                            accept="image/*">
+
+
+                    </label>
+
+
+                    <button
+                        type="submit"
+                        class="btn-add">
+
+                        <i class="fas fa-plus"></i>
+
+                        إضافة الهدية لصفّي
+
+                    </button>
+
+
+                </form>
+
+
+            </section>
+
+
+            <!-- =================================================
+                 عنوان الهدايا
+            ================================================= -->
+
+            <div class="section-title">
+
+                <h2>
+
+                    <i class="fas fa-gift"></i>
+
+                    هدايا صفّي المتاحة
+
+                </h2>
+
+            </div>
+
+
+            <!-- الهدايا -->
+
+            <div
+                id="giftsContainer"
+                class="gifts-grid">
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     نافذة عرض الصورة
+===================================================== -->
+
+<div
+    class="image-modal"
+    id="imageModal">
+
+
+    <button
+        class="close-modal"
+        onclick="closeGiftModal()">
+
+        <i class="fas fa-xmark"></i>
+
+    </button>
+
+
+    <div class="modal-content">
+
+
+        <img
+            id="modalImg"
+            src=""
+            alt="صورة الهدية">
+
+
+        <h3 id="modalTitle"></h3>
+
+
+        <div
+            class="modal-details"
+            id="modalDetails">
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     Firebase
+===================================================== -->
+
+<script type="module">
+
+
+    import {
+        initializeApp
+    } from
+    "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+    import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+        serverTimestamp
+    } from
+    "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
+    /* =====================================================
+       Firebase Config
+    ===================================================== */
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+
+        authDomain:
+            "st-mina-c01ec.firebaseapp.com",
+
+        databaseURL:
+            "https://st-mina-c01ec-default-rtdb.firebaseio.com",
+
+        projectId:
+            "st-mina-c01ec",
+
+        storageBucket:
+            "st-mina-c01ec.firebasestorage.app",
+
+        messagingSenderId:
+            "792349150559",
+
+        appId:
+            "1:792349150559:web:8a86bbf57c2c7e351f3aea",
+
+        measurementId:
+            "G-XZGSBG05KR"
+
+    };
+
+
+    const app =
+        initializeApp(firebaseConfig);
+
+
+    const db =
+        getFirestore(app);
+
+
+    /* =====================================================
+       نافذة الهدية
+    ===================================================== */
+
+    window.openGiftModal =
+        function (
+            imgSrc,
+            name,
+            quantity,
+            points
+        ) {
+
+
+            const modal =
+                document.getElementById(
+                    'imageModal'
+                );
+
+
+            const modalImg =
+                document.getElementById(
+                    'modalImg'
+                );
+
+
+            const modalTitle =
+                document.getElementById(
+                    'modalTitle'
+                );
+
+
+            const modalDetails =
+                document.getElementById(
+                    'modalDetails'
+                );
+
+
+            modalImg.src =
+                imgSrc;
+
+
+            modalTitle.textContent =
+                name || 'هدية';
+
+
+            modalDetails.innerHTML = `
+
+                <span>
+
+                    <i class="fas fa-box"></i>
+
+                    الكمية: ${quantity}
+
+                </span>
+
+
+                <span>
+
+                    <i class="fas fa-star"></i>
+
+                    النقاط: ${points}
+
+                </span>
+
+            `;
+
+
+            modal.style.display =
+                'flex';
+
         };
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const currentServantGradeBadge = document.getElementById('currentServantGradeBadge');
-            const giftsContainer = document.getElementById('giftsContainer');
-            const giftForm = document.getElementById('giftForm');
-            const giftImageInput = document.getElementById('giftImageInput');
-            const fileLabelText = document.getElementById('fileLabelText');
-            const noGradeBox = document.getElementById('noGradeBox');
-            const pageContent = document.getElementById('pageContent');
+
+    window.closeGiftModal =
+        function () {
+
+            document.getElementById(
+                'imageModal'
+            ).style.display =
+                'none';
+
+        };
+
+
+    /* =====================================================
+       تحميل الصفحة
+    ===================================================== */
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        async () => {
+
+
+            const currentServantGradeBadge =
+                document.getElementById(
+                    'currentServantGradeBadge'
+                );
+
+
+            const giftsContainer =
+                document.getElementById(
+                    'giftsContainer'
+                );
+
+
+            const giftForm =
+                document.getElementById(
+                    'giftForm'
+                );
+
+
+            const giftImageInput =
+                document.getElementById(
+                    'giftImageInput'
+                );
+
+
+            const fileLabelText =
+                document.getElementById(
+                    'fileLabelText'
+                );
+
+
+            const noGradeBox =
+                document.getElementById(
+                    'noGradeBox'
+                );
+
+
+            const pageContent =
+                document.getElementById(
+                    'pageContent'
+                );
+
 
             let base64Image = '';
 
-            // جلب اسم المستخدم الحالي
-            const loggedInUser = localStorage.getItem('currentUser') || localStorage.getItem('username');
 
-            // صف الخادم نفسه فقط (نفس المفتاح المحفوظ وقت التسجيل)
-            const myGrade = (localStorage.getItem('servantGrade') || '').trim();
+            /* المستخدم الحالي */
+
+            const loggedInUser =
+                localStorage.getItem(
+                    'currentUser'
+                )
+                ||
+                localStorage.getItem(
+                    'username'
+                );
+
+
+            /* صف الخادم */
+
+            const myGrade =
+                (
+                    localStorage.getItem(
+                        'servantGrade'
+                    )
+                    ||
+                    ''
+                ).trim();
+
+
+            /* =================================================
+               لو مفيش صف
+            ================================================= */
 
             if (!myGrade) {
-                // الخادم لسه محددش صفه
-                noGradeBox.style.display = 'block';
-                pageContent.style.display = 'none';
+
+                noGradeBox.style.display =
+                    'block';
+
+
+                pageContent.style.display =
+                    'none';
+
+
                 return;
+
             }
 
-            currentServantGradeBadge.innerText = myGrade;
 
-            // اختيار صورة الهدية وتحويلها لـ Base64
-            giftImageInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    fileLabelText.innerText = file.name;
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        base64Image = event.target.result;
-                    };
-                    reader.readAsDataURL(file);
+            currentServantGradeBadge.textContent =
+                myGrade;
+
+
+            /* =================================================
+               اختيار الصورة
+            ================================================= */
+
+            giftImageInput.addEventListener(
+                'change',
+                function (e) {
+
+
+                    const file =
+                        e.target.files[0];
+
+
+                    if (!file) {
+
+                        fileLabelText.textContent =
+                            'اختر صورة الهدية من الجاليري';
+
+                        base64Image = '';
+
+                        return;
+
+                    }
+
+
+                    fileLabelText.textContent =
+                        file.name;
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        function (event) {
+
+                            base64Image =
+                                event.target.result;
+
+                        };
+
+
+                    reader.readAsDataURL(
+                        file
+                    );
+
                 }
-            });
+            );
 
-            // جلب وعرض هدايا صفّي فقط (مع استبعاد الكميات التي تساوي صفر أو أقل)
+
+            /* =================================================
+               عرض الهدايا
+            ================================================= */
+
             async function renderGifts() {
-                giftsContainer.innerHTML = `<div class="no-gifts">جاري تحميل الهدايا...</div>`;
-                try {
-                    const giftsRef = collection(db, "gifts");
-                    const querySnapshot = await getDocs(giftsRef);
 
-                    giftsContainer.innerHTML = '';
+
+                giftsContainer.innerHTML = `
+
+                    <div class="no-gifts">
+
+                        <i class="fas fa-spinner fa-spin"></i>
+
+                        <br><br>
+
+                        جاري تحميل الهدايا...
+
+                    </div>
+
+                `;
+
+
+                try {
+
+
+                    const giftsRef =
+                        collection(
+                            db,
+                            "gifts"
+                        );
+
+
+                    const querySnapshot =
+                        await getDocs(
+                            giftsRef
+                        );
+
+
+                    giftsContainer.innerHTML =
+                        '';
+
+
                     let itemsCount = 0;
 
-                    querySnapshot.forEach((docSnap) => {
-                        const gift = docSnap.data();
 
-                        // التحقق من أن الكمية أكبر من الصفر أولاً
-                        const qty = Number(gift.quantity) || 0;
-                        if (qty <= 0) return;
+                    querySnapshot.forEach(
+                        (docSnap) => {
 
-                        // نعرض فقط هدايا نفس الصف الخاص بالخادم
-                        if (gift.grade !== myGrade) return;
 
-                        itemsCount++;
+                            const gift =
+                                docSnap.data();
 
-                        const imgSrc = gift.image || 'https://via.placeholder.com/250x180/f6f1e9/7c1b28?text=هدية';
-                        const safeName = (gift.name || 'هدية').replace(/'/g, "\\'");
 
-                        const card = document.createElement('div');
-                        card.className = 'gift-card';
-                        card.innerHTML = `
-                            <div class="gift-img-wrapper" onclick="openGiftModal('${imgSrc}', '${safeName}', ${qty}, ${Number(gift.points) || 0})">
-                                <img src="${imgSrc}" alt="${gift.name}" class="gift-img" onerror="this.src='https://via.placeholder.com/250x180/f6f1e9/7c1b28?text=هدية'">
-                                <span class="zoom-badge"><i class="fas fa-search-plus"></i> انقر لعرض التفاصيل</span>
-                            </div>
-                            <div class="gift-details">
-                                <div class="gift-title">${gift.name}</div>
-                                <div class="gift-info">
-                                    <span>الكمية: <span>${qty}</span></span>
+                            const qty =
+                                Number(
+                                    gift.quantity
+                                ) || 0;
+
+
+                            /* لو نفدت */
+
+                            if (qty <= 0) {
+
+                                return;
+
+                            }
+
+
+                            /* صفّي فقط */
+
+                            if (
+                                gift.grade !==
+                                myGrade
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            itemsCount++;
+
+
+                            const imgSrc =
+                                gift.image
+                                ||
+                                'https://via.placeholder.com/500x350/f6f1e9/7c1b28?text=هدية';
+
+
+                            const points =
+                                Number(
+                                    gift.points
+                                ) || 0;
+
+
+                            const card =
+                                document.createElement(
+                                    'div'
+                                );
+
+
+                            card.className =
+                                'gift-card';
+
+
+                            card.innerHTML = `
+
+                                <div
+                                    class="gift-img-wrapper">
+
+                                    <img
+                                        src="${imgSrc}"
+                                        alt="${gift.name || 'هدية'}"
+                                        class="gift-img">
+
+                                    <span
+                                        class="zoom-badge">
+
+                                        <i class="fas fa-search-plus"></i>
+
+                                        عرض التفاصيل
+
+                                    </span>
+
                                 </div>
-                                <div class="gift-info">
-                                    <span>النقاط: <span>${gift.points} نقطة</span></span>
+
+
+                                <div
+                                    class="gift-details">
+
+
+                                    <div
+                                        class="gift-title">
+
+                                        ${gift.name || 'هدية'}
+
+                                    </div>
+
+
+                                    <div
+                                        class="gift-info">
+
+                                        <span>
+                                            الكمية
+                                        </span>
+
+                                        <strong>
+                                            ${qty}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div
+                                        class="gift-info">
+
+                                        <span>
+                                            النقاط
+                                        </span>
+
+                                        <strong>
+                                            ${points}
+                                        </strong>
+
+                                    </div>
+
+
                                 </div>
+
+                            `;
+
+
+                            const imageWrapper =
+                                card.querySelector(
+                                    '.gift-img-wrapper'
+                                );
+
+
+                            imageWrapper.addEventListener(
+                                'click',
+                                () => {
+
+
+                                    openGiftModal(
+                                        imgSrc,
+                                        gift.name || 'هدية',
+                                        qty,
+                                        points
+                                    );
+
+
+                                }
+                            );
+
+
+                            giftsContainer.appendChild(
+                                card
+                            );
+
+
+                        }
+                    );
+
+
+                    /* =================================================
+                       لا توجد هدايا
+                    ================================================= */
+
+                    if (
+                        itemsCount === 0
+                    ) {
+
+
+                        giftsContainer.innerHTML = `
+
+                            <div class="no-gifts">
+
+                                <i
+                                    class="fas fa-gift"
+                                    style="
+                                        font-size:30px;
+                                        color:#9b1c30;
+                                        margin-bottom:10px;
+                                    ">
+                                </i>
+
+                                <br>
+
+                                لا توجد هدايا متاحة
+                                لصفّك حالياً.
+
                             </div>
+
                         `;
-                        giftsContainer.appendChild(card);
-                    });
 
-                    if (itemsCount === 0) {
-                        giftsContainer.innerHTML = `<div class="no-gifts">لا توجد هدايا مضافة لصفّك حالياً أو نفدت الكميات.</div>`;
                     }
+
+
                 } catch (error) {
-                    console.error("خطأ في جلب الهدايا: ", error);
-                    giftsContainer.innerHTML = `<div class="no-gifts">حدث خطأ أثناء تحميل الهدايا. تأكد من اتصال الإنترنت.</div>`;
+
+
+                    console.error(
+                        "خطأ في جلب الهدايا:",
+                        error
+                    );
+
+
+                    giftsContainer.innerHTML = `
+
+                        <div class="no-gifts">
+
+                            حدث خطأ أثناء تحميل الهدايا.
+
+                            <br><br>
+
+                            تأكد من اتصال الإنترنت
+                            وحاول مرة أخرى.
+
+                        </div>
+
+                    `;
+
                 }
+
             }
 
-            // إضافة هدية جديدة لصفّي فقط
-            giftForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
 
-                const name = document.getElementById('giftName').value.trim();
-                const quantity = Number(document.getElementById('giftQuantity').value.trim());
-                const points = Number(document.getElementById('giftPoints').value.trim());
+            /* =================================================
+               إضافة هدية
+            ================================================= */
 
-                if (!name || isNaN(quantity) || isNaN(points)) {
-                    alert("يرجى ملء جميع الحقول بدقة!");
-                    return;
+            giftForm.addEventListener(
+                'submit',
+                async function (e) {
+
+
+                    e.preventDefault();
+
+
+                    const name =
+                        document.getElementById(
+                            'giftName'
+                        ).value.trim();
+
+
+                    const quantity =
+                        Number(
+                            document.getElementById(
+                                'giftQuantity'
+                            ).value
+                        );
+
+
+                    const points =
+                        Number(
+                            document.getElementById(
+                                'giftPoints'
+                            ).value
+                        );
+
+
+                    if (
+                        !name ||
+                        !Number.isFinite(quantity) ||
+                        !Number.isFinite(points)
+                    ) {
+
+
+                        alert(
+                            'يرجى ملء جميع البيانات بشكل صحيح.'
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    if (
+                        quantity <= 0
+                    ) {
+
+
+                        alert(
+                            'الكمية يجب أن تكون أكبر من صفر.'
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    if (
+                        points < 0
+                    ) {
+
+
+                        alert(
+                            'النقاط لا يمكن أن تكون أقل من صفر.'
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    const submitBtn =
+                        giftForm.querySelector(
+                            'button[type="submit"]'
+                        );
+
+
+                    submitBtn.disabled =
+                        true;
+
+
+                    submitBtn.innerHTML = `
+
+                        <i class="fas fa-spinner fa-spin"></i>
+
+                        جاري إضافة الهدية...
+
+                    `;
+
+
+                    try {
+
+
+                        await addDoc(
+                            collection(
+                                db,
+                                "gifts"
+                            ),
+
+                            {
+
+                                name:
+                                    name,
+
+                                quantity:
+                                    quantity,
+
+                                points:
+                                    points,
+
+                                grade:
+                                    myGrade,
+
+                                addedBy:
+                                    loggedInUser
+                                    ||
+                                    'خادم',
+
+                                image:
+                                    base64Image
+                                    ||
+                                    '',
+
+                                createdAt:
+                                    serverTimestamp()
+
+                            }
+
+                        );
+
+
+                        alert(
+                            `تمت إضافة الهدية بنجاح لصف ${myGrade} 🎁`
+                        );
+
+
+                        giftForm.reset();
+
+
+                        fileLabelText.textContent =
+                            'اختر صورة الهدية من الجاليري';
+
+
+                        base64Image =
+                            '';
+
+
+                        await renderGifts();
+
+
+                    } catch (error) {
+
+
+                        console.error(
+                            "خطأ في إضافة الهدية:",
+                            error
+                        );
+
+
+                        alert(
+                            'حدث خطأ أثناء حفظ الهدية.'
+                        );
+
+
+                    } finally {
+
+
+                        submitBtn.disabled =
+                            false;
+
+
+                        submitBtn.innerHTML = `
+
+                            <i class="fas fa-plus"></i>
+
+                            إضافة الهدية لصفّي
+
+                        `;
+
+                    }
+
                 }
+            );
 
-                if (quantity <= 0) {
-                    alert("لا يمكن إضافة هدية بكمية صفر أو أقل!");
-                    return;
-                }
 
-                const submitBtn = giftForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...`;
-
-                try {
-                    await addDoc(collection(db, "gifts"), {
-                        name: name,
-                        quantity: quantity,
-                        points: points,
-                        grade: myGrade,
-                        addedBy: loggedInUser || 'خادم',
-                        image: base64Image || 'https://via.placeholder.com/250x180/f6f1e9/7c1b28?text=هدية',
-                        createdAt: serverTimestamp()
-                    });
-
-                    alert(`تمت إضافة الهدية بنجاح إلى صفّك (${myGrade})!`);
-                    giftForm.reset();
-                    fileLabelText.innerText = "اختر صورة الهدية من الجاليري";
-                    base64Image = '';
-                    renderGifts();
-                } catch (error) {
-                    console.error("خطأ في الإضافة: ", error);
-                    alert("حدث خطأ أثناء حفظ الهدية.");
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = `<i class="fas fa-plus"></i> إضافة الهدية لصفّي`;
-                }
-            });
+            /* تحميل الهدايا */
 
             renderGifts();
-        });
-    </script>
 
-    <style>
-        :root{
-            --wine-900:#4a0e16;
-            --wine-800:#6b1420;
-            --wine-700:#7c1b28;
-            --gold:#c9a04d;
-            --gold-light:#e6c878;
-            --paper:#f6f1e9;
-            --card:#ffffff;
-            --ink:#2a2320;
-            --ink-soft:#6b625c;
-            --line:#e9dfd0;
         }
+    );
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            background: var(--paper);
-            min-height: 100vh;
-            font-family: 'Cairo', sans-serif;
-            color: var(--ink);
-            display: flex;
-            flex-direction: column;
+    /* =====================================================
+       قفل نافذة الصورة
+    ===================================================== */
+
+    document.getElementById(
+        'imageModal'
+    ).addEventListener(
+        'click',
+        function (e) {
+
+
+            if (
+                e.target === this
+            ) {
+
+                closeGiftModal();
+
+            }
+
         }
+    );
 
-        /* ===== الهيدر ===== */
-        header.church-header{
-            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
-            padding:22px 20px 26px;
-            text-align:center;
-            position:relative;
-            box-shadow:0 8px 20px rgba(74,14,22,0.25);
-        }
+</script>
 
-        header.church-header::after{
-            content:'';
-            position:absolute;
-            bottom:0; right:0; left:0;
-            height:4px;
-            background:linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
-
-        .church-logo{
-            width:52px;
-            height:52px;
-            border-radius:50%;
-            background:var(--wine-700);
-            border:2px solid var(--gold);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            margin:0 auto 10px;
-        }
-
-        .church-logo i{
-            color:var(--gold-light);
-            font-size:24px;
-        }
-
-        header.church-header h2{
-            font-family:'Amiri', serif;
-            color:#fbeed4;
-            font-size:18px;
-            font-weight:700;
-        }
-
-        .servant-badge {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-right: 4px solid var(--gold);
-            padding: 10px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            color: var(--wine-800);
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(74,14,22,0.06);
-            margin-bottom: 20px;
-        }
-
-        .servant-badge i {
-            color: var(--gold);
-        }
-
-        .main-content { 
-            flex: 1;
-            text-align: center; 
-            padding: 24px 16px 40px; 
-            max-width: 680px; 
-            width: 100%; 
-            margin: 0 auto; 
-        }
-
-        h1 { 
-            font-family: 'Amiri', serif;
-            color: var(--wine-800); 
-            font-size: 24px; 
-            margin-bottom: 15px; 
-        }
-
-        /* ===== رسالة عدم تحديد الصف ===== */
-        .no-grade-box{
-            background: var(--card);
-            border: 1px dashed var(--gold);
-            border-radius: 20px;
-            padding: 40px 24px;
-            text-align: center;
-            display: none;
-        }
-        .no-grade-box i{ font-size: 34px; color: var(--gold); margin-bottom: 14px; display: block; }
-        .no-grade-box h3{ font-family: 'Amiri', serif; color: var(--wine-800); font-size: 19px; margin-bottom: 8px; }
-        .no-grade-box p{ color: var(--ink-soft); font-size: 14px; }
-
-        .add-gift-box { 
-            background: var(--card); 
-            border: 1px solid var(--line); 
-            border-top: 3px solid var(--gold);
-            padding: 22px; 
-            border-radius: 20px; 
-            margin-bottom: 25px; 
-            text-align: right; 
-            box-shadow: 0 10px 25px rgba(74,14,22,0.06); 
-        }
-
-        .add-gift-box h3 { 
-            color: var(--wine-800); 
-            margin-bottom: 15px; 
-            font-size: 16px; 
-            font-weight: 700;
-        }
-
-        .form-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 12px; 
-            margin-bottom: 12px; 
-        }
-
-        .form-control { 
-            background: var(--paper); 
-            border: 1px solid var(--line); 
-            color: var(--ink); 
-            padding: 11px 14px; 
-            border-radius: 10px; 
-            font-family: 'Cairo', sans-serif; 
-            font-size: 13px; 
-            font-weight: 600;
-            width: 100%; 
-        }
-        .form-control::placeholder { color: var(--ink-soft); }
-        .form-control:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 8px rgba(201,160,77,0.25); }
-
-        .file-upload-wrapper { 
-            background: var(--paper); 
-            border: 1px dashed var(--gold); 
-            padding: 12px 15px; 
-            border-radius: 10px; 
-            color: var(--wine-700); 
-            font-size: 13px; 
-            font-weight: 600;
-            text-align: center; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            margin-bottom: 15px; 
-            transition: 0.3s; 
-        }
-        .file-upload-wrapper:hover { background: rgba(201,160,77,0.08); }
-        .file-upload-wrapper input { display: none; }
-
-        .btn-gold { 
-            background: linear-gradient(135deg, var(--wine-800), var(--wine-900)); 
-            color: #fbeed4; 
-            border: 2px solid var(--gold); 
-            padding: 12px 25px; 
-            border-radius: 50px; 
-            font-weight: 700; 
-            font-size: 14px; 
-            cursor: pointer; 
-            width: 100%; 
-            font-family: 'Cairo', sans-serif; 
-            transition: 0.3s; 
-            box-shadow: 0 4px 15px rgba(74,14,22,0.2);
-        }
-        .btn-gold:hover { 
-            background: linear-gradient(135deg, var(--wine-700), var(--wine-800)); 
-            color: var(--gold-light);
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 18px rgba(74,14,22,0.3);
-        }
-
-        .section-title{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
-        .section-title h2{
-            font-family: 'Amiri', serif;
-            color: var(--wine-800);
-            font-size: 18px;
-            text-align: right;
-        }
-
-        .gifts-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-            gap: 16px; 
-            text-align: right;
-        }
-
-        .gift-card { 
-            background: var(--card); 
-            border: 1px solid var(--line); 
-            border-radius: 18px; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            transition: 0.3s; 
-            box-shadow: 0 8px 20px rgba(74,14,22,0.06);
-        }
-        .gift-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 12px 25px rgba(74,14,22,0.1); }
-
-        /* غلاف الصورة القابل للنقر لعرض التكبير والتفاصيل */
-        .gift-img-wrapper {
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .gift-img { 
-            width: 100%; 
-            height: 160px; 
-            object-fit: cover; 
-            background: var(--paper); 
-            border-bottom: 1px solid var(--line); 
-        }
-
-        .zoom-badge {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            font-size: 11px;
-            padding: 3px 6px;
-            border-radius: 3px;
-        }
-
-        .gift-details { 
-            padding: 14px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px; 
-            flex-grow: 1; 
-        }
-
-        .gift-title { 
-            color: var(--wine-800); 
-            font-size: 16px; 
-            font-weight: 700; 
-            font-family: 'Amiri', serif;
-        }
-
-        .gift-info { 
-            display: flex; 
-            justify-content: space-between; 
-            font-size: 13px; 
-            color: var(--ink-soft); 
-        }
-        .gift-info span span { color: var(--wine-700); font-weight: 700; }
-
-        .no-gifts { 
-            grid-column: 1 / -1; 
-            padding: 30px; 
-            background: var(--card); 
-            border: 1px dashed var(--line); 
-            border-radius: 15px; 
-            color: var(--ink-soft); 
-            font-size: 14px; 
-            font-weight: 600;
-        }
-
-        /* ===== نافذة تكبير صورة الهدية (Modal) ===== */
-        .image-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1200;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .image-modal img {
-            max-width: 90%;
-            max-height: 65vh;
-            border-radius: 12px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-            background: white;
-        }
-
-        .image-modal .close-modal {
-            position: absolute;
-            top: 20px;
-            left: 30px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        .image-modal h3 {
-            color: white;
-            margin-top: 15px;
-            font-size: 18px;
-            font-family: 'Amiri', serif;
-        }
-
-        .image-modal .modal-details {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-            color: var(--gold-light);
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        /* ===== زر الرجوع الأنيق ===== */
-        .back-btn-container {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: linear-gradient(135deg, var(--wine-800), var(--wine-900));
-            color: #fbeed4;
-            text-decoration: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 700;
-            border: 2px solid var(--gold);
-            box-shadow: 0 6px 18px rgba(74,14,22,0.25);
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: linear-gradient(135deg, var(--wine-700), var(--wine-800));
-            color: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(74,14,22,0.35);
-        }
-
-        .back-btn i {
-            font-size: 15px;
-            color: var(--gold);
-        }
-    </style>
-</head>
-<body>
-
-    <header class="church-header">
-        <div class="church-logo"><i class="fas fa-cross"></i></div>
-        <h2>كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي</h2>
-    </header>
-
-    <div class="main-content">
-        <h1>هدايا صفّي</h1>
-
-        <!-- رسالة تظهر لو الخادم لسه محددش صفه -->
-        <div id="noGradeBox" class="no-grade-box">
-            <i class="fas fa-triangle-exclamation"></i>
-            <h3>لم يتم تحديد صفّك بعد</h3>
-            <p>يرجى إكمال بيانات ملفك الشخصي لتحديد الصف الذي تخدمه، قبل إضافة أو عرض الهدايا.</p>
-        </div>
-
-        <div id="pageContent">
-            <div>
-                <div class="servant-badge"><i class="fas fa-book-open"></i> صفّك: <span id="currentServantGradeBadge">جاري التحميل...</span></div>
-            </div>
-
-            <div class="add-gift-box">
-                <h3>إضافة هدية جديدة <span style="font-size: 11px; color: var(--gold); font-weight: normal;">(تُضاف لصفّك فقط)</span></h3>
-                <form id="giftForm">
-                    <div class="form-grid">
-                        <input type="text" id="giftName" class="form-control" placeholder="اسم الهدية" required>
-                        <input type="number" id="giftQuantity" class="form-control" placeholder="الكمية المتاحة" min="1" required>
-                        <input type="number" id="giftPoints" class="form-control" placeholder="النقاط المطلوبة" min="1" required>
-                    </div>
-                    
-                    <label class="file-upload-wrapper">
-                        <i class="fas fa-image"></i>
-                        <span id="fileLabelText">اختر صورة الهدية من الجاليري</span>
-                        <input type="file" id="giftImageInput" accept="image/*">
-                    </label>
-
-                    <button type="submit" class="btn-gold"><i class="fas fa-plus"></i> إضافة الهدية لصفّي</button>
-                </form>
-            </div>
-
-            <div class="section-title">
-                <h2>هدايا صفّي المتاحة</h2>
-            </div>
-
-            <div id="giftsContainer" class="gifts-grid"></div>
-        </div>
-
-        <!-- زر الرجوع الأنيق -->
-        <div class="back-btn-container">
-            <a href="home.html" class="back-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>العودة إلى الرئيسية</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- نافذة تكبير صورة الهدية وعرض تفاصيلها -->
-    <div class="image-modal" id="imageModal">
-        <button class="close-modal" onclick="closeGiftModal()">&times;</button>
-        <img id="modalImg" src="" alt="صورة مكبرة للهدية">
-        <h3 id="modalTitle"></h3>
-        <div class="modal-details" id="modalDetails"></div>
-    </div>
 
 </body>
+
 </html>
