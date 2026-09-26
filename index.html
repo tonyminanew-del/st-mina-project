@@ -1,219 +1,707 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
 <title>برنامج كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
-    rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-  :root{
-    --navy-deep: #041a36;
-    --navy-mid: #062348;
-    --navy-edge: #000b18;
 
-    --maroon-dark: #5d101c;
-    --maroon: #7d1424;
-    --maroon-light: #9b1c30;
+:root{
+    --navy:#061a32;
+    --navy2:#0b2b50;
 
-    --ink: #1f1715;
-    --muted: #8a817c;
-  }
+    --maroon:#7d1424;
+    --maroon2:#a51f35;
 
-  *{ box-sizing:border-box; margin:0; padding:0; }
+    --gold:#d6ad63;
+    --gold-light:#f0d58e;
 
-  html,body{ height:100%; }
+    --white:#ffffff;
+    --muted:#7d7773;
+}
 
-  body{
-    font-family:'Tajawal', sans-serif;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,
+body{
+    min-height:100%;
+}
+
+body{
+
+    font-family:'Tajawal',sans-serif;
+
     background:
-      radial-gradient(circle at center, var(--navy-mid) 0%, var(--navy-deep) 45%, var(--navy-edge) 100%);
-    color:var(--ink);
+        radial-gradient(
+            circle at 50% 0%,
+            #123c69 0%,
+            var(--navy2) 32%,
+            var(--navy) 70%,
+            #020a14 100%
+        );
+
     min-height:100dvh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
-  }
 
-  .welcome-box{
-    width:100%;
-    max-width:440px;
-    background:#ffffff;
-    border-radius:30px;
-    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:
+        max(20px,env(safe-area-inset-top))
+        18px
+        max(20px,env(safe-area-inset-bottom));
+
     position:relative;
+
     overflow:hidden;
-  }
+}
 
-  .drag-handle{
-    width:100%;
-    display:flex;
-    justify-content:center;
-    padding-top:12px;
-    padding-bottom:4px;
-    background: linear-gradient(180deg, #fbeef0 0%, #ffffff 60%);
-  }
 
-  .drag-handle span{
-    width:44px;
-    height:4px;
-    border-radius:4px;
-    background:#e3c9cd;
-  }
+/* =========================
+   الخلفية
+========================= */
 
-  .box-body{
-    padding: 12px 30px 38px;
-    text-align:center;
-  }
+body::before{
 
-  .logo-container{
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin-top:8px;
-    margin-bottom:18px;
-  }
+    content:"";
 
-  .church-logo{
-    width:76px;
-    height:76px;
+    position:fixed;
+
+    width:420px;
+    height:420px;
+
     border-radius:50%;
-    background: linear-gradient(150deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#ffffff;
-    font-size:36px;
-    box-shadow: 0 10px 22px rgba(125, 20, 36, 0.35);
-  }
 
-  .formal-gold{
-    font-family:'Amiri', serif;
-    font-weight:700;
-    font-size: clamp(21px, 6vw, 25px);
-    line-height:1.7;
-    color: var(--ink);
-  }
+    background:rgba(214,173,99,.07);
 
-  /* كلمة استيفانوس السرية (تتفاعل فقط إذا سمح مينا بذلك) */
-  .formal-gold #secret-click{
-    color: var(--maroon);
-    font:inherit;
-    cursor: pointer;
-    user-select: none;
-  }
+    filter:blur(5px);
 
-  .subtitle{
-    margin-top:12px;
-    font-size: clamp(14px, 4vw, 15px);
-    color: var(--muted);
-  }
+    top:-180px;
+    right:-160px;
 
-  .formal-button{
-    margin-top:30px;
+    pointer-events:none;
+}
+
+body::after{
+
+    content:"";
+
+    position:fixed;
+
+    width:350px;
+    height:350px;
+
+    border-radius:50%;
+
+    background:rgba(125,20,36,.12);
+
+    filter:blur(10px);
+
+    bottom:-180px;
+    left:-150px;
+
+    pointer-events:none;
+}
+
+
+/* =========================
+   الكارت
+========================= */
+
+.welcome-box{
+
     width:100%;
-    min-height:54px;
-    border:none;
-    border-radius:14px;
-    background: linear-gradient(135deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
-    color:#ffffff;
-    font-family:'Tajawal', sans-serif;
+
+    max-width:470px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.99),
+            rgba(250,247,245,.99)
+        );
+
+    border-radius:32px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 35px 90px rgba(0,0,0,.55),
+        0 10px 25px rgba(0,0,0,.25);
+
+    animation:cardShow .7s ease;
+}
+
+@keyframes cardShow{
+
+    from{
+        opacity:0;
+        transform:translateY(25px) scale(.97);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+}
+
+
+/* =========================
+   الخط العلوي
+========================= */
+
+.top-line{
+
+    height:6px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--maroon),
+            var(--gold),
+            var(--maroon)
+        );
+}
+
+
+/* =========================
+   جسم الكارت
+========================= */
+
+.box-body{
+
+    padding:32px 30px 34px;
+
+    text-align:center;
+}
+
+
+/* =========================
+   الشعار
+========================= */
+
+.logo-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin-bottom:22px;
+}
+
+.church-logo{
+
+    width:94px;
+
+    height:94px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:42px;
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--maroon2),
+            var(--maroon)
+        );
+
+    border:5px solid #fff;
+
+    outline:2px solid rgba(214,173,99,.65);
+
+    box-shadow:
+        0 15px 35px rgba(125,20,36,.30),
+        inset 0 2px 8px rgba(255,255,255,.18);
+
+    animation:logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-5px);
+    }
+
+}
+
+
+/* =========================
+   العنوان
+========================= */
+
+.formal-title{
+
+    font-family:'Amiri',serif;
+
+    font-size:clamp(22px,6vw,28px);
+
+    line-height:1.7;
+
+    color:#211918;
+
     font-weight:700;
-    font-size: clamp(16px, 5vw, 18px);
-    letter-spacing:0.3px;
+}
+
+
+/* استيفانوس باللون الأسود */
+
+.formal-title .gold{
+
+    color:#211918;
+
+}
+
+
+/* =========================
+   الخط الفاصل
+========================= */
+
+.divider{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    margin:18px auto 13px;
+
+    width:80%;
+}
+
+.divider::before,
+.divider::after{
+
+    content:"";
+
+    height:1px;
+
+    flex:1;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #d8c7a5
+        );
+}
+
+.divider::after{
+
+    background:
+        linear-gradient(
+            90deg,
+            #d8c7a5,
+            transparent
+        );
+}
+
+.divider i{
+
+    color:var(--gold);
+
+    font-size:12px;
+}
+
+
+/* =========================
+   الوصف
+========================= */
+
+.subtitle{
+
+    font-size:15px;
+
+    color:var(--muted);
+
+    line-height:1.8;
+
+    margin-bottom:25px;
+}
+
+
+/* =========================
+   الأزرار
+========================= */
+
+.buttons{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:13px;
+}
+
+
+.login-button{
+
+    width:100%;
+
+    min-height:58px;
+
+    border:none;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:12px;
+
+    color:#fff;
+
+    font-family:'Tajawal',sans-serif;
+
+    font-size:17px;
+
+    font-weight:700;
+
     cursor:pointer;
-    box-shadow: 0 10px 22px rgba(125, 20, 36, 0.35);
-    transition: all 0.25s ease;
-  }
 
-  .formal-button:hover{
-    transform: translateY(-1px);
-    box-shadow: 0 12px 26px rgba(125, 20, 36, 0.45);
-  }
+    transition:.25s ease;
 
-  .formal-button:active{
-    transform: translateY(1px);
-    box-shadow: 0 5px 12px rgba(125, 20, 36, 0.25);
-  }
+    position:relative;
 
-  .lock-status {
-    margin-top: 16px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #9f1239;
-    min-height: 18px;
-  }
+    overflow:hidden;
+}
 
-  @media (max-width:360px){
-    .box-body{ padding: 10px 20px 30px; }
-  }
+
+.login-button::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:100%;
+
+    height:100%;
+
+    left:-100%;
+
+    top:0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.18),
+            transparent
+        );
+
+    transition:.5s;
+}
+
+
+.login-button:hover::before{
+
+    left:100%;
+}
+
+
+.login-button:hover{
+
+    transform:translateY(-2px);
+}
+
+
+.login-button:active{
+
+    transform:scale(.98);
+}
+
+
+/* =========================
+   دخول مستخدم
+========================= */
+
+.user-button{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--maroon2),
+            var(--maroon)
+        );
+
+    box-shadow:
+        0 10px 25px rgba(125,20,36,.28);
+}
+
+
+/* =========================
+   دخول خادم
+========================= */
+
+.servant-button{
+
+    background:
+        linear-gradient(
+            135deg,
+            #102f50,
+            #061a32
+        );
+
+    box-shadow:
+        0 10px 25px rgba(6,26,50,.28);
+}
+
+
+/* =========================
+   أيقونات الأزرار
+========================= */
+
+.login-button i{
+
+    font-size:19px;
+
+    width:24px;
+}
+
+
+/* =========================
+   أسفل الصفحة
+========================= */
+
+.footer{
+
+    margin-top:24px;
+
+    font-size:12px;
+
+    color:#aaa19b;
+}
+
+.footer i{
+
+    color:var(--maroon);
+
+    margin-left:4px;
+}
+
+
+/* =========================
+   الموبايل الصغير
+========================= */
+
+@media(max-width:380px){
+
+    .box-body{
+
+        padding:26px 20px 28px;
+    }
+
+    .church-logo{
+
+        width:82px;
+
+        height:82px;
+
+        font-size:36px;
+    }
+
+    .formal-title{
+
+        font-size:21px;
+    }
+
+    .login-button{
+
+        min-height:54px;
+
+        font-size:16px;
+    }
+
+}
+
 </style>
 </head>
+
+
 <body>
 
-  <div class="welcome-box">
 
-    <div class="drag-handle"><span></span></div>
+<div class="welcome-box">
+
+    <div class="top-line"></div>
+
 
     <div class="box-body">
 
-      <div class="logo-container">
-        <div class="church-logo">
-          <i class="fas fa-cross"></i>
+
+        <!-- شعار الكنيسة -->
+
+        <div class="logo-container">
+
+            <div class="church-logo">
+
+                <i class="fas fa-cross"></i>
+
+            </div>
+
         </div>
-      </div>
 
-      <div class="formal-gold">
-        أهلاً ببرنامج كنيسة الشهيد العظيم <span id="secret-click" title="خاص">استيفانوس</span> ومارمينا العجايبي
-      </div>
 
-      <div class="subtitle">برجاء الدخول لمتابعة البرنامج</div>
+        <!-- اسم البرنامج -->
 
-      <button type="button" id="login-btn" class="formal-button">دخول مستخدم</button>
-      <div id="lockStatusMsg" class="lock-status"></div>
+        <div class="formal-title">
+
+            أهلاً ببرنامج كنيسة الشهيد العظيم
+
+            <span class="gold">
+                استيفانوس
+            </span>
+
+            ومارمينا العجايبي
+
+        </div>
+
+
+        <!-- فاصل -->
+
+        <div class="divider">
+
+            <i class="fas fa-cross"></i>
+
+        </div>
+
+
+        <!-- الوصف -->
+
+        <div class="subtitle">
+
+            برجاء اختيار نوع الدخول لمتابعة البرنامج
+
+        </div>
+
+
+        <!-- الأزرار -->
+
+        <div class="buttons">
+
+
+            <!-- دخول المستخدم -->
+
+            <button
+                type="button"
+                id="login-btn"
+                class="login-button user-button">
+
+                <i class="fas fa-user"></i>
+
+                <span>
+                    دخول مستخدم
+                </span>
+
+            </button>
+
+
+            <!-- دخول الخادم -->
+
+            <button
+                type="button"
+                id="servant-btn"
+                class="login-button servant-button">
+
+                <i class="fas fa-user-shield"></i>
+
+                <span>
+                    دخول خادم
+                </span>
+
+            </button>
+
+
+        </div>
+
+
+        <!-- أسفل الكارت -->
+
+        <div class="footer">
+
+            <i class="fas fa-church"></i>
+
+            برنامج خدمة الكنيسة
+
+        </div>
+
 
     </div>
 
-  </div>
+</div>
 
-  <script>
-    let clickCount = 0;
-    const targetWord = document.getElementById('secret-click');
-    const lockStatusMsg = document.getElementById('lockStatusMsg');
 
-    targetWord.addEventListener('click', function() {
-      // التحقق مما إذا كان السوبر أدمن (Mina) قد فتح الصلاحية أم لا
-      const isUnlockedByMina = localStorage.getItem('stephanus_unlocked') === 'true';
 
-      if (!isUnlockedByMina) {
-        lockStatusMsg.textContent = "عذراً، هذا المسار مغلق ولا يمكن فتحه إلا بواسطة السوبر أدمن.";
-        setTimeout(() => { lockStatusMsg.textContent = ""; }, 3500);
-        return;
-      }
+<script>
 
-      clickCount++;
-      if (clickCount < 5) {
-        lockStatusMsg.style.color = "#b45309";
-        lockStatusMsg.textContent = `متبقي ${5 - clickCount} ضغطات...`;
-      } else {
-        lockStatusMsg.style.color = "#137333";
-        lockStatusMsg.textContent = "تم التحقق بنجاح!";
-        setTimeout(() => {
-          window.location.href = 'a/sign.html'; // أو صفحة مينا حسب المسار الخاص بك
-        }, 500);
-      }
-    });
 
-    document.getElementById('login-btn').addEventListener('click', function() {
-      window.location.href = 'u/sign.html';
-    });
-  </script>
+/* =========================
+   دخول المستخدم
+========================= */
+
+document
+.getElementById("login-btn")
+.addEventListener("click", function(){
+
+    window.location.href = "u/sign.html";
+
+});
+
+
+/* =========================
+   دخول الخادم
+   دخول مباشر
+========================= */
+
+document
+.getElementById("servant-btn")
+.addEventListener("click", function(){
+
+    window.location.href = "a/sign.html";
+
+});
+
+
+</script>
+
 
 </body>
 </html>
+```
