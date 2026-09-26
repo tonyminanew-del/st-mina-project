@@ -1,14 +1,18 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دخول لوحة تحكم الأدمن</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
+    <title>حساب الأدمن</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         * {
@@ -50,9 +54,7 @@
             font-family: 'Tajawal', sans-serif;
         }
 
-        /* =========================
-           الكارت
-        ========================= */
+        /* الكارت */
 
         .form-card {
             width: 100%;
@@ -63,8 +65,6 @@
             border-radius: 30px;
 
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
-
-            position: relative;
 
             overflow: hidden;
         }
@@ -78,13 +78,20 @@
             padding-top: 12px;
             padding-bottom: 4px;
 
-            background: linear-gradient(180deg, #fbeef0 0%, #ffffff 60%);
+            background:
+                linear-gradient(
+                    180deg,
+                    #fbeef0 0%,
+                    #ffffff 60%
+                );
         }
 
         .drag-handle span {
             width: 44px;
             height: 4px;
+
             border-radius: 4px;
+
             background: #e3c9cd;
         }
 
@@ -94,9 +101,7 @@
             text-align: center;
         }
 
-        /* =========================
-           اللوجو / الصليب
-        ========================= */
+        /* اللوجو */
 
         .logo-container {
             width: 100%;
@@ -115,7 +120,12 @@
 
             border-radius: 50%;
 
-            background: linear-gradient(150deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
+            background:
+                linear-gradient(
+                    150deg,
+                    var(--maroon-light) 0%,
+                    var(--maroon-dark) 100%
+                );
 
             display: flex;
             justify-content: center;
@@ -125,12 +135,11 @@
 
             font-size: 34px;
 
-            box-shadow: 0 10px 22px rgba(125, 20, 36, 0.35);
+            box-shadow:
+                0 10px 22px rgba(125, 20, 36, 0.35);
         }
 
-        /* =========================
-           العنوان
-        ========================= */
+        /* العنوان */
 
         h2 {
             color: var(--ink);
@@ -154,100 +163,29 @@
             margin-bottom: 28px;
         }
 
-        /* =========================
-           زر جوجل
-        ========================= */
+        /* الأزرار */
 
-        .btn-google {
+        .buttons {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
 
-            width: 100%;
+            flex-direction: column;
 
-            padding: 14px;
-
-            border-radius: 14px;
-
-            background: #ffffff;
-
-            border: 1.5px solid #e1d8d0;
-
-            color: var(--ink);
-
-            font-family: 'Tajawal', sans-serif;
-
-            font-size: 15px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
-
-            transition: all 0.25s ease;
-
-            margin-bottom: 16px;
+            gap: 14px;
         }
-
-        .btn-google img {
-            width: 20px;
-            height: 20px;
-        }
-
-        .btn-google:hover {
-            border-color: var(--maroon);
-            box-shadow: 0 8px 18px rgba(125, 20, 36, 0.12);
-        }
-
-        .btn-google:active {
-            transform: translateY(1px);
-        }
-
-        /* =========================
-           فاصل "أو"
-        ========================= */
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-
-            margin: 18px 0;
-
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: #eee1dd;
-        }
-
-        /* =========================
-           زر لدي حساب
-        ========================= */
 
         .btn-action {
             display: flex;
+
             align-items: center;
             justify-content: center;
+
+            gap: 10px;
 
             width: 100%;
 
             padding: 15px;
 
-            border: none;
-
             border-radius: 14px;
-
-            background: linear-gradient(135deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
-
-            color: #ffffff;
 
             font-family: 'Tajawal', sans-serif;
 
@@ -260,23 +198,60 @@
             cursor: pointer;
 
             transition: all 0.25s ease;
-
-            box-shadow: 0 10px 22px rgba(125, 20, 36, 0.35);
         }
 
-        .btn-action:hover {
+        /* إنشاء حساب */
+
+        .btn-create {
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--maroon-light) 0%,
+                    var(--maroon-dark) 100%
+                );
+
+            color: #ffffff;
+
+            box-shadow:
+                0 10px 22px rgba(125, 20, 36, 0.35);
+        }
+
+        .btn-create:hover {
             transform: translateY(-1px);
-            box-shadow: 0 12px 26px rgba(125, 20, 36, 0.45);
+
+            box-shadow:
+                0 12px 26px rgba(125, 20, 36, 0.45);
+        }
+
+        /* لدي حساب */
+
+        .btn-login {
+            background: #ffffff;
+
+            color: var(--maroon);
+
+            border: 1.5px solid #e1d8d0;
+
+            box-shadow:
+                0 6px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-login:hover {
+            border-color: var(--maroon);
+
+            background: #fff8f9;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 8px 18px rgba(125, 20, 36, 0.12);
         }
 
         .btn-action:active {
             transform: translateY(1px);
-            box-shadow: 0 5px 12px rgba(125, 20, 36, 0.25);
         }
 
-        /* =========================
-           Responsive
-        ========================= */
+        /* Responsive */
 
         @media (max-width: 500px) {
 
@@ -291,11 +266,13 @@
             .church-logo {
                 width: 66px;
                 height: 66px;
+
                 font-size: 30px;
             }
         }
     </style>
 </head>
+
 <body>
 
     <div class="form-card">
@@ -306,78 +283,61 @@
 
         <div class="card-body">
 
+            <!-- اللوجو -->
             <div class="logo-container">
+
                 <div class="church-logo">
+
                     <i class="fas fa-user-shield"></i>
+
                 </div>
+
             </div>
 
-            <div class="subtitle">تسجيل الدخول الخاص بالمسؤولين</div>
 
-            <!-- زر جوجل -->
-            <button type="button" class="btn-google" id="googleLoginBtn" title="تسجيل بجوجل">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
-                <span>الدخول باستخدام جوجل</span>
-            </button>
+            <h2>حساب الأدمن</h2>
 
-            <div class="divider">أو</div>
+            <div class="subtitle">
+                اختر الطريقة المناسبة للمتابعة
+            </div>
 
-            <!-- زر لدي حساب في الأسفل -->
-            <a href="sign_c.html" class="btn-action">
-                <span>لدي حساب بالفعل</span>
-            </a>
+
+            <!-- الأزرار -->
+
+            <div class="buttons">
+
+                <!-- إنشاء حساب -->
+                <a href="sign_c.html"
+                    class="btn-action btn-create">
+
+                    <i class="fas fa-user-plus"></i>
+
+                    <span>
+                        إنشاء حساب
+                    </span>
+
+                </a>
+
+
+                <!-- لدي حساب بالفعل -->
+                <a href="sign_c.html"
+                    class="btn-action btn-login">
+
+                    <i class="fas fa-right-to-bracket"></i>
+
+                    <span>
+                        لدي حساب بالفعل
+                    </span>
+
+                </a>
+
+            </div>
 
         </div>
 
     </div>
 
-    <!-- سكربت Firebase وتسجيل الدخول بجوجل -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-            authDomain: "st-mina-c01ec.firebaseapp.com",
-            databaseURL: "https://st-mina-c01ec-default-rtdb.firebaseio.com",
-            projectId: "st-mina-c01ec",
-            storageBucket: "st-mina-c01ec.firebasestorage.app",
-            messagingSenderId: "792349150559",
-            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea",
-            measurementId: "G-XZGSBG05KR"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-        const provider = new GoogleAuthProvider();
-
-        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
-            try {
-                // فتح نافذة اختيار الحسابات من جوجل
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-
-                // حفظ الحساب المختار في Realtime Database تحت كولكشن google_accounts
-                await push(ref(db, 'google_accounts'), {
-                    uid: user.uid,
-                    email: user.email,
-                    name: user.displayName,
-                    loginTime: new Date().toISOString()
-                });
-
-                console.log('Google account saved successfully:', user.email);
-
-                // الانتقال الفوري لصفحة sign-cc.html
-                window.location.href = 'sign-cc.html';
-
-            } catch (error) {
-                console.error('Login Error:', error.message);
-                alert('حدث خطأ أثناء تسجيل الدخول: ' + error.message);
-            }
-        });
-    </script>
-
 </body>
+
 </html>
+```
