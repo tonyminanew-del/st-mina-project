@@ -291,7 +291,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import {
       getFirestore, collection, query, orderBy, onSnapshot,
-      doc, getDoc, getDocs, updateDoc
+      doc, getDoc, getDocs, updateDoc, arrayUnion
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -416,21 +416,14 @@
     async function loadUserData() {
       const profile = getCurrentProfile();
       currentUsername = normalize(profile.username);
+      myGrade = String(profile.grade || localStorage.getItem("grade") || "").trim();
 
       try {
         const directSnap = await getDoc(doc(db, "users", profile.username));
         if (directSnap.exists()) {
           myGrade = String(directSnap.data().grade || "").trim();
-        } else {
-          const usersSnap = await getDocs(collection(db, "users"));
-          const user = usersSnap.docs.find((item) => {
-            const data = item.data();
-            return [item.id, data.username, data.userName, data.fullName]
-              .map(normalize)
-              .includes(currentUsername);
-          });
-          myGrade = String(user?.data()?.grade || "").trim();
         }
+        if (myGrade) localStorage.setItem("grade", myGrade);
       } catch (error) {
         console.error("تعذر جلب بيانات المخدوم:", error);
       }
@@ -453,62 +446,153 @@
       }
     }
 
-    async function startNotifications() {
-      await Promise.all([loadUserData(), loadGiftCatalog()]);
+    let latestNotificationsSnapshot = null;
+    const notificationSignatures = new Map();
+    let hasServerBaseline = false;
 
+    function isVisibleNotification(item) {
+      const personal = normalize(item.username || item.userName) === currentUsername;
+      const general = item.type === "announcement" || (!item.username && !item.type);
+      const showAnnouncement = general && (
+        (myGrade && normalize(item.targetGrade) === normalize(myGrade))
+        || (!myGrade && !item.targetGrade)
+      );
+      return personal || showAnnouncement;
+    }
+
+    function notificationSignature(item) {
+      return JSON.stringify([
+        item.title || item.giftName || "",
+        item.message || item.body || "",
+        item.status || "",
+        item.isDelivered === true,
+        item.isRejected === true
+      ]);
+    }
+
+    function notifyForNewRecord(item, id) {
+      const title = item.title || item.giftName || "إشعار جديد";
+      const body = item.message || item.body || "لديك تحديث جديد من الكنيسة.";
+      const image = item.imageUrl || item.giftImage || item.image || "";
+
+      if (typeof window.sendNativeNotification === "function") {
+        window.sendNativeNotification(title, body, image, id);
+      } else if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, { body, icon: image || undefined, tag: id });
+      }
+    }
+
+    function renderNotifications(snapshot) {
+      const container = $("#notificationsContainer");
+      container.innerHTML = "";
+      let count = 0;
+
+      snapshot.forEach((docSnap) => {
+        const item = docSnap.data();
+        if (!isVisibleNotification(item)) return;
+        count++;
+
+        const catalogGift = findCatalogGift(item);
+        const image = item.imageUrl || item.giftImage || item.image
+          || catalogGift.image || catalogGift.giftImage || "";
+        const title = item.title || item.giftName || "إشعار جديد";
+        const readBy = Array.isArray(item.readBy)
+          ? item.readBy.map(normalize)
+          : [];
+        const isReadByCurrentUser = item.isRead === true
+          || readBy.includes(currentUsername);
+        const card = document.createElement("article");
+        card.dataset.notificationId = docSnap.id;
+        card.className = `notification-card ${isReadByCurrentUser ? "" : "unread"}`;
+        card.innerHTML = `
+          ${image
+            ? `<img class="notification-image" src="${escapeHtml(image)}" alt="${escapeHtml(title)}">`
+            : `<div class="notification-icon"><i class="fas ${item.giftName ? "fa-gift" : "fa-bell"}"></i></div>`}
+          <div class="notification-content">
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(item.message || item.body || "")}</p>
+            ${statusBadge(item, normalize(item.username || item.userName) === currentUsername)}
+            <p class="notification-date"><i class="fas fa-calendar"></i> ${escapeHtml(formatDate(item.timestamp || item.createdAt))}</p>
+          </div>
+        `;
+
+        if (currentUsername && !item.isRead && !readBy.includes(currentUsername)) {
+          updateDoc(doc(db, "notifications", docSnap.id), {
+            readBy: arrayUnion(currentUsername)
+          }).catch((error) => console.error("تعذر تحديث حالة قراءة الإشعار:", error));
+        }
+        container.appendChild(card);
+      });
+
+      $("#notificationCount").textContent = count;
+      if (!count) {
+        container.innerHTML = `<div class="empty"><i class="fas fa-bell-slash"></i> لا توجد إشعارات أو طلبات جديدة حاليًا</div>`;
+      }
+    }
+
+    function startNotifications() {
       const notificationsQuery = query(
         collection(db, "notifications"),
         orderBy("timestamp", "desc")
       );
 
+      let receivedFirstSnapshot = false;
+      const loadingTimeout = window.setTimeout(() => {
+        if (receivedFirstSnapshot) return;
+        $("#notificationsContainer").innerHTML = `
+          <div class="error">
+            <i class="fas fa-triangle-exclamation"></i>
+            تأخر الاتصال بقاعدة البيانات. تحقق من الإنترنت ثم اضغط تحديث.
+          </div>
+        `;
+      }, 15000);
+
       onSnapshot(notificationsQuery, (snapshot) => {
-        const container = $("#notificationsContainer");
-        container.innerHTML = "";
-        let count = 0;
+        receivedFirstSnapshot = true;
+        window.clearTimeout(loadingTimeout);
+
+        const isBaseline = !hasServerBaseline || snapshot.metadata.fromCache;
+        if (!snapshot.metadata.fromCache) hasServerBaseline = true;
 
         snapshot.forEach((docSnap) => {
           const item = docSnap.data();
-          const personal = normalize(item.username) === currentUsername;
-          const general = item.type === "announcement" || (!item.username && !item.type);
-          const showAnnouncement = general && (
-            (myGrade && normalize(item.targetGrade) === normalize(myGrade))
-            || (!myGrade && !item.targetGrade)
-          );
-
-          if (!personal && !showAnnouncement) return;
-          count++;
-
-          const catalogGift = findCatalogGift(item);
-          const image = item.imageUrl || item.giftImage || item.image
-            || catalogGift.image || catalogGift.giftImage || "";
-          const title = item.title || item.giftName || "إشعار جديد";
-          const card = document.createElement("article");
-          card.className = `notification-card ${item.isRead ? "" : "unread"}`;
-          card.innerHTML = `
-            ${image
-              ? `<img class="notification-image" src="${escapeHtml(image)}" alt="${escapeHtml(title)}">`
-              : `<div class="notification-icon"><i class="fas ${item.giftName ? "fa-gift" : "fa-bell"}"></i></div>`}
-            <div class="notification-content">
-              <h3>${escapeHtml(title)}</h3>
-              <p>${escapeHtml(item.message || "")}</p>
-              ${statusBadge(item, personal)}
-              <p class="notification-date"><i class="fas fa-calendar"></i> ${escapeHtml(formatDate(item.timestamp || item.createdAt))}</p>
-            </div>
-          `;
-
-          if (!item.isRead) {
-            updateDoc(doc(db, "notifications", docSnap.id), { isRead: true }).catch(() => {});
+          const signature = notificationSignature(item);
+          const previousSignature = notificationSignatures.get(docSnap.id);
+          if (
+            !isBaseline
+            && previousSignature !== undefined
+            && previousSignature !== signature
+            && isVisibleNotification(item)
+          ) {
+            notifyForNewRecord(item, docSnap.id);
+          } else if (
+            !isBaseline
+            && previousSignature === undefined
+            && isVisibleNotification(item)
+          ) {
+            notifyForNewRecord(item, docSnap.id);
           }
-          container.appendChild(card);
+          notificationSignatures.set(docSnap.id, signature);
         });
 
-        $("#notificationCount").textContent = count;
-        if (!count) {
-          container.innerHTML = `<div class="empty"><i class="fas fa-bell-slash"></i> لا توجد إشعارات أو طلبات جديدة حاليًا</div>`;
-        }
+        latestNotificationsSnapshot = snapshot;
+        renderNotifications(snapshot);
       }, (error) => {
+        receivedFirstSnapshot = true;
+        window.clearTimeout(loadingTimeout);
         console.error("خطأ في الإشعارات:", error);
         $("#notificationsContainer").innerHTML = `<div class="error"><i class="fas fa-triangle-exclamation"></i> حدث خطأ أثناء تحميل الإشعارات</div>`;
+      });
+
+      loadUserData().then(() => {
+        if (latestNotificationsSnapshot) {
+          renderNotifications(latestNotificationsSnapshot);
+        }
+      });
+      loadGiftCatalog().then(() => {
+        if (latestNotificationsSnapshot) {
+          renderNotifications(latestNotificationsSnapshot);
+        }
       });
     }
 
