@@ -1,707 +1,638 @@
-```html
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
 
 <title>برنامج كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
-
-:root{
-    --navy:#061a32;
-    --navy2:#0b2b50;
-
-    --maroon:#7d1424;
-    --maroon2:#a51f35;
-
-    --gold:#d6ad63;
-    --gold-light:#f0d58e;
-
-    --white:#ffffff;
-    --muted:#7d7773;
+:root {
+    --primary: #30213D;
+    --primary-dark: #24172F;
+    --gold: #B79A63;
+    --gold-pale: #F5F0E5;
+    --white: #FFFFFF;
+    --background: #FFFFFF;
+    --text: #30213D;
+    --muted: #85818A;
+    --border: #ECE9E5;
+    --shadow: 0 8px 25px rgba(40, 29, 47, .055);
 }
 
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
-html,
-body{
-    min-height:100%;
+html {
+    background: #FFFFFF;
+    scroll-behavior: smooth;
 }
 
-body{
-
-    font-family:'Tajawal',sans-serif;
-
-    background:
-        radial-gradient(
-            circle at 50% 0%,
-            #123c69 0%,
-            var(--navy2) 32%,
-            var(--navy) 70%,
-            #020a14 100%
-        );
-
-    min-height:100dvh;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    padding:
-        max(20px,env(safe-area-inset-top))
-        18px
-        max(20px,env(safe-area-inset-bottom));
-
-    position:relative;
-
-    overflow:hidden;
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
 }
 
-
-/* =========================
-   الخلفية
-========================= */
-
-body::before{
-
-    content:"";
-
-    position:fixed;
-
-    width:420px;
-    height:420px;
-
-    border-radius:50%;
-
-    background:rgba(214,173,99,.07);
-
-    filter:blur(5px);
-
-    top:-180px;
-    right:-160px;
-
-    pointer-events:none;
+button {
+    font: inherit;
 }
 
-body::after{
-
-    content:"";
-
-    position:fixed;
-
-    width:350px;
-    height:350px;
-
-    border-radius:50%;
-
-    background:rgba(125,20,36,.12);
-
-    filter:blur(10px);
-
-    bottom:-180px;
-    left:-150px;
-
-    pointer-events:none;
+button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
 }
 
-
-/* =========================
-   الكارت
-========================= */
-
-.welcome-box{
-
-    width:100%;
-
-    max-width:470px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.99),
-            rgba(250,247,245,.99)
-        );
-
-    border-radius:32px;
-
-    position:relative;
-
-    overflow:hidden;
-
-    box-shadow:
-        0 35px 90px rgba(0,0,0,.55),
-        0 10px 25px rgba(0,0,0,.25);
-
-    animation:cardShow .7s ease;
+.app {
+    width: 100%;
+    max-width: 500px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: auto;
+    background: #FFFFFF;
+    padding-bottom: max(22px, env(safe-area-inset-bottom));
 }
 
-@keyframes cardShow{
+/* الشريط العلوي */
+.topbar {
+    min-height: 72px;
+    padding: max(10px, env(safe-area-inset-top)) 18px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--border);
+}
 
-    from{
-        opacity:0;
-        transform:translateY(25px) scale(.97);
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.brand-icon {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: var(--primary);
+    color: #FFFFFF;
+    border-radius: 13px;
+}
+
+.brand-icon i {
+    font-size: 20px;
+}
+
+.brand-title {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+.brand-subtitle {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.refresh-btn {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    color: var(--primary);
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+}
+
+.refresh-btn i {
+    font-size: 19px;
+}
+
+.refresh-btn:active {
+    background: var(--gold-pale);
+    transform: scale(.96);
+}
+
+.refresh-btn.spinning i {
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* كارت الترحيب الأبيض */
+.hero {
+    margin: 19px 15px 0;
+    padding: 27px 19px 25px;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 23px;
+    background: #FFFFFF;
+    box-shadow: var(--shadow);
+}
+
+.church-emblem {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 17px;
+    display: grid;
+    place-items: center;
+    border-radius: 22px;
+    background: var(--primary);
+    color: #FFFFFF;
+    border: 1px solid var(--gold);
+    box-shadow: 0 5px 15px rgba(40, 29, 47, .10);
+}
+
+.church-emblem i {
+    font-size: 31px;
+    color: #FFFFFF;
+}
+
+.hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    margin-bottom: 12px;
+    color: var(--primary);
+    background: #FFFFFF;
+    border: 1px solid #E9E0CE;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.hero-label i {
+    font-size: 12px;
+    color: var(--gold);
+}
+
+h1 {
+    color: var(--primary);
+    font-family: 'Amiri', 'Cairo', serif;
+    font-size: clamp(25px, 6.5vw, 31px);
+    line-height: 1.7;
+    font-weight: 700;
+}
+
+.church-name {
+    display: block;
+}
+
+.name-highlight {
+    color: var(--primary);
+}
+
+.hero-divider {
+    width: 58px;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 5px;
+    margin: 15px auto 0;
+}
+
+/* عنوان تسجيل الدخول */
+.content {
+    padding: 25px 15px 10px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.heading-icon {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    color: var(--primary);
+    background: var(--gold-pale);
+    border: 1px solid #E9E0CE;
+    border-radius: 14px;
+}
+
+.heading-icon i {
+    font-size: 20px;
+}
+
+.heading-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+.heading-subtitle {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* كارت أزرار الدخول */
+.login-panel {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: #FFFFFF;
+    box-shadow: var(--shadow);
+}
+
+.login-options {
+    display: grid;
+    gap: 11px;
+}
+
+.login-button {
+    min-height: 78px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #FFFFFF;
+    color: var(--text);
+    text-align: right;
+    cursor: pointer;
+    transition: background .18s, transform .18s, border-color .18s;
+}
+
+.login-button:hover {
+    background: #FCFBFD;
+    border-color: #DCD3E2;
+}
+
+.login-button:active {
+    transform: scale(.985);
+}
+
+.button-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--primary);
+    color: #FFFFFF;
+}
+
+.button-icon i {
+    font-size: 23px;
+}
+
+.servant-button .button-icon {
+    background: var(--gold-pale);
+    color: var(--primary);
+    border: 1px solid #E9E0CE;
+}
+
+.button-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.button-title {
+    display: block;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.button-description {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.8;
+}
+
+.arrow-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    color: var(--gold);
+    margin-right: auto;
+}
+
+.panel-footer {
+    margin-top: 15px;
+    padding-top: 13px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.panel-footer i {
+    font-size: 14px;
+    color: var(--gold);
+}
+
+.footer {
+    padding: 18px 12px 5px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 2;
+    text-align: center;
+}
+
+.footer strong {
+    color: var(--primary);
+}
+
+/* إشعار التحديث */
+.pull-indicator {
+    position: fixed;
+    z-index: 10;
+    top: max(8px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translate(-50%, -70px);
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    background: #FFFFFF;
+    color: var(--primary);
+    font-size: 11px;
+    box-shadow: var(--shadow);
+    white-space: nowrap;
+    pointer-events: none;
+    transition: transform .2s;
+}
+
+.pull-indicator.visible {
+    transform: translate(-50%, 0);
+}
+
+@media (min-width: 600px) {
+    body {
+        background: #FAFAFA;
     }
 
-    to{
-        opacity:1;
-        transform:translateY(0) scale(1);
+    .app {
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+    }
+}
+
+@media (max-width: 360px) {
+    .hero {
+        margin: 13px 10px 0;
+        padding: 23px 13px;
     }
 
-}
-
-
-/* =========================
-   الخط العلوي
-========================= */
-
-.top-line{
-
-    height:6px;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--maroon),
-            var(--gold),
-            var(--maroon)
-        );
-}
-
-
-/* =========================
-   جسم الكارت
-========================= */
-
-.box-body{
-
-    padding:32px 30px 34px;
-
-    text-align:center;
-}
-
-
-/* =========================
-   الشعار
-========================= */
-
-.logo-container{
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    margin-bottom:22px;
-}
-
-.church-logo{
-
-    width:94px;
-
-    height:94px;
-
-    border-radius:50%;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    color:#fff;
-
-    font-size:42px;
-
-    background:
-        linear-gradient(
-            145deg,
-            var(--maroon2),
-            var(--maroon)
-        );
-
-    border:5px solid #fff;
-
-    outline:2px solid rgba(214,173,99,.65);
-
-    box-shadow:
-        0 15px 35px rgba(125,20,36,.30),
-        inset 0 2px 8px rgba(255,255,255,.18);
-
-    animation:logoFloat 3s ease-in-out infinite;
-}
-
-@keyframes logoFloat{
-
-    0%,100%{
-        transform:translateY(0);
+    .content {
+        padding: 21px 10px;
     }
 
-    50%{
-        transform:translateY(-5px);
+    .church-emblem {
+        width: 68px;
+        height: 68px;
     }
 
-}
-
-
-/* =========================
-   العنوان
-========================= */
-
-.formal-title{
-
-    font-family:'Amiri',serif;
-
-    font-size:clamp(22px,6vw,28px);
-
-    line-height:1.7;
-
-    color:#211918;
-
-    font-weight:700;
-}
-
-
-/* استيفانوس باللون الأسود */
-
-.formal-title .gold{
-
-    color:#211918;
-
-}
-
-
-/* =========================
-   الخط الفاصل
-========================= */
-
-.divider{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:10px;
-
-    margin:18px auto 13px;
-
-    width:80%;
-}
-
-.divider::before,
-.divider::after{
-
-    content:"";
-
-    height:1px;
-
-    flex:1;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            #d8c7a5
-        );
-}
-
-.divider::after{
-
-    background:
-        linear-gradient(
-            90deg,
-            #d8c7a5,
-            transparent
-        );
-}
-
-.divider i{
-
-    color:var(--gold);
-
-    font-size:12px;
-}
-
-
-/* =========================
-   الوصف
-========================= */
-
-.subtitle{
-
-    font-size:15px;
-
-    color:var(--muted);
-
-    line-height:1.8;
-
-    margin-bottom:25px;
-}
-
-
-/* =========================
-   الأزرار
-========================= */
-
-.buttons{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:13px;
-}
-
-
-.login-button{
-
-    width:100%;
-
-    min-height:58px;
-
-    border:none;
-
-    border-radius:16px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:12px;
-
-    color:#fff;
-
-    font-family:'Tajawal',sans-serif;
-
-    font-size:17px;
-
-    font-weight:700;
-
-    cursor:pointer;
-
-    transition:.25s ease;
-
-    position:relative;
-
-    overflow:hidden;
-}
-
-
-.login-button::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:100%;
-
-    height:100%;
-
-    left:-100%;
-
-    top:0;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.18),
-            transparent
-        );
-
-    transition:.5s;
-}
-
-
-.login-button:hover::before{
-
-    left:100%;
-}
-
-
-.login-button:hover{
-
-    transform:translateY(-2px);
-}
-
-
-.login-button:active{
-
-    transform:scale(.98);
-}
-
-
-/* =========================
-   دخول مستخدم
-========================= */
-
-.user-button{
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--maroon2),
-            var(--maroon)
-        );
-
-    box-shadow:
-        0 10px 25px rgba(125,20,36,.28);
-}
-
-
-/* =========================
-   دخول خادم
-========================= */
-
-.servant-button{
-
-    background:
-        linear-gradient(
-            135deg,
-            #102f50,
-            #061a32
-        );
-
-    box-shadow:
-        0 10px 25px rgba(6,26,50,.28);
-}
-
-
-/* =========================
-   أيقونات الأزرار
-========================= */
-
-.login-button i{
-
-    font-size:19px;
-
-    width:24px;
-}
-
-
-/* =========================
-   أسفل الصفحة
-========================= */
-
-.footer{
-
-    margin-top:24px;
-
-    font-size:12px;
-
-    color:#aaa19b;
-}
-
-.footer i{
-
-    color:var(--maroon);
-
-    margin-left:4px;
-}
-
-
-/* =========================
-   الموبايل الصغير
-========================= */
-
-@media(max-width:380px){
-
-    .box-body{
-
-        padding:26px 20px 28px;
+    .church-emblem i {
+        font-size: 28px;
     }
 
-    .church-logo{
-
-        width:82px;
-
-        height:82px;
-
-        font-size:36px;
+    h1 {
+        font-size: 24px;
     }
 
-    .formal-title{
-
-        font-size:21px;
+    .login-panel {
+        padding: 9px;
     }
 
-    .login-button{
-
-        min-height:54px;
-
-        font-size:16px;
+    .login-button {
+        gap: 9px;
+        padding: 10px;
     }
 
+    .button-icon {
+        width: 43px;
+        height: 43px;
+    }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
 </style>
 </head>
 
-
 <body>
 
+<div class="pull-indicator" id="pullIndicator">
+    <i class="fa-solid fa-rotate"></i>
+    جاري تحديث الصفحة...
+</div>
 
-<div class="welcome-box">
+<main class="app">
 
-    <div class="top-line"></div>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon" aria-hidden="true">
+                <i class="fa-solid fa-house"></i>
+            </div>
 
+            <div>
+                <div class="brand-title">برنامج الكنيسة</div>
+                <div class="brand-subtitle">الصفحة الرئيسية</div>
+            </div>
+        </div>
 
-    <div class="box-body">
+        <button class="refresh-btn" id="refreshBtn" type="button" aria-label="تحديث الصفحة" title="تحديث الصفحة">
+            <i class="fa-solid fa-rotate"></i>
+        </button>
+    </header>
 
+    <section class="hero">
+        <div class="church-emblem" aria-hidden="true">
+            <i class="fa-solid fa-church"></i>
+        </div>
 
-        <!-- شعار الكنيسة -->
+        <div class="hero-label">
+            <i class="fa-solid fa-house"></i>
+            الصفحة الرئيسية
+        </div>
 
-        <div class="logo-container">
+        <h1>
+            كنيسة الشهيد العظيم
+            <span class="church-name">
+                <span class="name-highlight">استيفانوس</span>
+            </span>
+            ومارمينا العجايبي
+        </h1>
 
-            <div class="church-logo">
+        <div class="hero-divider"></div>
+    </section>
 
-                <i class="fas fa-cross"></i>
+    <section class="content">
+
+        <div class="section-heading">
+            <div class="heading-icon" aria-hidden="true">
+                <i class="fa-solid fa-right-to-bracket"></i>
+            </div>
+
+            <div>
+                <h2 class="heading-title">تسجيل الدخول</h2>
+                <p class="heading-subtitle">اختر نوع الحساب للمتابعة</p>
+            </div>
+        </div>
+
+        <div class="login-panel">
+            <div class="login-options">
+
+                <button type="button" id="login-btn" class="login-button">
+                    <span class="button-icon" aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+
+                    <span class="button-copy">
+                        <span class="button-title">دخول مستخدم</span>
+                        <span class="button-description">الدخول إلى حساب المستخدم</span>
+                    </span>
+
+                    <i class="fa-solid fa-chevron-left arrow-icon" aria-hidden="true"></i>
+                </button>
+
+                <button type="button" id="servant-btn" class="login-button servant-button">
+                    <span class="button-icon" aria-hidden="true">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </span>
+
+                    <span class="button-copy">
+                        <span class="button-title">دخول خادم</span>
+                        <span class="button-description">الدخول إلى حساب الخادم</span>
+                    </span>
+
+                    <i class="fa-solid fa-chevron-left arrow-icon" aria-hidden="true"></i>
+                </button>
 
             </div>
 
+            <div class="panel-footer">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                بوابة الدخول إلى برنامج الكنيسة
+            </div>
         </div>
 
+        <footer class="footer">
+            <strong>كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</strong>
+        </footer>
 
-        <!-- اسم البرنامج -->
+    </section>
 
-        <div class="formal-title">
-
-            أهلاً ببرنامج كنيسة الشهيد العظيم
-
-            <span class="gold">
-                استيفانوس
-            </span>
-
-            ومارمينا العجايبي
-
-        </div>
-
-
-        <!-- فاصل -->
-
-        <div class="divider">
-
-            <i class="fas fa-cross"></i>
-
-        </div>
-
-
-        <!-- الوصف -->
-
-        <div class="subtitle">
-
-            برجاء اختيار نوع الدخول لمتابعة البرنامج
-
-        </div>
-
-
-        <!-- الأزرار -->
-
-        <div class="buttons">
-
-
-            <!-- دخول المستخدم -->
-
-            <button
-                type="button"
-                id="login-btn"
-                class="login-button user-button">
-
-                <i class="fas fa-user"></i>
-
-                <span>
-                    دخول مستخدم
-                </span>
-
-            </button>
-
-
-            <!-- دخول الخادم -->
-
-            <button
-                type="button"
-                id="servant-btn"
-                class="login-button servant-button">
-
-                <i class="fas fa-user-shield"></i>
-
-                <span>
-                    دخول خادم
-                </span>
-
-            </button>
-
-
-        </div>
-
-
-        <!-- أسفل الكارت -->
-
-        <div class="footer">
-
-            <i class="fas fa-church"></i>
-
-            برنامج خدمة الكنيسة
-
-        </div>
-
-
-    </div>
-
-</div>
-
-
+</main>
 
 <script>
+"use strict";
 
-
-/* =========================
-   دخول المستخدم
-========================= */
-
-document
-.getElementById("login-btn")
-.addEventListener("click", function(){
-
+/* دخول المستخدم */
+document.getElementById("login-btn").addEventListener("click", function () {
     window.location.href = "u/sign.html";
-
 });
 
-
-/* =========================
-   دخول الخادم
-   دخول مباشر
-========================= */
-
-document
-.getElementById("servant-btn")
-.addEventListener("click", function(){
-
+/* دخول الخادم */
+document.getElementById("servant-btn").addEventListener("click", function () {
     window.location.href = "a/sign.html";
-
 });
 
+/* زر تحديث الصفحة */
+const refreshBtn = document.getElementById("refreshBtn");
+const pullIndicator = document.getElementById("pullIndicator");
 
+refreshBtn.addEventListener("click", function () {
+    refreshBtn.classList.add("spinning");
+    window.location.reload();
+});
+
+/* السحب لأسفل لتحديث الصفحة على الهاتف */
+let startY = 0;
+let startX = 0;
+let pulling = false;
+let refreshing = false;
+
+document.addEventListener("touchstart", function (event) {
+    if (
+        event.touches.length !== 1 ||
+        window.scrollY > 0 ||
+        refreshing
+    ) {
+        pulling = false;
+        return;
+    }
+
+    startY = event.touches[0].clientY;
+    startX = event.touches[0].clientX;
+    pulling = true;
+}, { passive: true });
+
+document.addEventListener("touchend", function (event) {
+    if (!pulling || !event.changedTouches.length) return;
+
+    const endY = event.changedTouches[0].clientY;
+    const endX = event.changedTouches[0].clientX;
+
+    const distanceY = endY - startY;
+    const distanceX = Math.abs(endX - startX);
+
+    pulling = false;
+
+    if (
+        distanceY > 85 &&
+        distanceX < 55 &&
+        window.scrollY <= 0 &&
+        !refreshing
+    ) {
+        refreshing = true;
+        pullIndicator.classList.add("visible");
+
+        setTimeout(function () {
+            window.location.reload();
+        }, 300);
+    }
+}, { passive: true });
+
+document.addEventListener("touchcancel", function () {
+    pulling = false;
+    pullIndicator.classList.remove("visible");
+}, { passive: true });
 </script>
-
 
 </body>
 </html>
-```
