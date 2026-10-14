@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -56,16 +55,33 @@
 
             font-family: "Cairo", sans-serif;
 
-            background:
-                radial-gradient(
-                    circle at top,
-                    var(--navy-mid) 0%,
-                    var(--navy-deep) 45%,
-                    var(--navy-edge) 100%
-                );
-
+            background: #f5f6f8;
             color: var(--ink);
         }
+
+        /* Clean white page theme */
+        .page-shell { background: transparent; }
+        .hero { background: #ffffff !important; color: var(--ink) !important; border: 1px solid #e7e9ee; box-shadow: 0 8px 26px rgba(20,30,50,.06); }
+        .hero h1, .hero p { color: var(--ink) !important; }
+        .grade-banner, .notification-status, .control-panel { background: #ffffff !important; border-color: #e6e8ee !important; box-shadow: 0 5px 18px rgba(20,30,50,.045); }
+        .card { background: #ffffff !important; border-color: #e5e7eb !important; box-shadow: 0 5px 18px rgba(20,30,50,.055) !important; }
+        .history-heading { margin: 22px 0 12px; display:flex; align-items:center; gap:10px; color:#242b36; font-size:18px; font-weight:800; }
+        .history-heading i { color: var(--maroon); }
+        .history-note { color:#737b88; font-size:12px; font-weight:600; margin-top:-5px; margin-bottom:12px; }
+        .sent-date { display:inline-flex; align-items:center; gap:7px; margin-top:10px; padding:6px 10px; border-radius:9px; background:#f4f6f9; color:#687182; font-size:12px; font-weight:700; }
+        .history-divider { margin:28px 0 18px; border:0; border-top:1px solid #e4e7ed; }
+
+        .messages-title-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:8px}
+        .history-open-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 17px;border-radius:13px;background:linear-gradient(135deg,#7d1424,#a52a3b);color:#fff;font-weight:800;box-shadow:0 7px 18px rgba(125,20,36,.18);cursor:pointer;white-space:nowrap;transition:transform .15s,box-shadow .15s}
+        .history-open-btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(125,20,36,.22)}
+        .history-page{margin-top:22px;padding:clamp(14px,3vw,26px);background:#fff;border:1px solid #e6e8ee;border-radius:22px;box-shadow:0 12px 34px rgba(20,30,50,.07);min-height:320px}
+        .history-page[hidden]{display:none!important}
+        .history-page-header{display:flex;flex-direction:column;gap:20px;margin-bottom:22px}
+        .history-back-btn{align-self:flex-start;display:flex;align-items:center;gap:8px;background:#f4f5f7;color:#303744;border:1px solid #e6e8ee;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}
+        .history-page-title{display:flex;align-items:center;gap:14px}.history-big-icon{width:56px;height:56px;display:grid;place-items:center;border-radius:17px;background:#fff0f2;color:#8b1e2d;font-size:23px}.history-page-title h2{margin:0;color:#222936;font-size:26px;font-weight:900}.history-page-title p{margin:3px 0 0;color:#7a8290;font-size:13px}
+        .history-search-wrap{display:flex;align-items:center;gap:11px;background:#f7f8fa;border:1px solid #e3e6ec;border-radius:14px;padding:0 15px;margin-bottom:12px;color:#8b1e2d}.history-search-wrap:focus-within{border-color:#a52a3b;box-shadow:0 0 0 3px rgba(165,42,59,.08)}.history-search-wrap input{width:100%;min-width:0;border:0;outline:0;background:transparent;padding:15px 0;color:#252b36;font:inherit;font-size:14px}.history-search-count{font-size:12px;color:#7b8290;font-weight:700;margin:10px 2px 15px}
+        @media(max-width:560px){.messages-title-row{align-items:flex-start}.messages-title-row .history-heading{font-size:16px}.history-open-btn{padding:10px 12px;font-size:12px}.history-page-title h2{font-size:23px}.history-search-wrap input{font-size:12px}}
+
 
         button,
         input,
@@ -1558,15 +1574,29 @@
              NOTIFICATIONS
         ================================================== -->
 
-        <div
-            id="notificationsContainer"
-            class="list">
-
-            <div class="no-data">
-                جاري تحميل إشعارات صفك...
+        <div class="messages-title-row">
+            <div>
+                <h2 class="history-heading"><i class="fas fa-bell"></i> الرسائل الجديدة</h2>
+                <div class="history-note">الرسائل خلال آخر 7 أيام</div>
             </div>
-
+            <button type="button" id="openHistoryBtn" class="history-open-btn">
+                <i class="fas fa-box-archive"></i> History
+            </button>
         </div>
+        <div id="notificationsContainer" class="list">
+            <div class="no-data">جاري تحميل إشعارات صفك...</div>
+        </div>
+
+        <section id="historyPage" class="history-page" hidden>
+            <div class="history-page-header">
+                <button type="button" id="closeHistoryBtn" class="history-back-btn"><i class="fas fa-arrow-right"></i> رجوع للرسائل</button>
+                <div class="history-page-title"><span class="history-big-icon"><i class="fas fa-box-archive"></i></span><div><h2>History</h2><p>أرشيف كل الرسائل القديمة</p></div></div>
+            </div>
+            <div class="history-search-wrap"><i class="fas fa-search"></i><input type="search" id="historySearch" placeholder="ابحث بالعنوان أو محتوى الرسالة أو التاريخ..."></div>
+            <div id="historySearchCount" class="history-search-count">جاري تحميل الأرشيف...</div>
+            <div id="historyContainer" class="list"><div class="no-data">جاري تجهيز سجل الرسائل...</div></div>
+            <div id="historyNoResults" class="no-data" hidden>مفيش رسائل مطابقة لبحثك.</div>
+        </section>
 
     </main>
 
@@ -1712,6 +1742,67 @@
             document.getElementById(
                 "notificationsContainer"
             );
+
+        const historyContainer = document.getElementById("historyContainer");
+        const historyPage = document.getElementById("historyPage");
+        const openHistoryBtn = document.getElementById("openHistoryBtn");
+        const closeHistoryBtn = document.getElementById("closeHistoryBtn");
+        const historySearch = document.getElementById("historySearch");
+        const historySearchCount = document.getElementById("historySearchCount");
+        const historyNoResults = document.getElementById("historyNoResults");
+
+        openHistoryBtn.addEventListener("click", () => {
+            historyPage.hidden = false;
+            document.getElementById("notificationsContainer").hidden = true;
+            document.querySelector(".messages-title-row").hidden = true;
+            historySearch.value = "";
+            filterHistoryMessages();
+            historySearch.focus();
+            historyPage.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        closeHistoryBtn.addEventListener("click", () => {
+            historyPage.hidden = true;
+            document.getElementById("notificationsContainer").hidden = false;
+            document.querySelector(".messages-title-row").hidden = false;
+            document.querySelector(".messages-title-row").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        historySearch.addEventListener("input", filterHistoryMessages);
+
+        function filterHistoryMessages() {
+            const term = normalizeSearchText(historySearch.value);
+            const cards = Array.from(historyContainer.querySelectorAll(".card"));
+            let shown = 0;
+            cards.forEach(card => {
+                const matches = normalizeSearchText(card.innerText).includes(term);
+                card.hidden = !matches;
+                if (matches) shown++;
+            });
+            historySearchCount.textContent = `${shown} رسالة من أصل ${cards.length}`;
+            historyNoResults.hidden = shown !== 0 || cards.length === 0;
+            if (cards.length === 0) historyNoResults.hidden = true;
+        }
+
+        function normalizeSearchText(value) {
+            return String(value || "").toLowerCase().replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").trim();
+        }
+
+        function getMessageDate(item) {
+            const value = item.timestamp || item.createdAt || item.sentAt || item.date;
+            if (!value) return null;
+            let date = null;
+            if (value && typeof value.toDate === "function") date = value.toDate();
+            else if (value instanceof Date) date = value;
+            else if (typeof value === "number" || typeof value === "string") date = new Date(value);
+            return date && !Number.isNaN(date.getTime()) ? date : null;
+        }
+
+        function formatSentDate(item) {
+            const date = getMessageDate(item);
+            if (!date) return "تاريخ الإرسال غير متوفر";
+            return `تم الإرسال يوم ${date.toLocaleDateString("ar-EG", {weekday:"long", year:"numeric", month:"long", day:"numeric"})} الساعة ${date.toLocaleTimeString("ar-EG", {hour:"2-digit", minute:"2-digit"})}`;
+        }
 
 
         const sound =
@@ -1872,6 +1963,34 @@
 
 
         let firstLoad = true;
+        const knownNotificationIds = new Set();
+        let usersIndexPromise = null;
+
+        function normalizeUsername(value) {
+            return String(value || "").trim().toLowerCase();
+        }
+
+        async function getUsersIndex() {
+            if (!usersIndexPromise) {
+                usersIndexPromise = getDocs(collection(db, "users"))
+                    .then((usersSnap) => {
+                        const index = new Map();
+                        usersSnap.forEach((userDoc) => {
+                            const data = userDoc.data();
+                            const docId = normalizeUsername(userDoc.id);
+                            const username = normalizeUsername(data.username);
+                            if (docId) index.set(docId, userDoc);
+                            if (username) index.set(username, userDoc);
+                        });
+                        return index;
+                    })
+                    .catch((error) => {
+                        usersIndexPromise = null;
+                        throw error;
+                    });
+            }
+            return usersIndexPromise;
+        }
 
 
         /* =====================================================
@@ -2087,76 +2206,11 @@
            FIND USER
         ===================================================== */
 
-        async function findUserByUsername(
-            username
-        ) {
-
-            if (!username) {
-
-                return null;
-
-            }
-
-
-            const cleanUsername =
-                String(username)
-                    .trim()
-                    .toLowerCase();
-
-
-            const usersSnap =
-                await getDocs(
-                    collection(
-                        db,
-                        "users"
-                    )
-                );
-
-
-            for (
-                const userDoc
-                of usersSnap.docs
-            ) {
-
-                const data =
-                    userDoc.data();
-
-
-                const docId =
-                    String(
-                        userDoc.id
-                    )
-                        .trim()
-                        .toLowerCase();
-
-
-                const dataUsername =
-                    data.username
-                        ? String(
-                            data.username
-                        )
-                            .trim()
-                            .toLowerCase()
-                        : "";
-
-
-                if (
-                    docId ===
-                    cleanUsername ||
-
-                    dataUsername ===
-                    cleanUsername
-                ) {
-
-                    return userDoc;
-
-                }
-
-            }
-
-
-            return null;
-
+        async function findUserByUsername(username) {
+            const cleanUsername = normalizeUsername(username);
+            if (!cleanUsername) return null;
+            const usersIndex = await getUsersIndex();
+            return usersIndex.get(cleanUsername) || null;
         }
 
 
@@ -2733,10 +2787,10 @@
             async (snapshot) => {
 
                 container.innerHTML = "";
+                historyContainer.innerHTML = "";
 
-
-                let renderedAny =
-                    false;
+                let renderedAny = false;
+                let renderedHistory = false;
 
 
                 /*
@@ -2756,6 +2810,9 @@
 
                     const docId =
                         docSnap.id;
+
+                    const isNewNotification =
+                        !firstLoad && !knownNotificationIds.has(docId);
 
 
                     /* =================================================
@@ -2886,8 +2943,13 @@
                        الإشعار تابع للصف
                     ================================================= */
 
-                    renderedAny =
-                        true;
+                    const messageDate = getMessageDate(item);
+                    const isArchived = messageDate
+                        ? (Date.now() - messageDate.getTime()) >= 7 * 24 * 60 * 60 * 1000
+                        : false;
+                    const targetContainer = isArchived ? historyContainer : container;
+                    if (isArchived) renderedHistory = true;
+                    else renderedAny = true;
 
 
                     /* =================================================
@@ -3194,6 +3256,7 @@
 
 
                                 ${metaHTML}
+                                <div class="sent-date"><i class="far fa-clock"></i> ${escapeHtml(formatSentDate(item))}</div>
 
                             </div>
 
@@ -3205,9 +3268,7 @@
                     `;
 
 
-                    container.appendChild(
-                        card
-                    );
+                    targetContainer.appendChild(card);
 
 
                     /* =================================================
@@ -3309,15 +3370,12 @@
                     ================================================= */
 
                     if (
-                        !firstLoad &&
+                        isNewNotification &&
                         !item.isRead
                     ) {
 
-                        sound
-                            .play()
-                            .catch(
-                                () => {}
-                            );
+                        sound.currentTime = 0;
+                        sound.play().catch(() => {});
 
 
                         if (
@@ -3353,24 +3411,18 @@
                 ================================================= */
 
                 if (!renderedAny) {
-
-                    container.innerHTML =
-                        `
-
-                        <div class="no-data">
-
-                            لا توجد إشعارات أو طلبات
-                            خاصة بصفك حالياً
-
-                        </div>
-
-                        `;
-
+                    container.innerHTML = `<div class="no-data">لا توجد رسائل جديدة خلال آخر 7 أيام</div>`;
                 }
+                if (!renderedHistory) {
+                    historyContainer.innerHTML = `<div class="no-data">لا توجد رسائل قديمة في History حالياً</div>`;
+                }
+                filterHistoryMessages();
 
+                snapshot.docs.forEach((docSnap) => {
+                    knownNotificationIds.add(docSnap.id);
+                });
 
-                firstLoad =
-                    false;
+                firstLoad = false;
 
             },
 
@@ -3404,4 +3456,3 @@
 </body>
 
 </html>
-```
