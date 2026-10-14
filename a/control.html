@@ -437,6 +437,9 @@
       <span>لوحة التحكم</span>
     </div>
     <div class="topbar-actions">
+      <button id="profileBtn" class="topbar-btn" type="button" title="الملف الشخصي">
+        <i class="fas fa-user"></i>
+      </button>
       <button id="homeBtn" class="topbar-btn" type="button" title="الرئيسية">
         <i class="fas fa-house"></i>
       </button>
@@ -788,11 +791,19 @@
               <p>${escapeHtml(userGrade(user))} • ${userPoints(user)} نقطة${isBanned(user) ? " • محظور" : ""}</p>
             </div>
           </div>
-          <button class="manage-btn" type="button" data-user-id="${escapeHtml(user.id)}">
-            إدارة <i class="fas fa-arrow-left"></i>
-          </button>
+          <div class="actions">
+            <button class="manage-btn" type="button" data-user-id="${escapeHtml(user.id)}">
+              إدارة <i class="fas fa-sliders"></i>
+            </button>
+            <button class="manage-btn" type="button" data-profile-id="${escapeHtml(user.id)}">
+              بروفايل المخدوم <i class="fas fa-user"></i>
+            </button>
+          </div>
         `;
-        card.querySelector(".manage-btn").addEventListener("click", () => openModal(user.id));
+        card.querySelector("[data-user-id]").addEventListener("click", () => openModal(user.id));
+        card.querySelector("[data-profile-id]").addEventListener("click", () => {
+          location.href = `../u/profile.html?id=${encodeURIComponent(user.id)}`;
+        });
         usersGrid.appendChild(card);
       });
     }
@@ -987,6 +998,7 @@
     $("#loadBtn").addEventListener("click", loadPage);
     $("#refreshBtn").addEventListener("click", loadPage);
     $("#homeBtn").addEventListener("click", () => { location.href = "home.html"; });
+    $("#profileBtn").addEventListener("click", () => { location.href = "profile.html"; });
     $("#closeModalBtn").addEventListener("click", closeModal);
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay) closeModal();
