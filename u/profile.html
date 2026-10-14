@@ -1,3151 +1,592 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الملف الشخصي - لوحة التحكم</title>
 
-
-    <!-- =====================================================
-         الخطوط
-    ====================================================== -->
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800;900&display=swap"
-        rel="stylesheet">
-
-
-    <!-- =====================================================
-         Font Awesome
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-
-        /* =====================================================
-           الألوان
-        ====================================================== */
-
-        :root {
-
-            --wine-900: #4a0e16;
-            --wine-800: #6b1420;
-            --wine-700: #7c1b28;
-
-            --gold: #c9a04d;
-            --gold-light: #e6c878;
-
-            --paper: #f6f1e9;
-
-            --card: #ffffff;
-
-            --ink: #2a2320;
-            --ink-soft: #6b625c;
-
-            --line: #e9dfd0;
-
-            --green: #16a34a;
-            --green-dark: #15803d;
-
-            --red: #dc2626;
-
+        :root{
+            --wine-900:#4a0e16;
+            --wine-800:#6b1420;
+            --wine-700:#7c1b28;
+            --gold:#c9a04d;
+            --gold-light:#e6c878;
+            --paper:#f6f1e9;
+            --card:#ffffff;
+            --ink:#2a2320;
+            --ink-soft:#6b625c;
+            --line:#e9dfd0;
+            --green:#16a34a;
+            --green-dark:#15803d;
         }
 
+        * { box-sizing:border-box; margin:0; padding:0; }
 
-        /* =====================================================
-           Reset
-        ====================================================== */
-
-        * {
-
-            box-sizing: border-box;
-
-            margin: 0;
-            padding: 0;
-
+        body{
+            background:var(--paper);
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+            font-family:'Cairo', sans-serif;
+            color:var(--ink);
         }
 
-
-        /* =====================================================
-           Body
-        ====================================================== */
-
-        body {
-
-            background: var(--paper);
-
-            display: flex;
-
-            flex-direction: column;
-
-            min-height: 100vh;
-
-            font-family: 'Cairo', sans-serif;
-
-            color: var(--ink);
-
+        /* ===== الهيدر ===== */
+        header.church-header{
+            background:linear-gradient(180deg, var(--wine-800), var(--wine-900));
+            padding:18px 18px 22px;
+            position:relative;
+            box-shadow:0 8px 20px rgba(74,14,22,0.25);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
         }
 
-
-        /* =====================================================
-           Header
-        ====================================================== */
-
-        header.church-header {
-
-            width: 100%;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    var(--wine-800),
-                    var(--wine-900)
-                );
-
-            padding: 18px 30px 22px;
-
-            position: relative;
-
-            box-shadow:
-                0 8px 20px
-                rgba(74, 14, 22, 0.25);
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
+        header.church-header::after{
+            content:'';
+            position:absolute;
+            bottom:0; right:0; left:0;
+            height:4px;
+            background:linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
-
-        header.church-header::after {
-
-            content: '';
-
-            position: absolute;
-
-            bottom: 0;
-
-            right: 0;
-
-            left: 0;
-
-            height: 4px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    transparent,
-                    var(--gold),
-                    transparent
-                );
-
+        header.church-header h2{
+            font-family:'Amiri', serif;
+            color:#fbeed4;
+            font-size:18px;
+            font-weight:700;
         }
 
-
-        header.church-header h2 {
-
-            font-family: 'Amiri', serif;
-
-            color: #fbeed4;
-
-            font-size: 21px;
-
-            font-weight: 700;
-
+        .back-btn{
+            background:rgba(255,255,255,0.08);
+            border:1.5px solid rgba(230,200,120,0.4);
+            color:var(--gold-light);
+            padding:8px 16px;
+            border-radius:20px;
+            font-family:'Cairo', sans-serif;
+            font-weight:600;
+            font-size:13px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            gap:6px;
+            text-decoration:none;
+            transition:all .25s ease;
         }
 
-
-        /* =====================================================
-           Back Button
-        ====================================================== */
-
-        .back-btn {
-
-            background:
-                rgba(255, 255, 255, 0.08);
-
-            border:
-                1.5px solid
-                rgba(230, 200, 120, 0.4);
-
-            color: var(--gold-light);
-
-            padding: 9px 18px;
-
-            border-radius: 20px;
-
-            font-family: 'Cairo', sans-serif;
-
-            font-weight: 600;
-
-            font-size: 14px;
-
-            cursor: pointer;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 7px;
-
-            text-decoration: none;
-
-            transition: all 0.25s ease;
-
+        .back-btn:hover{
+            background:rgba(230,200,120,0.15);
+            border-color:var(--gold);
+            transform:translateY(-2px);
         }
 
-
-        .back-btn:hover {
-
-            background:
-                rgba(230, 200, 120, 0.15);
-
-            border-color: var(--gold);
-
-            transform: translateY(-2px);
-
+        /* ===== المحتوى ===== */
+        .main-content{
+            flex:1;
+            padding:18px 16px 40px;
+            max-width:620px;
+            width:100%;
+            margin:0 auto;
         }
 
-
-        /* =====================================================
-           Main
-        ====================================================== */
-
-        .main-content {
-
-            flex: 1;
-
-            padding: 30px 30px 55px;
-
-            max-width: 1200px;
-
-            width: 100%;
-
-            margin: 0 auto;
-
+        /* ===== الويدجت الموحد ===== */
+        .widget{
+            background:var(--card);
+            border-radius:22px;
+            border:1px solid var(--line);
+            box-shadow:0 12px 28px rgba(74,14,22,0.08);
+            margin-bottom:18px;
+            overflow:hidden;
+            position:relative;
         }
 
-
-        /* =====================================================
-           Loading
-        ====================================================== */
-
-        .loading {
-
-            color: var(--wine-700);
-
-            font-size: 20px;
-
-            font-weight: 700;
-
-            text-align: center;
-
-            padding: 80px 20px;
-
+        .widget::before{
+            content:'';
+            position:absolute;
+            top:0; right:0; left:0;
+            height:3px;
+            background:linear-gradient(90deg, var(--wine-700), var(--gold), var(--wine-700));
+            opacity:.9;
         }
 
-
-        /* =====================================================
-           Widgets
-        ====================================================== */
-
-        .widget {
-
-            background: var(--card);
-
-            border-radius: 24px;
-
-            border: 1px solid var(--line);
-
-            box-shadow:
-                0 14px 32px
-                rgba(74, 14, 22, 0.10);
-
-            margin-bottom: 24px;
-
-            overflow: hidden;
-
-            position: relative;
-
+        .widget-head{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            padding:16px 18px 12px;
+            border-bottom:1px dashed var(--line);
         }
 
-
-        .widget::before {
-
-            content: '';
-
-            position: absolute;
-
-            top: 0;
-
-            right: 0;
-
-            left: 0;
-
-            height: 4px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--wine-700),
-                    var(--gold),
-                    var(--wine-700)
-                );
-
-            opacity: 0.95;
-
+        .widget-head .title-row{
+            display:flex;
+            align-items:center;
+            gap:10px;
         }
 
-
-        /* =====================================================
-           Profile Widget
-        ====================================================== */
-
-        .profile-widget .widget-body {
-
-            padding: 40px 30px 42px;
-
-            text-align: center;
-
+        .widget-head .icon-badge{
+            width:30px; height:30px;
+            border-radius:10px;
+            background:var(--wine-700);
+            color:var(--gold-light);
+            display:flex; align-items:center; justify-content:center;
+            font-size:13px;
+            flex-shrink:0;
         }
 
-
-        /* =====================================================
-           Avatar
-        ====================================================== */
-
-        .avatar-container {
-
-            position: relative;
-
-            width: 145px;
-
-            height: 145px;
-
-            margin: 0 auto 20px;
-
+        .widget-head h3{
+            font-size:14px;
+            font-weight:700;
+            color:var(--wine-800);
         }
 
-
-        .avatar-img {
-
-            width: 100%;
-
-            height: 100%;
-
-            border-radius: 50%;
-
-            object-fit: cover;
-
-            border:
-                4px solid
-                var(--gold);
-
-            box-shadow:
-                0 12px 28px
-                rgba(74, 14, 22, 0.23);
-
-            background: var(--paper);
-
+        /* بطاقة البروفايل */
+        .profile-widget .widget-body{
+            padding:22px 20px 26px;
+            text-align:center;
         }
 
-
-        /* =====================================================
-           Upload Button
-        ====================================================== */
-
-        .upload-btn-label {
-
-            position: absolute;
-
-            bottom: 3px;
-
-            left: 3px;
-
-            background: var(--wine-700);
-
-            color: var(--gold-light);
-
-            width: 43px;
-
-            height: 43px;
-
-            border-radius: 50%;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            cursor: pointer;
-
-            border:
-                3px solid
-                var(--card);
-
-            box-shadow:
-                0 5px 13px
-                rgba(0, 0, 0, 0.25);
-
-            transition: 0.3s;
-
+        .avatar-container{
+            position:relative;
+            width:104px;
+            height:104px;
+            margin:0 auto 14px;
         }
 
-
-        .upload-btn-label:hover {
-
-            background: var(--wine-900);
-
-            transform: scale(1.1);
-
+        .avatar-img{
+            width:100%;
+            height:100%;
+            border-radius:50%;
+            object-fit:cover;
+            border:3px solid var(--gold);
+            box-shadow:0 8px 20px rgba(74,14,22,0.2);
+            background:var(--paper);
         }
 
-
-        #avatar-input {
-
-            display: none;
-
+        .upload-btn-label{
+            position:absolute;
+            bottom:0; left:0;
+            background:var(--wine-700);
+            color:var(--gold-light);
+            width:34px; height:34px;
+            border-radius:50%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            cursor:pointer;
+            border:2px solid var(--card);
+            box-shadow:0 4px 10px rgba(0,0,0,0.25);
+            transition:.3s;
         }
 
-
-        /* =====================================================
-           Welcome
-        ====================================================== */
-
-        .profile-widget h1 {
-
-            font-family: 'Amiri', serif;
-
-            font-size: 31px;
-
-            color: var(--wine-800);
-
-            margin-bottom: 7px;
-
-            font-weight: 700;
-
+        .upload-btn-label:hover{
+            background:var(--wine-900);
+            transform:scale(1.08);
         }
 
+        #avatar-input{ display:none; }
 
-        /* =====================================================
-           Profile subtitle
-        ====================================================== */
-
-        .profile-subtitle {
-
-            color: var(--ink-soft);
-
-            font-size: 14px;
-
-            margin-top: 4px;
-
+        .profile-widget h1{
+            font-family:'Amiri', serif;
+            font-size:23px;
+            color:var(--wine-800);
+            margin-bottom:8px;
         }
 
-
-        /* =====================================================
-           Widget Header
-        ====================================================== */
-
-        .widget-head {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            padding: 20px 28px 16px;
-
-            border-bottom:
-                1px dashed
-                var(--line);
-
+        .badge{
+            display:inline-block;
+            background:var(--paper);
+            color:var(--wine-700);
+            padding:5px 16px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:600;
+            border:1px solid var(--line);
         }
 
+        /* قسم المعلومات */
+        .info-widget .widget-body{ padding:6px 18px 8px; }
 
-        .widget-head .title-row {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 11px;
-
+        .info-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:13px 0;
+            border-bottom:1px solid var(--line);
         }
 
+        .info-row:last-child{ border-bottom:none; }
 
-        .widget-head .icon-badge {
-
-            width: 36px;
-
-            height: 36px;
-
-            border-radius: 11px;
-
-            background: var(--wine-700);
-
-            color: var(--gold-light);
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 15px;
-
-            flex-shrink: 0;
-
+        .info-label{
+            color:var(--ink-soft);
+            font-size:14px;
         }
 
-
-        .widget-head-title {
-
-            font-family: 'Amiri', serif;
-
-            font-size: 20px;
-
-            color: var(--wine-800);
-
-            font-weight: 700;
-
+        .info-value{
+            color:var(--ink);
+            font-size:15px;
+            font-weight:700;
         }
-
-
-        /* =====================================================
-           Info Body
-        ====================================================== */
-
-        .info-widget .widget-body {
-
-            padding: 10px 30px 18px;
-
-        }
-
-
-        /* =====================================================
-           Information Grid
-        ====================================================== */
-
-        .info-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, minmax(0, 1fr));
-
-            column-gap: 35px;
-
-        }
-
-
-        /* =====================================================
-           Info Row
-        ====================================================== */
-
-        .info-row {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            padding: 18px 7px;
-
-            border-bottom:
-                1px solid
-                var(--line);
-
-            gap: 25px;
-
-            min-height: 65px;
-
-        }
-
-
-        .info-label {
-
-            color: var(--ink-soft);
-
-            font-size: 15px;
-
-            flex-shrink: 0;
-
-            font-weight: 600;
-
-        }
-
-
-        .info-value {
-
-            color: var(--ink);
-
-            font-size: 16px;
-
-            font-weight: 700;
-
-            min-width: 0;
-
-            text-align: right;
-
-            word-break: break-word;
-
-        }
-
-
-        /* =====================================================
-           Inputs
-        ====================================================== */
 
         .info-value input,
-        .info-value select {
-
-            background: var(--paper);
-
-            border:
-                1.5px solid
-                var(--gold);
-
-            color: var(--ink);
-
-            padding: 10px 13px;
-
-            border-radius: 10px;
-
-            font-family: 'Cairo', sans-serif;
-
-            font-size: 14px;
-
-            width: 300px;
-
-            max-width: 100%;
-
-            text-align: right;
-
-            outline: none;
-
-            direction: rtl;
-
-            transition: 0.2s;
-
+        .info-value select{
+            background:var(--paper);
+            border:1.5px solid var(--gold);
+            color:var(--ink);
+            padding:6px 10px;
+            border-radius:8px;
+            font-family:'Cairo', sans-serif;
+            font-size:14px;
+            width:170px;
+            text-align:center;
         }
 
-
-        .info-value select {
-
-            cursor: pointer;
-
+        .parents-title{
+            padding:14px 18px 4px;
+            font-weight:700;
+            font-size:13px;
+            color:var(--wine-800);
         }
 
+        .parents-body{ padding:0 18px 6px; }
 
-        .info-value input:focus,
-        .info-value select:focus {
-
-            border-color: var(--wine-700);
-
-            box-shadow:
-                0 0 0 3px
-                rgba(124, 27, 40, 0.08);
-
+        .btn{
+            background:linear-gradient(135deg, var(--wine-700), var(--wine-900));
+            color:#fbeed4;
+            border:none;
+            padding:9px 18px;
+            border-radius:20px;
+            font-family:'Cairo', sans-serif;
+            font-weight:600;
+            font-size:13px;
+            cursor:pointer;
+            box-shadow:0 4px 12px rgba(74,14,22,0.25);
+            transition:.3s;
         }
 
-
-        /* =====================================================
-           Parents
-        ====================================================== */
-
-        .parents-title {
-
-            padding:
-                20px 30px 7px;
-
-            font-weight: 700;
-
-            font-size: 15px;
-
-            color: var(--wine-800);
-
-            border-top:
-                1px solid
-                var(--line);
-
+        .btn:hover{
+            background:linear-gradient(135deg, var(--wine-900), var(--wine-700));
+            transform:translateY(-1px);
         }
 
-
-        .parents-body {
-
-            padding:
-                0 30px 15px;
-
+        .btn-save{
+            background:linear-gradient(135deg, var(--green), var(--green-dark));
+            box-shadow:0 4px 12px rgba(22,163,74,0.3);
         }
 
-
-        .parents-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, minmax(0, 1fr));
-
-            column-gap: 35px;
-
+        .btn-save:hover{
+            background:linear-gradient(135deg, var(--green-dark), #166534);
         }
 
-
-        /* =====================================================
-           Buttons
-        ====================================================== */
-
-        .btn {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--wine-700),
-                    var(--wine-900)
-                );
-
-            color: #fbeed4;
-
-            border: none;
-
-            padding: 10px 23px;
-
-            border-radius: 22px;
-
-            font-family: 'Cairo', sans-serif;
-
-            font-weight: 600;
-
-            font-size: 14px;
-
-            cursor: pointer;
-
-            box-shadow:
-                0 5px 14px
-                rgba(74, 14, 22, 0.25);
-
-            transition: 0.3s;
-
+        .loading{
+            color:var(--wine-700);
+            font-size:18px;
+            font-weight:700;
+            text-align:center;
+            padding:50px 20px;
         }
-
-
-        .btn:hover {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--wine-900),
-                    var(--wine-700)
-                );
-
-            transform: translateY(-2px);
-
-        }
-
-
-        .btn:disabled {
-
-            opacity: 0.65;
-
-            cursor: not-allowed;
-
-            transform: none;
-
-        }
-
-
-        /* =====================================================
-           Save Button
-        ====================================================== */
-
-        .btn-save {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--green),
-                    var(--green-dark)
-                );
-
-            box-shadow:
-                0 5px 14px
-                rgba(22, 163, 74, 0.3);
-
-        }
-
-
-        .btn-save:hover {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--green-dark),
-                    var(--green)
-                );
-
-        }
-
-
-        /* =====================================================
-           Desktop Large
-        ====================================================== */
-
-        @media (min-width: 1000px) {
-
-            .main-content {
-
-                max-width: 1200px;
-
-                padding-left: 40px;
-
-                padding-right: 40px;
-
-            }
-
-
-            .profile-widget {
-
-                min-height: 280px;
-
-            }
-
-
-            .info-grid {
-
-                column-gap: 50px;
-
-            }
-
-
-            .parents-grid {
-
-                column-gap: 50px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           Very Large Screens
-        ====================================================== */
-
-        @media (min-width: 1400px) {
-
-            .main-content {
-
-                max-width: 1250px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           Tablet
-        ====================================================== */
-
-        @media (max-width: 850px) {
-
-            .main-content {
-
-                max-width: 100%;
-
-                padding:
-                    24px
-                    18px
-                    45px;
-
-            }
-
-
-            .info-grid {
-
-                grid-template-columns: 1fr;
-
-            }
-
-
-            .parents-grid {
-
-                grid-template-columns: 1fr;
-
-            }
-
-
-            .info-value input,
-            .info-value select {
-
-                width: 250px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           Mobile
-        ====================================================== */
-
-        @media (max-width: 600px) {
-
-            header.church-header {
-
-                padding:
-                    16px
-                    15px
-                    20px;
-
-            }
-
-
-            header.church-header h2 {
-
-                font-size: 18px;
-
-            }
-
-
-            .back-btn {
-
-                padding:
-                    8px
-                    13px;
-
-                font-size: 12px;
-
-            }
-
-
-            .main-content {
-
-                width: 100%;
-
-                padding:
-                    18px
-                    11px
-                    35px;
-
-            }
-
-
-            .widget {
-
-                border-radius: 20px;
-
-                margin-bottom: 18px;
-
-            }
-
-
-            .profile-widget .widget-body {
-
-                padding:
-                    28px
-                    15px
-                    30px;
-
-            }
-
-
-            .avatar-container {
-
-                width: 115px;
-
-                height: 115px;
-
-            }
-
-
-            .upload-btn-label {
-
-                width: 38px;
-
-                height: 38px;
-
-            }
-
-
-            .profile-widget h1 {
-
-                font-size: 25px;
-
-            }
-
-
-            .profile-subtitle {
-
-                font-size: 12px;
-
-            }
-
-
-            .widget-head {
-
-                padding:
-                    16px
-                    16px
-                    13px;
-
-            }
-
-
-            .widget-head-title {
-
-                font-size: 17px;
-
-            }
-
-
-            .widget-head .icon-badge {
-
-                width: 32px;
-
-                height: 32px;
-
-            }
-
-
-            .info-widget .widget-body {
-
-                padding:
-                    5px
-                    16px
-                    8px;
-
-            }
-
-
-            .parents-title {
-
-                padding:
-                    15px
-                    16px
-                    5px;
-
-                font-size: 13px;
-
-            }
-
-
-            .parents-body {
-
-                padding:
-                    0
-                    16px
-                    7px;
-
-            }
-
-
-            .info-row {
-
-                align-items: flex-start;
-
-                padding:
-                    14px
-                    0;
-
-                gap: 12px;
-
-                min-height: 58px;
-
-            }
-
-
-            .info-label {
-
-                font-size: 12px;
-
-            }
-
-
-            .info-value {
-
-                font-size: 13px;
-
-                max-width: 62%;
-
-            }
-
-
-            .info-value input,
-            .info-value select {
-
-                width: 185px;
-
-                max-width: 100%;
-
-                font-size: 12px;
-
-                padding:
-                    8px
-                    9px;
-
-            }
-
-
-            .btn {
-
-                padding:
-                    8px
-                    14px;
-
-                font-size: 12px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           Small Mobile
-        ====================================================== */
-
-        @media (max-width: 400px) {
-
-            header.church-header h2 {
-
-                font-size: 16px;
-
-            }
-
-
-            .back-btn span {
-
-                display: none;
-
-            }
-
-
-            .info-row {
-
-                gap: 8px;
-
-            }
-
-
-            .info-value {
-
-                max-width: 58%;
-
-            }
-
-
-            .info-value input,
-            .info-value select {
-
-                width: 165px;
-
-            }
-
-        }
-
     </style>
 
-
-    <!-- =====================================================
-         Firebase
-    ====================================================== -->
-
+    <!-- مكتبات Firebase Firestore -->
     <script type="module">
-
-        import {
-            initializeApp
-        }
-        from
-        "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-
-        import {
-            getFirestore,
-            doc,
-            getDoc,
-            updateDoc
-        }
-        from
-        "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-
-        /* =====================================================
-           Firebase Configuration
-        ====================================================== */
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
-
-            apiKey:
-                "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-
-            authDomain:
-                "st-mina-c01ec.firebaseapp.com",
-
-            projectId:
-                "st-mina-c01ec",
-
-            storageBucket:
-                "st-mina-c01ec.firebasestorage.app",
-
-            messagingSenderId:
-                "792349150559",
-
-            appId:
-                "1:792349150559:web:8a86bbf57c2c7e351f3aea"
-
+            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+            authDomain: "st-mina-c01ec.firebaseapp.com",
+            projectId: "st-mina-c01ec",
+            storageBucket: "st-mina-c01ec.firebasestorage.app",
+            messagingSenderId: "792349150559",
+            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea"
         };
 
-
-        const app =
-            initializeApp(
-                firebaseConfig
-            );
-
-
-        const db =
-            getFirestore(app);
-
-
-        /* =====================================================
-           Variables
-        ====================================================== */
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
         let isEditing = false;
-
         let currentUsernameUrl = "";
 
-        let originalStage = "";
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
 
-        let originalGrade = "";
+            const storedCurrentUser = localStorage.getItem('currentUser');
+            let storedUserId = storedCurrentUser || '';
+            try {
+                const parsed = JSON.parse(storedCurrentUser || 'null');
+                if (parsed && typeof parsed === 'object') storedUserId = parsed.id || parsed.docId || parsed.userId || parsed.username || parsed.userName || '';
+            } catch (_) {}
+            currentUsernameUrl = urlParams.get('id') || urlParams.get('user') || urlParams.get('userId') || localStorage.getItem('userDocId') || storedUserId || localStorage.getItem('currentUsername') || localStorage.getItem('username');
 
-        let originalUsername = "";
+            const loadingText = document.getElementById('loading-text');
+            const profileContent = document.getElementById('profile-content');
 
-        let originalBirthdate = "";
+            if (!currentUsernameUrl) {
+                loadingText.innerText = "يرجى تسجيل الدخول أولاً أو تحديد المستخدم!";
+                return;
+            }
 
-        let originalAddress = "";
+            localStorage.setItem('userDocId', currentUsernameUrl);
 
-        let originalFather = "";
+            try {
+                const docRef = doc(db, "users", currentUsernameUrl);
+                const docSnap = await getDoc(docRef);
 
-        let originalMother = "";
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
 
+                    document.getElementById('welcome-msg').innerText = `أهلاً بك يا ${userData.username || currentUsernameUrl}`;
+                    document.getElementById('val-username').innerText = userData.username || "-";
+                    document.getElementById('val-userid').innerText = userData.userId || "-";
+                    document.getElementById('val-birthdate').innerText = userData.birthdate || "-";
+                    document.getElementById('val-stage').innerText = userData.stage || "-";
+                    document.getElementById('val-grade').innerText = userData.grade || "-";
+                    document.getElementById('val-address').innerText = userData.address || "-";
+                    document.getElementById('val-father').innerText = userData.fatherPhone || "-";
+                    document.getElementById('val-mother').innerText = userData.motherPhone || "-";
 
-        /* =====================================================
-           المراحل والصفوف
-        ====================================================== */
+                    if (userData.avatarUrl || userData.photoBase64 || userData.photo || userData.image) {
+                        document.getElementById('profile-avatar').src = userData.avatarUrl || userData.photoBase64 || userData.photo || userData.image;
+                    } else {
+                        document.getElementById('profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || 'User')}&background=7c1b28&color=fbeed4&size=150`;
+                    }
 
+                    loadingText.style.display = 'none';
+                    profileContent.style.display = 'block';
+
+                } else {
+                    loadingText.innerText = "عذراً، لم يتم العثور على بيانات هذا المستخدم!";
+                }
+
+            } catch (error) {
+                console.error("خطأ في جلب البيانات:", error);
+                loadingText.innerText = "حدث خطأ أثناء الاتصال بقاعدة البيانات.";
+            }
+        });
+
+        // خيارات المرحلة والصف الدراسي
         const stageGrades = {
-
-            "ابتدائي": [
-
-                "الأول الابتدائي",
-                "الثاني الابتدائي",
-                "الثالث الابتدائي",
-                "الرابع الابتدائي",
-                "الخامس الابتدائي",
-                "السادس الابتدائي"
-
-            ],
-
-            "إعدادي": [
-
-                "الأول الإعدادي",
-                "الثاني الإعدادي",
-                "الثالث الإعدادي"
-
-            ],
-
-            "ثانوي": [
-
-                "الأول الثانوي",
-                "الثاني الثانوي",
-                "الثالث الثانوي"
-
-            ]
-
+            'ابتدائي': ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'],
+            'إعدادي': ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'],
+            'ثانوي': ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي']
         };
 
-
-        /* =====================================================
-           Normalize Text
-        ====================================================== */
-
-        function normalizeText(value) {
-
-            if (
-                value === null ||
-                value === undefined
-            ) {
-
-                return "";
-
-            }
-
-
-            return String(value)
-
-                .replace(/\u200f/g, "")
-
-                .replace(/\u200e/g, "")
-
-                .replace(/\u00a0/g, " ")
-
-                .trim();
-
+        function buildStageSelect(current) {
+            const stages = Object.keys(stageGrades);
+            const options = stages.map(s => `<option value="${s}" ${s === current ? 'selected' : ''}>${s}</option>`).join('');
+            return `<select id="input-stage" onchange="onStageChange()">${options}</select>`;
         }
 
-
-        /* =====================================================
-           Normalize Stage
-        ====================================================== */
-
-        function normalizeStage(stage) {
-
-            const value =
-                normalizeText(stage);
-
-
-            const found =
-                Object.keys(stageGrades).find(
-
-                    s =>
-                        normalizeText(s) === value
-
-                );
-
-
-            return found || "";
-
+        function buildGradeSelect(stage, current) {
+            const grades = stageGrades[stage] || [];
+            const options = grades.map(g => `<option value="${g}" ${g === current ? 'selected' : ''}>${g}</option>`).join('');
+            return `<select id="input-grade">${options}</select>`;
         }
 
-
-        /* =====================================================
-           Normalize Grade
-        ====================================================== */
-
-        function normalizeGrade(
-            stage,
-            grade
-        ) {
-
-            const cleanStage =
-                normalizeStage(stage);
-
-
-            const cleanGrade =
-                normalizeText(grade);
-
-
-            const grades =
-                stageGrades[cleanStage] || [];
-
-
-            const found =
-                grades.find(
-
-                    g =>
-                        normalizeText(g) === cleanGrade
-
-                );
-
-
-            return found || "";
-
+        window.onStageChange = function() {
+            const stage = document.getElementById('input-stage').value;
+            document.getElementById('val-grade').innerHTML = buildGradeSelect(stage, '');
         }
 
-
-        /* =====================================================
-           Stage Select
-        ====================================================== */
-
-        function buildStageSelect(
-            currentStage
-        ) {
-
-            const cleanStage =
-                normalizeStage(
-                    currentStage
-                );
-
-
-            let html = `
-                <select id="input-stage">
-            `;
-
-
-            Object.keys(
-                stageGrades
-            ).forEach(
-
-                stage => {
-
-                    html += `
-                        <option
-                            value="${stage}"
-                            ${stage === cleanStage
-                                ? "selected"
-                                : ""}
-                        >
-                            ${stage}
-                        </option>
-                    `;
-
-                }
-
-            );
-
-
-            html += `
-                </select>
-            `;
-
-
-            return html;
-
-        }
-
-
-        /* =====================================================
-           Grade Select
-        ====================================================== */
-
-        function buildGradeSelect(
-            stage,
-            currentGrade
-        ) {
-
-            const cleanStage =
-                normalizeStage(stage);
-
-
-            const cleanGrade =
-                normalizeGrade(
-                    cleanStage,
-                    currentGrade
-                );
-
-
-            const grades =
-                stageGrades[cleanStage] || [];
-
-
-            let html = `
-                <select id="input-grade">
-            `;
-
-
-            grades.forEach(
-
-                grade => {
-
-                    html += `
-                        <option
-                            value="${grade}"
-                            ${grade === cleanGrade
-                                ? "selected"
-                                : ""}
-                        >
-                            ${grade}
-                        </option>
-                    `;
-
-                }
-
-            );
-
-
-            html += `
-                </select>
-            `;
-
-
-            return html;
-
-        }
-
-
-        /* =====================================================
-           تغيير المرحلة
-        ====================================================== */
-
-        window.onStageChange =
-            function () {
-
-                const stageSelect =
-                    document.getElementById(
-                        "input-stage"
-                    );
-
-
-                if (!stageSelect) {
-
-                    return;
-
-                }
-
-
-                const selectedStage =
-                    normalizeStage(
-                        stageSelect.value
-                    );
-
-
-                let targetGrade = "";
-
-
-                if (
-                    selectedStage ===
-                    normalizeStage(
-                        originalStage
-                    )
-                ) {
-
-                    targetGrade =
-                        normalizeGrade(
-                            selectedStage,
-                            originalGrade
-                        );
-
-                }
-
-
-                if (!targetGrade) {
-
-                    targetGrade =
-                        stageGrades[
-                            selectedStage
-                        ]?.[0] || "";
-
-                }
-
-
-                const gradeContainer =
-                    document.getElementById(
-                        "val-grade"
-                    );
-
-
-                if (!gradeContainer) {
-
-                    return;
-
-                }
-
-
-                gradeContainer.innerHTML =
-                    buildGradeSelect(
-                        selectedStage,
-                        targetGrade
-                    );
-
-
-                const gradeSelect =
-                    document.getElementById(
-                        "input-grade"
-                    );
-
-
-                if (
-                    gradeSelect &&
-                    targetGrade
-                ) {
-
-                    gradeSelect.value =
-                        targetGrade;
-
-                }
-
-            };
-
-
-        /* =====================================================
-           تحميل البروفايل
-        ====================================================== */
-
-        window.addEventListener(
-            "DOMContentLoaded",
-            async function () {
-
-                const urlParams =
-                    new URLSearchParams(
-                        window.location.search
-                    );
-
-
-                const urlUser =
-                    normalizeText(
-                        urlParams.get("user")
-                    );
-
-
-                const savedUserId =
-                    normalizeText(
-                        localStorage.getItem(
-                            "userDocId"
-                        )
-                    );
-
-
-                currentUsernameUrl =
-                    urlUser ||
-                    savedUserId;
-
-
-                const loadingText =
-                    document.getElementById(
-                        "loading-text"
-                    );
-
-
-                const profileContent =
-                    document.getElementById(
-                        "profile-content"
-                    );
-
-
-                if (!currentUsernameUrl) {
-
-                    loadingText.innerText =
-                        "يرجى تسجيل الدخول أولاً أو تحديد المستخدم!";
-
-                    return;
-
-                }
-
-
-                console.log(
-                    "================================"
-                );
-
-                console.log(
-                    "PROFILE DEBUG"
-                );
-
-                console.log(
-                    "Document ID المستخدم:",
-                    currentUsernameUrl
-                );
-
-                console.log(
-                    "URL user:",
-                    urlUser
-                );
-
-                console.log(
-                    "LocalStorage userDocId:",
-                    savedUserId
-                );
-
-                console.log(
-                    "================================"
-                );
-
-
+        window.toggleEditMode = async function() {
+            const textFields = ['username', 'birthdate', 'address', 'father', 'mother'];
+            const btn = document.getElementById('edit-btn');
+
+            if (!isEditing) {
+                textFields.forEach(field => {
+                    const span = document.getElementById(`val-${field}`);
+                    const val = span.innerText === '-' ? '' : span.innerText;
+                    span.innerHTML = `<input type="text" id="input-${field}" value="${val}">`;
+                });
+
+                const currentStage = document.getElementById('val-stage').innerText;
+                const currentGrade = document.getElementById('val-grade').innerText;
+                const stageValue = (currentStage in stageGrades) ? currentStage : 'ابتدائي';
+
+                document.getElementById('val-stage').innerHTML = buildStageSelect(stageValue);
+                document.getElementById('val-grade').innerHTML = buildGradeSelect(stageValue, currentGrade === '-' ? '' : currentGrade);
+
+                btn.innerText = "حفظ التغييرات";
+                btn.classList.add('btn-save');
+                isEditing = true;
+            } else {
+                const fields = ['username', 'birthdate', 'stage', 'grade', 'address', 'father', 'mother'];
+                btn.innerText = "جاري الحفظ...";
                 try {
-
-                    const docRef =
-                        doc(
-                            db,
-                            "users",
-                            currentUsernameUrl
-                        );
-
-
-                    const docSnap =
-                        await getDoc(
-                            docRef
-                        );
-
-
-                    if (!docSnap.exists()) {
-
-                        console.error(
-                            "❌ Document غير موجود:",
-                            currentUsernameUrl
-                        );
-
-
-                        loadingText.innerText =
-                            "عذراً، لم يتم العثور على بيانات هذا المستخدم في Firebase.";
-
-                        return;
-
-                    }
-
-
-                    currentUsernameUrl =
-                        docSnap.id;
-
-
-                    localStorage.setItem(
-                        "userDocId",
-                        docSnap.id
-                    );
-
-
-                    const userData =
-                        docSnap.data();
-
-
-                    console.log(
-                        "================================"
-                    );
-
-                    console.log(
-                        "✅ Firebase Document موجود"
-                    );
-
-                    console.log(
-                        "Document ID:",
-                        docSnap.id
-                    );
-
-                    console.log(
-                        "Firebase Data:",
-                        userData
-                    );
-
-                    console.log(
-                        "username:",
-                        userData.username
-                    );
-
-                    console.log(
-                        "userId:",
-                        userData.userId
-                    );
-
-                    console.log(
-                        "stage:",
-                        userData.stage
-                    );
-
-                    console.log(
-                        "grade:",
-                        userData.grade
-                    );
-
-                    console.log(
-                        "================================"
-                    );
-
-
-                    /* =================================================
-                       البيانات
-                    ================================================== */
-
-                    const username =
-                        normalizeText(
-                            userData.username
-                        ) ||
-
-                        normalizeText(
-                            userData.fullName
-                        ) ||
-
-                        docSnap.id;
-
-
-                    const rawStage =
-                        normalizeText(
-                            userData.stage
-                        );
-
-
-                    const rawGrade =
-                        normalizeText(
-                            userData.grade
-                        );
-
-
-                    const stage =
-                        normalizeStage(
-                            rawStage
-                        );
-
-
-                    const grade =
-                        normalizeGrade(
-                            stage,
-                            rawGrade
-                        );
-
-
-                    originalUsername =
-                        username;
-
-
-                    originalBirthdate =
-                        normalizeText(
-                            userData.birthdate
-                        );
-
-
-                    originalAddress =
-                        normalizeText(
-                            userData.address
-                        );
-
-
-                    originalFather =
-                        normalizeText(
-                            userData.fatherPhone
-                        );
-
-
-                    originalMother =
-                        normalizeText(
-                            userData.motherPhone
-                        );
-
-
-                    originalStage =
-                        stage ||
-                        rawStage;
-
-
-                    originalGrade =
-                        grade ||
-                        rawGrade;
-
-
-                    /* =================================================
-                       عرض البيانات
-                    ================================================== */
-
-                    document.getElementById(
-                        "welcome-msg"
-                    ).innerText =
-                        `أهلاً بك يا ${username}`;
-
-
-                    document.getElementById(
-                        "val-username"
-                    ).innerText =
-                        username || "-";
-
-
-                    document.getElementById(
-                        "val-userid"
-                    ).innerText =
-                        userData.userId ||
-                        docSnap.id ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-birthdate"
-                    ).innerText =
-                        originalBirthdate ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-stage"
-                    ).innerText =
-                        originalStage ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-grade"
-                    ).innerText =
-                        originalGrade ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-address"
-                    ).innerText =
-                        originalAddress ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-father"
-                    ).innerText =
-                        originalFather ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-mother"
-                    ).innerText =
-                        originalMother ||
-                        "-";
-
-
-                    /* =================================================
-                       LocalStorage
-                    ================================================== */
-
-                    if (originalGrade) {
-
-                        localStorage.setItem(
-                            "userGrade",
-                            originalGrade
-                        );
-
-                        localStorage.setItem(
-                            "grade",
-                            originalGrade
-                        );
-
-                        localStorage.setItem(
-                            "servantGrade",
-                            originalGrade
-                        );
-
-                    }
-
-
-                    if (originalStage) {
-
-                        localStorage.setItem(
-                            "userStage",
-                            originalStage
-                        );
-
-                        localStorage.setItem(
-                            "stage",
-                            originalStage
-                        );
-
-                        localStorage.setItem(
-                            "servantStage",
-                            originalStage
-                        );
-
-                    }
-
-
-                    localStorage.setItem(
-                        "userDocId",
-                        docSnap.id
-                    );
-
-
-                    /* =================================================
-                       الصورة
-                    ================================================== */
-
-                    if (
-                        userData.avatarUrl
-                    ) {
-
-                        document.getElementById(
-                            "profile-avatar"
-                        ).src =
-                            userData.avatarUrl;
-
-                    } else {
-
-                        document.getElementById(
-                            "profile-avatar"
-                        ).src =
-                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                username
-                            )}&background=7c1b28&color=fbeed4&size=150`;
-
-                    }
-
-
-                    loadingText.style.display =
-                        "none";
-
-
-                    profileContent.style.display =
-                        "block";
-
-
-                } catch (error) {
-
-                    console.error(
-                        "❌ خطأ في جلب البيانات:",
-                        error
-                    );
-
-
-                    loadingText.innerText =
-                        "حدث خطأ أثناء الاتصال بقاعدة البيانات.";
-
-                }
-
-            }
-        );
-
-
-        /* =====================================================
-           تعديل البيانات
-        ====================================================== */
-
-        window.toggleEditMode =
-            async function () {
-
-                const textFields = [
-
-                    "username",
-                    "birthdate",
-                    "address",
-                    "father",
-                    "mother"
-
-                ];
-
-
-                const btn =
-                    document.getElementById(
-                        "edit-btn"
-                    );
-
-
-                /* =================================================
-                   الدخول لوضع التعديل
-                ================================================== */
-
-                if (!isEditing) {
-
-                    textFields.forEach(
-                        field => {
-
-                            const span =
-                                document.getElementById(
-                                    `val-${field}`
-                                );
-
-
-                            if (!span) {
-
-                                return;
-
-                            }
-
-
-                            let value =
-                                span.innerText;
-
-
-                            if (
-                                value === "-"
-                            ) {
-
-                                value = "";
-
-                            }
-
-
-                            span.innerHTML = `
-                                <input
-                                    type="text"
-                                    id="input-${field}"
-                                >
-                            `;
-
-
-                            document.getElementById(
-                                `input-${field}`
-                            ).value =
-                                value;
-
-                        }
-                    );
-
-
-                    /* =================================================
-                       المرحلة
-                    ================================================== */
-
-                    const correctStage =
-                        normalizeStage(
-                            originalStage
-                        );
-
-
-                    const stageForEdit =
-                        correctStage ||
-                        "إعدادي";
-
-
-                    const stageContainer =
-                        document.getElementById(
-                            "val-stage"
-                        );
-
-
-                    stageContainer.innerHTML =
-                        buildStageSelect(
-                            stageForEdit
-                        );
-
-
-                    const stageSelect =
-                        document.getElementById(
-                            "input-stage"
-                        );
-
-
-                    if (stageSelect) {
-
-                        stageSelect.value =
-                            stageForEdit;
-
-
-                        stageSelect.onchange =
-                            window.onStageChange;
-
-                    }
-
-
-                    /* =================================================
-                       الصف
-                    ================================================== */
-
-                    const correctGrade =
-                        normalizeGrade(
-                            stageForEdit,
-                            originalGrade
-                        );
-
-
-                    const gradeContainer =
-                        document.getElementById(
-                            "val-grade"
-                        );
-
-
-                    gradeContainer.innerHTML =
-                        buildGradeSelect(
-                            stageForEdit,
-                            correctGrade
-                        );
-
-
-                    const gradeSelect =
-                        document.getElementById(
-                            "input-grade"
-                        );
-
-
-                    if (
-                        gradeSelect &&
-                        correctGrade
-                    ) {
-
-                        gradeSelect.value =
-                            correctGrade;
-
-                    }
-
-
-                    /* =================================================
-                       الزر
-                    ================================================== */
-
-                    btn.innerText =
-                        "حفظ التغييرات";
-
-
-                    btn.classList.add(
-                        "btn-save"
-                    );
-
-
-                    isEditing = true;
-
-
-                    return;
-
-                }
-
-
-                /* =================================================
-                   الحفظ
-                ================================================== */
-
-                btn.innerText =
-                    "جاري الحفظ...";
-
-
-                btn.disabled = true;
-
-
-                try {
-
-                    const docRef =
-                        doc(
-                            db,
-                            "users",
-                            currentUsernameUrl
-                        );
-
-
-                    const stageInput =
-                        document.getElementById(
-                            "input-stage"
-                        );
-
-
-                    const gradeInput =
-                        document.getElementById(
-                            "input-grade"
-                        );
-
-
-                    if (
-                        !stageInput ||
-                        !gradeInput
-                    ) {
-
-                        throw new Error(
-                            "حقول المرحلة أو الصف غير موجودة."
-                        );
-
-                    }
-
-
-                    const selectedStage =
-                        normalizeStage(
-                            stageInput.value
-                        );
-
-
-                    const selectedGrade =
-                        normalizeGrade(
-                            selectedStage,
-                            gradeInput.value
-                        );
-
-
-                    if (!selectedStage) {
-
-                        alert(
-                            "من فضلك اختر المرحلة الدراسية."
-                        );
-
-
-                        btn.disabled = false;
-
-
-                        btn.innerText =
-                            "حفظ التغييرات";
-
-
-                        return;
-
-                    }
-
-
-                    if (!selectedGrade) {
-
-                        alert(
-                            "من فضلك اختر الصف الدراسي."
-                        );
-
-
-                        btn.disabled = false;
-
-
-                        btn.innerText =
-                            "حفظ التغييرات";
-
-
-                        return;
-
-                    }
-
-
-                    /* =================================================
-                       البيانات الجديدة
-                    ================================================== */
+                    const docRef = doc(db, "users", currentUsernameUrl);
 
                     const updatedData = {
-
-                        username:
-                            document.getElementById(
-                                "input-username"
-                            ).value.trim(),
-
-
-                        birthdate:
-                            document.getElementById(
-                                "input-birthdate"
-                            ).value.trim(),
-
-
-                        stage:
-                            selectedStage,
-
-
-                        grade:
-                            selectedGrade,
-
-
-                        address:
-                            document.getElementById(
-                                "input-address"
-                            ).value.trim(),
-
-
-                        fatherPhone:
-                            document.getElementById(
-                                "input-father"
-                            ).value.trim(),
-
-
-                        motherPhone:
-                            document.getElementById(
-                                "input-mother"
-                            ).value.trim()
-
+                        username: document.getElementById('input-username').value,
+                        birthdate: document.getElementById('input-birthdate').value,
+                        stage: document.getElementById('input-stage').value,
+                        grade: document.getElementById('input-grade').value,
+                        address: document.getElementById('input-address').value,
+                        fatherPhone: document.getElementById('input-father').value,
+                        motherPhone: document.getElementById('input-mother').value,
                     };
 
+                    await updateDoc(docRef, updatedData);
 
-                    console.log(
-                        "================================"
-                    );
+                    fields.forEach(field => {
+                        const newVal = document.getElementById(`input-${field}`).value || '-';
+                        document.getElementById(`val-${field}`).innerText = newVal;
+                    });
 
-                    console.log(
-                        "📤 سيتم الحفظ في Firebase"
-                    );
+                    document.getElementById('welcome-msg').innerText = `أهلاً بك يا ${updatedData.username}`;
+                    alert("تم حفظ التعديلات بنجاح! ✅");
 
-                    console.log(
-                        "Collection: users"
-                    );
-
-                    console.log(
-                        "Document ID:",
-                        currentUsernameUrl
-                    );
-
-                    console.log(
-                        "Stage:",
-                        updatedData.stage
-                    );
-
-                    console.log(
-                        "Grade:",
-                        updatedData.grade
-                    );
-
-                    console.log(
-                        "================================"
-                    );
-
-
-                    /* =================================================
-                       حفظ البيانات
-                    ================================================== */
-
-                    await updateDoc(
-                        docRef,
-                        updatedData
-                    );
-
-
-                    /* =================================================
-                       إعادة القراءة للتأكد
-                    ================================================== */
-
-                    const checkSnap =
-                        await getDoc(
-                            docRef
-                        );
-
-
-                    if (!checkSnap.exists()) {
-
-                        throw new Error(
-                            "Document اختفى بعد الحفظ!"
-                        );
-
-                    }
-
-
-                    const checkData =
-                        checkSnap.data();
-
-
-                    console.log(
-                        "================================"
-                    );
-
-                    console.log(
-                        "✅ تم الحفظ فعلياً في Firebase"
-                    );
-
-                    console.log(
-                        "Document ID:",
-                        checkSnap.id
-                    );
-
-                    console.log(
-                        "Stage بعد الحفظ:",
-                        checkData.stage
-                    );
-
-                    console.log(
-                        "Grade بعد الحفظ:",
-                        checkData.grade
-                    );
-
-                    console.log(
-                        "================================"
-                    );
-
-
-                    /* =================================================
-                       التأكد من المرحلة
-                    ================================================== */
-
-                    if (
-
-                        normalizeText(
-                            checkData.stage
-                        ) !==
-
-                        normalizeText(
-                            updatedData.stage
-                        )
-
-                    ) {
-
-                        throw new Error(
-                            "المرحلة لم يتم حفظها بالقيمة الصحيحة."
-                        );
-
-                    }
-
-
-                    /* =================================================
-                       التأكد من الصف
-                    ================================================== */
-
-                    if (
-
-                        normalizeText(
-                            checkData.grade
-                        ) !==
-
-                        normalizeText(
-                            updatedData.grade
-                        )
-
-                    ) {
-
-                        throw new Error(
-                            "الصف لم يتم حفظه بالقيمة الصحيحة."
-                        );
-
-                    }
-
-
-                    /* =================================================
-                       تحديث القيم الأصلية
-                    ================================================== */
-
-                    originalUsername =
-                        updatedData.username;
-
-
-                    originalBirthdate =
-                        updatedData.birthdate;
-
-
-                    originalStage =
-                        updatedData.stage;
-
-
-                    originalGrade =
-                        updatedData.grade;
-
-
-                    originalAddress =
-                        updatedData.address;
-
-
-                    originalFather =
-                        updatedData.fatherPhone;
-
-
-                    originalMother =
-                        updatedData.motherPhone;
-
-
-                    /* =================================================
-                       LocalStorage
-                    ================================================== */
-
-                    localStorage.setItem(
-                        "userDocId",
-                        currentUsernameUrl
-                    );
-
-
-                    localStorage.setItem(
-                        "userGrade",
-                        updatedData.grade
-                    );
-
-
-                    localStorage.setItem(
-                        "grade",
-                        updatedData.grade
-                    );
-
-
-                    localStorage.setItem(
-                        "servantGrade",
-                        updatedData.grade
-                    );
-
-
-                    localStorage.setItem(
-                        "userStage",
-                        updatedData.stage
-                    );
-
-
-                    localStorage.setItem(
-                        "stage",
-                        updatedData.stage
-                    );
-
-
-                    localStorage.setItem(
-                        "servantStage",
-                        updatedData.stage
-                    );
-
-
-                    /* =================================================
-                       عرض البيانات
-                    ================================================== */
-
-                    document.getElementById(
-                        "val-username"
-                    ).innerText =
-                        updatedData.username ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-birthdate"
-                    ).innerText =
-                        updatedData.birthdate ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-stage"
-                    ).innerText =
-                        updatedData.stage;
-
-
-                    document.getElementById(
-                        "val-grade"
-                    ).innerText =
-                        updatedData.grade;
-
-
-                    document.getElementById(
-                        "val-address"
-                    ).innerText =
-                        updatedData.address ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-father"
-                    ).innerText =
-                        updatedData.fatherPhone ||
-                        "-";
-
-
-                    document.getElementById(
-                        "val-mother"
-                    ).innerText =
-                        updatedData.motherPhone ||
-                        "-";
-
-
-                    document.getElementById(
-                        "welcome-msg"
-                    ).innerText =
-                        `أهلاً بك يا ${updatedData.username}`;
-
-
-                    /* =================================================
-                       إنهاء التعديل
-                    ================================================== */
-
+                    btn.innerText = "تعديل البيانات";
+                    btn.classList.remove('btn-save');
                     isEditing = false;
 
-
-                    btn.disabled = false;
-
-
-                    btn.innerText =
-                        "تعديل البيانات";
-
-
-                    btn.classList.remove(
-                        "btn-save"
-                    );
-
-
-                    alert(
-                        "تم حفظ التعديلات بنجاح في Firebase! ✅"
-                    );
-
-
                 } catch (error) {
-
-                    console.error(
-                        "❌ خطأ أثناء الحفظ:",
-                        error
-                    );
-
-
-                    alert(
-                        "حدث خطأ أثناء حفظ البيانات:\n\n" +
-                        error.message
-                    );
-
-
-                    btn.disabled = false;
-
-
-                    btn.innerText =
-                        "حفظ التغييرات";
-
+                    console.error("خطأ أثناء الحفظ:", error);
+                    alert("حدث خطأ أثناء حفظ البيانات!");
+                    btn.innerText = "حفظ التغييرات";
                 }
+            }
+        }
 
+        window.handleImageUpload = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('اختار ملف صورة صحيح.');
+                event.target.value = '';
+                return;
+            }
+            if (file.size > 8 * 1024 * 1024) {
+                alert('الصورة كبيرة جداً. اختار صورة أقل من 8 ميجابايت.');
+                event.target.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const source = new Image();
+                source.onload = async function() {
+                    const canvas = document.createElement('canvas');
+                    const maxSide = 700;
+                    const scale = Math.min(1, maxSide / Math.max(source.width, source.height));
+                    canvas.width = Math.max(1, Math.round(source.width * scale));
+                    canvas.height = Math.max(1, Math.round(source.height * scale));
+                    canvas.getContext('2d').drawImage(source, 0, 0, canvas.width, canvas.height);
+                    const base64Image = canvas.toDataURL('image/jpeg', 0.78);
+                    try {
+                        const docRef = doc(db, 'users', currentUsernameUrl);
+                        await updateDoc(docRef, { avatarUrl: base64Image, photoBase64: base64Image });
+                        document.getElementById('profile-avatar').src = base64Image;
+                        alert('تم تحديث وحفظ صورة البروفايل بنجاح!');
+                    } catch (error) {
+                        console.error('خطأ في حفظ الصورة:', error);
+                        alert(error?.code === 'permission-denied' ? 'ليس لديك صلاحية حفظ الصورة في Firebase.' : 'حدث خطأ أثناء حفظ الصورة.');
+                    }
+                };
+                source.onerror = () => alert('تعذر قراءة الصورة. جرّب صورة أخرى.');
+                source.src = e.target.result;
             };
-
-
-        /* =====================================================
-           رفع صورة البروفايل
-        ====================================================== */
-
-        window.handleImageUpload =
-            async function (event) {
-
-                const file =
-                    event.target.files[0];
-
-
-                if (!file) {
-
-                    return;
-
-                }
-
-
-                const reader =
-                    new FileReader();
-
-
-                reader.onload =
-                    async function (e) {
-
-                        const base64Image =
-                            e.target.result;
-
-
-                        document.getElementById(
-                            "profile-avatar"
-                        ).src =
-                            base64Image;
-
-
-                        try {
-
-                            const docRef =
-                                doc(
-                                    db,
-                                    "users",
-                                    currentUsernameUrl
-                                );
-
-
-                            await updateDoc(
-                                docRef,
-                                {
-
-                                    avatarUrl:
-                                        base64Image
-
-                                }
-                            );
-
-
-                            const checkSnap =
-                                await getDoc(
-                                    docRef
-                                );
-
-
-                            if (
-                                !checkSnap.exists()
-                            ) {
-
-                                throw new Error(
-                                    "Document غير موجود بعد حفظ الصورة."
-                                );
-
-                            }
-
-
-                            if (
-                                !checkSnap.data().avatarUrl
-                            ) {
-
-                                throw new Error(
-                                    "الصورة لم يتم حفظها."
-                                );
-
-                            }
-
-
-                            alert(
-                                "تم تحديث وحفظ صورة البروفايل بنجاح! 🖼️"
-                            );
-
-
-                        } catch (error) {
-
-                            console.error(
-                                "❌ خطأ في حفظ الصورة:",
-                                error
-                            );
-
-
-                            alert(
-                                "حدث خطأ أثناء حفظ الصورة في قاعدة البيانات."
-                            );
-
-                        }
-
-                    };
-
-
-                reader.readAsDataURL(file);
-
-            };
-
+            reader.readAsDataURL(file);
+        }
     </script>
-
 </head>
-
-
 <body>
 
-
-    <!-- =====================================================
-         Header
-    ====================================================== -->
-
     <header class="church-header">
-
-        <h2>
-            الملف الشخصي
-        </h2>
-
-
-        <a
-            href="home.html"
-            class="back-btn"
-        >
-
-            <i class="fas fa-arrow-right"></i>
-
-            <span>
-                الرئيسية
-            </span>
-
-        </a>
-
+        <h2>الملف الشخصي</h2>
+        <button type="button" class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-right"></i><span>رجوع</span>
+        </button>
     </header>
 
-
-
-    <!-- =====================================================
-         Main Content
-    ====================================================== -->
+    <script>
+        // يرجع إلى آخر صفحة جاء منها المستخدم، ولو فُتحت الصفحة مباشرة يذهب للرئيسية.
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'home.html';
+            }
+        }
+    </script>
 
     <div class="main-content">
 
+        <!-- رسالة التحميل -->
+        <div id="loading-text" class="loading">جاري تحميل الملف الشخصي... ⏳</div>
 
-        <!-- =================================================
-             Loading
-        ================================================== -->
+        <!-- محتوى البروفايل -->
+        <div id="profile-content" style="display: none;">
 
-        <div
-            id="loading-text"
-            class="loading"
-        >
-
-            جاري تحميل الملف الشخصي... ⏳
-
-        </div>
-
-
-
-        <!-- =================================================
-             Profile Content
-        ================================================== -->
-
-        <div
-            id="profile-content"
-            style="display: none;"
-        >
-
-
-            <!-- =================================================
-                 Profile Card
-            ================================================== -->
-
+            <!-- بطاقة البروفايل -->
             <div class="widget profile-widget">
-
                 <div class="widget-body">
-
-
                     <div class="avatar-container">
-
-                        <img
-                            id="profile-avatar"
-                            class="avatar-img"
-                            alt="صورة البروفايل"
-                        >
-
-
-                        <label
-                            for="avatar-input"
-                            class="upload-btn-label"
-                            title="تغيير الصورة"
-                        >
-
+                        <img id="profile-avatar" class="avatar-img" alt="صورة البروفايل">
+                        <label for="avatar-input" class="upload-btn-label" title="تغيير الصورة">
                             <i class="fas fa-camera"></i>
-
                         </label>
-
-
-                        <input
-                            type="file"
-                            id="avatar-input"
-                            accept="image/*"
-                            onchange="handleImageUpload(event)"
-                        >
-
+                        <input type="file" id="avatar-input" accept="image/*" onchange="handleImageUpload(event)">
                     </div>
 
-
-                    <h1 id="welcome-msg">
-
-                        أهلاً بك
-
-                    </h1>
-
-
-                    <div class="profile-subtitle">
-
-                        بياناتك الشخصية والدراسية
-
-                    </div>
-
+                    <h1 id="welcome-msg">أهلاً بك</h1>
                 </div>
-
             </div>
 
-
-
-            <!-- =================================================
-                 User Information
-            ================================================== -->
-
+            <!-- المعلومات الشخصية والدراسية -->
             <div class="widget info-widget">
-
-
-                <!-- Header -->
-
                 <div class="widget-head">
-
                     <div class="title-row">
-
-                        <div class="icon-badge">
-
-                            <i class="fas fa-id-card"></i>
-
-                        </div>
-
-
-                        <div class="widget-head-title">
-
-                            البيانات الشخصية
-
-                        </div>
-
+                        <div class="icon-badge"><i class="fas fa-id-card"></i></div>
                     </div>
-
-
-                    <button
-                        id="edit-btn"
-                        class="btn"
-                        onclick="toggleEditMode()"
-                    >
-
-                        تعديل البيانات
-
-                    </button>
-
+                    <button id="edit-btn" class="btn" onclick="toggleEditMode()">تعديل البيانات</button>
                 </div>
-
-
-
-                <!-- =================================================
-                     Information Grid
-                ================================================== -->
 
                 <div class="widget-body">
-
-                    <div class="info-grid">
-
-
-                        <!-- اسم المستخدم -->
-
-                        <div class="info-row">
-
-                            <span class="info-label">
-
-                                اسم المستخدم:
-
-                            </span>
-
-
-                            <span
-                                class="info-value"
-                                id="val-username"
-                            >
-
-                                --
-
-                            </span>
-
-                        </div>
-
-
-
-                        <!-- رقم المستخدم -->
-
-                        <div class="info-row">
-
-                            <span class="info-label">
-
-                                رقم المستخدم:
-
-                            </span>
-
-
-                            <span
-                                class="info-value"
-                                id="val-userid"
-                            >
-
-                                --
-
-                            </span>
-
-                        </div>
-
-
-
-                        <!-- تاريخ الميلاد -->
-
-                        <div class="info-row">
-
-                            <span class="info-label">
-
-                                تاريخ الميلاد:
-
-                            </span>
-
-
-                            <span
-                                class="info-value"
-                                id="val-birthdate"
-                            >
-
-                                --
-
-                            </span>
-
-                        </div>
-
-
-
-                        <!-- المرحلة -->
-
-                        <div class="info-row">
-
-                            <span class="info-label">
-
-                                المرحلة الدراسية:
-
-                            </span>
-
-
-                            <span
-                                class="info-value"
-                                id="val-stage"
-                            >
-
-                                --
-
-                            </span>
-
-                        </div>
-
-
-
-                        <!-- الصف -->
-
-                        <div class="info-row">
-
-                            <span class="info-label">
-
-                                الصف الدراسي:
-
-                            </span>
-
-
-                            <span
-                                class="info-value"
-                                id="val-grade"
-                            >
-
-                                --
-
-                            </span>
-
-                        </div>
-
-
-
-                        <!-- العنوان -->
-
-                        <div class="info-row">
-
-                            <span class="info-label">
-
-                                العنوان:
-
-                            </span>
-
-
-                            <span
-                                class="info-value"
-                                id="val-address"
-                            >
-
-                                --
-
-                            </span>
-
-                        </div>
-
+                    <div class="info-row">
+                        <span class="info-label">اسم المستخدم:</span>
+                        <span class="info-value" id="val-username">--</span>
                     </div>
-
-                </div>
-
-
-
-                <!-- =================================================
-                     Parents
-                ================================================== -->
-
-                <div class="parents-title">
-
-                    أرقام أولياء الأمور
-
-                </div>
-
-
-                <div class="parents-body">
-
-                    <div class="parents-grid">
-
-
-                        <!-- الأب -->
-
-                        <div class="info-row">
-
-                            <span class="info-label">
-
-                                رقم الأب:
-
-                            </span>
-
-
-                            <span
-                                class="info-value"
-                                id="val-father"
-                            >
-
-                                --
-
-                            </span>
-
-                        </div>
-
-
-
-                        <!-- الأم -->
-
-                        <div class="info-row">
-
-                            <span class="info-label">
-
-                                رقم الأم:
-
-                            </span>
-
-
-                            <span
-                                class="info-value"
-                                id="val-mother"
-                            >
-
-                                --
-
-                            </span>
-
-                        </div>
-
+                    <div class="info-row">
+                        <span class="info-label">رقم المستخدم:</span>
+                        <span class="info-value" id="val-userid">--</span>
                     </div>
-
+                    <div class="info-row">
+                        <span class="info-label">تاريخ الميلاد:</span>
+                        <span class="info-value" id="val-birthdate">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">المرحلة الدراسية:</span>
+                        <span class="info-value" id="val-stage">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">الصف الدراسي:</span>
+                        <span class="info-value" id="val-grade">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">العنوان:</span>
+                        <span class="info-value" id="val-address">--</span>
+                    </div>
                 </div>
 
+                <div class="parents-title">أرقام أولياء الأمور</div>
+                <div class="widget-body parents-body">
+                    <div class="info-row">
+                        <span class="info-label">رقم الأب:</span>
+                        <span class="info-value" id="val-father">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">رقم الأم:</span>
+                        <span class="info-value" id="val-mother">--</span>
+                    </div>
+                </div>
             </div>
-
 
         </div>
-
     </div>
 
-
 </body>
-
 </html>
