@@ -1,429 +1,540 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء حساب مشرف جديد - كنيسة الشهيد استفانوس ومارمينا</title>
-    
-    <!-- خط عربي فخم (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<title>إنشاء حساب مشرف جديد | برنامج الكنيسة</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-        body {
-            background: linear-gradient(135deg, #791319 0%, #4a0a0f 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            font-family: 'Cairo', sans-serif;
-            color: #333;
-            position: relative;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 440px;
-            background: #ffffff;
-            padding: 40px 30px;
-            border-radius: 28px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 
-                        0 5px 15px rgba(121, 19, 25, 0.2);
-            position: relative;
-            text-align: center;
-        }
-
-        .app-logo-container {
-            margin-bottom: 25px;
-        }
-
-        .cross-icon-box {
-            width: 75px;
-            height: 75px;
-            background: #791319;
-            color: #ffffff;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 15px auto;
-            font-size: 34px;
-            box-shadow: 0 8px 20px rgba(121, 19, 25, 0.3);
-        }
-
-        h2 {
-            color: #791319;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .church-title {
-            color: #555;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 12px;
-        }
-
-        .form-section {
-            display: none;
-            text-align: right;
-        }
-
-        .form-section.active {
-            display: block;
-        }
-
-        .input-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            color: #444;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px 16px;
-            background: #fafafa;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            color: #333;
-            font-size: 15px;
-            font-family: 'Cairo', sans-serif;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus {
-            background: #fff;
-            border-color: #791319;
-            box-shadow: 0 0 0 3px rgba(121, 19, 25, 0.1);
-        }
-
-        select option {
-            background: #fff;
-            color: #333;
-        }
-
-        .btn {
-            width: 100%;
-            background: #791319;
-            color: #ffffff;
-            font-weight: 700;
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-family: 'Cairo', sans-serif;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(121, 19, 25, 0.25);
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            background: #5e0e13;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(121, 19, 25, 0.35);
-        }
-
-        .error-msg {
-            color: #d9534f;
-            font-size: 13px;
-            margin-top: 8px;
-            display: none;
-            text-align: center;
-            background: #fdf2f2;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid #f5c6cb;
-        }
-
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #791319;
-            border-radius: 28px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #ffffff;
-            z-index: 10;
-            display: none;
-        }
-
-        .loading-overlay i {
-            font-size: 50px;
-            margin-bottom: 15px;
-            animation: pulse 1.5s infinite;
-        }
-
-        .loading-overlay p {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .dots-loader {
-            display: flex;
-            gap: 8px;
-        }
-
-        .dots-loader span {
-            width: 10px;
-            height: 100%;
-            min-height: 10px;
-            background: #ffffff;
-            border-radius: 50%;
-            display: inline-block;
-            opacity: 0.4;
-            animation: bounce 1.2s infinite ease-in-out both;
-        }
-
-        .dots-loader span:nth-child(1) { animation-delay: -0.32s; }
-        .dots-loader span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); opacity: 1; }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.9; }
-        }
-    </style>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
-            authDomain: "st-mina-c01ec.firebaseapp.com",
-            projectId: "st-mina-c01ec",
-            storageBucket: "st-mina-c01ec.firebasestorage.app",
-            messagingSenderId: "792349150559",
-            appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const stageGrades = {
-            'ابتدائي': ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'],
-            'إعدادي': ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'],
-            'ثانوي': ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي']
-        };
-
-        function fillGradeOptions(stage) {
-            const gradeSelect = document.getElementById('servant-grade');
-            const grades = stageGrades[stage] || [];
-            gradeSelect.innerHTML = grades.map(g => `<option value="${g}">${g}</option>`).join('');
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const step1Btn = document.getElementById('step1-btn');
-            const step2Btn = document.getElementById('step2-btn');
-            const errorMsg = document.getElementById('error-msg');
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const loadingText = document.getElementById('loading-text');
-            const stageSelect = document.getElementById('servant-stage');
-
-            fillGradeOptions(stageSelect.value);
-
-            stageSelect.addEventListener('change', () => {
-                fillGradeOptions(stageSelect.value);
-            });
-
-            step1Btn.addEventListener('click', async () => {
-                const username = document.getElementById('admin-username').value.trim();
-                const password = document.getElementById('admin-password').value.trim();
-
-                if (!username || !password) {
-                    errorMsg.innerText = "يرجى إدخال اسم المستخدم وكلمة المرور!";
-                    errorMsg.style.display = "block";
-                    return;
-                }
-
-                errorMsg.style.display = "none";
-                loadingText.innerText = "جاري التحقق من التوفر...";
-                loadingOverlay.style.display = "flex";
-                step1Btn.disabled = true;
-
-                try {
-                    const adminRef = collection(db, "admin");
-                    const q = query(adminRef, where("username", "==", username));
-                    const querySnapshot = await getDocs(q);
-
-                    if (!querySnapshot.empty) {
-                        errorMsg.innerText = "اسم المستخدم هذا موجود مسبقاً، يرجى اختيار اسم آخر!";
-                        errorMsg.style.display = "block";
-                        loadingOverlay.style.display = "none";
-                        step1Btn.disabled = false;
-                        return;
-                    }
-
-                    loadingOverlay.style.display = "none";
-                    step1Btn.disabled = false;
-
-                    document.getElementById('section-1').classList.remove('active');
-                    document.getElementById('section-2').classList.add('active');
-
-                } catch (error) {
-                    console.error("خطأ في التحقق:", error);
-                    errorMsg.innerText = "حدث خطأ في الاتصال بقاعدة البيانات!";
-                    errorMsg.style.display = "block";
-                    loadingOverlay.style.display = "none";
-                    step1Btn.disabled = false;
-                }
-            });
-
-            step2Btn.addEventListener('click', async () => {
-                const username = document.getElementById('admin-username').value.trim();
-                const password = document.getElementById('admin-password').value.trim();
-                const fullName = document.getElementById('servant-name').value.trim();
-                const servantNum = document.getElementById('servant-number').value.trim();
-                const servantTitle = document.getElementById('servant-title').value; 
-                const servantStage = document.getElementById('servant-stage').value; 
-                const servantGrade = document.getElementById('servant-grade').value;
-
-                if (!fullName || !servantNum) {
-                    alert("يرجى ملء جميع الحقول المطلوبة!");
-                    return;
-                }
-
-                loadingText.innerText = "جاري إنشاء الحساب وحفظ البيانات...";
-                loadingOverlay.style.display = "flex";
-                step2Btn.disabled = true;
-
-                try {
-                    await setDoc(doc(db, "admin", username), {
-                        username: username,
-                        password: password,
-                        fullName: fullName,
-                        servantNumber: servantNum,
-                        servantTitle: servantTitle,
-                        servantStage: servantStage,
-                        servantGrade: servantGrade,
-                        createdAt: new Date().toISOString()
-                    });
-
-                    localStorage.setItem('username', username);
-                    localStorage.setItem('fullName', fullName);
-                    localStorage.setItem('servantTitle', servantTitle);
-                    localStorage.setItem('servantStage', servantStage);
-                    localStorage.setItem('servantGrade', servantGrade);
-                    localStorage.setItem('servantNumber', servantNum);
-
-                    setTimeout(() => {
-                        window.location.href = 'home.html';
-                    }, 1000);
-
-                } catch (error) {
-                    console.error("خطأ أثناء الحفظ:", error);
-                    alert("حدث خطأ أثناء حفظ البيانات!");
-                    loadingOverlay.style.display = "none";
-                    step2Btn.disabled = false;
-                }
-            });
-        });
-    </script>
+<style>
+:root {
+    --primary: #30213D;
+    --primary-dark: #24172F;
+    --gold: #B79A63;
+    --gold-pale: #F5F0E5;
+    --white: #FFFFFF;
+    --text: #30213D;
+    --muted: #85818A;
+    --border: #ECE9E5;
+    --shadow: 0 8px 25px rgba(40, 29, 47, .055);
+    --success: #247747;
+    --danger: #B42332;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { background: #fff; scroll-behavior: smooth; }
+body { min-height: 100vh; min-height: 100dvh; background: #fff; color: var(--text); font-family: 'Cairo', sans-serif; }
+button, input, select { font: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.app { width: 100%; max-width: 500px; min-height: 100vh; min-height: 100dvh; margin: auto; background: #fff; padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+.topbar { min-height: 72px; padding: max(10px, env(safe-area-inset-top)) 18px 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border-bottom: 1px solid var(--border); }
+.brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.brand-icon { width: 43px; height: 43px; flex-shrink: 0; display: grid; place-items: center; background: var(--primary); color: #fff; border-radius: 13px; }
+.brand-icon i { font-size: 20px; }
+.brand-title { font-size: 13px; font-weight: 900; color: var(--primary); }
+.brand-subtitle { font-size: 10px; color: var(--muted); margin-top: 3px; }
+.back-btn { width: 42px; height: 42px; flex-shrink: 0; display: grid; place-items: center; background: #fff; border: 1px solid var(--border); border-radius: 13px; color: var(--primary); text-decoration: none; cursor: pointer; }
+.back-btn:active { background: var(--gold-pale); }
+.hero { margin: 19px 15px 0; padding: 24px 18px 22px; text-align: center; border: 1px solid var(--border); border-radius: 23px; background: #fff; box-shadow: var(--shadow); }
+.church-emblem { width: 70px; height: 70px; margin: 0 auto 13px; display: grid; place-items: center; border-radius: 21px; background: var(--primary); color: #fff; border: 1px solid var(--gold); box-shadow: 0 5px 15px rgba(40,29,47,.10); }
+.church-emblem i { font-size: 29px; }
+.hero-label { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; margin-bottom: 9px; color: var(--primary); background: #fff; border: 1px solid #E9E0CE; border-radius: 20px; font-size: 10px; font-weight: 800; }
+.hero-label i { color: var(--gold); }
+h1 { color: var(--primary); font-family: 'Amiri','Cairo',serif; font-size: clamp(24px, 6vw, 29px); line-height: 1.6; }
+.hero-description { color: var(--muted); font-size: 10px; line-height: 1.9; margin-top: 4px; }
+.hero-divider { width: 58px; height: 2px; background: var(--gold); border-radius: 5px; margin: 13px auto 0; }
+.content { padding: 23px 15px 10px; }
+.section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.heading-icon { width: 43px; height: 43px; flex-shrink: 0; display: grid; place-items: center; color: var(--primary); background: var(--gold-pale); border: 1px solid #E9E0CE; border-radius: 14px; }
+.heading-icon i { font-size: 19px; }
+.heading-title { font-size: 15px; font-weight: 900; color: var(--primary); }
+.heading-subtitle { margin-top: 3px; color: var(--muted); font-size: 10px; }
+.form-panel { position: relative; padding: 17px 15px; border: 1px solid var(--border); border-radius: 20px; background: #fff; box-shadow: var(--shadow); }
+.form-section { display: none; text-align: right; }
+.form-section.active { display: block; animation: fadeUp .25s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.progress-wrap { margin-bottom: 19px; }
+.progress-label { display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 8px; }
+.progress-track { height: 5px; border-radius: 9px; background: #F0EDF2; overflow: hidden; }
+.progress-bar { height: 100%; width: 50%; border-radius: 9px; background: var(--gold); transition: width .25s ease; }
+.input-group { margin-bottom: 17px; }
+label { display: block; color: var(--primary); font-size: 12px; font-weight: 800; margin-bottom: 7px; }
+.input-wrap { position: relative; }
+.input-wrap > .field-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--gold); font-size: 15px; pointer-events: none; }
+input, select { width: 100%; min-height: 48px; padding: 11px 41px 11px 13px; background: #FCFBFA; border: 1.5px solid var(--border); border-radius: 13px; color: var(--primary); font-size: 13px; font-family: 'Cairo',sans-serif; outline: none; transition: border-color .2s, box-shadow .2s, background .2s; }
+input:focus, select:focus { background: #fff; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(183,154,99,.12); }
+input::placeholder { color: #AAA4AD; }
+.input-wrap input.ltr { direction: ltr; text-align: left; padding-left: 43px; padding-right: 41px; }
+.input-action { position: absolute; top: 50%; left: 9px; transform: translateY(-50%); border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 7px; display: grid; place-items: center; }
+.field-help { margin-top: 6px; color: var(--muted); font-size: 10px; line-height: 1.8; }
+.suggest-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 7px; }
+.suggest-btn { border: 1px solid #E9E0CE; background: var(--gold-pale); color: var(--primary); padding: 6px 9px; border-radius: 9px; font-size: 10px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+.suggest-btn i { color: #9A7B3F; margin-left: 4px; }
+.strength-box { margin-top: 10px; padding: 11px; border-radius: 12px; background: #FCFBFA; border: 1px solid var(--border); }
+.strength-top { display: flex; justify-content: space-between; gap: 8px; font-size: 10px; margin-bottom: 8px; }
+.strength-label { color: var(--muted); }
+.strength-value { font-weight: 900; color: var(--muted); }
+.strength-track { height: 5px; background: #EDE9EF; border-radius: 8px; overflow: hidden; margin-bottom: 9px; }
+.strength-fill { height: 100%; width: 0; border-radius: 8px; background: #D9534F; transition: width .2s, background .2s; }
+.check-list { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 8px; }
+.check-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
+.check-item i { font-size: 11px; color: #C8C1CC; }
+.check-item.ok { color: var(--success); }
+.check-item.ok i { color: var(--success); }
+.error-msg, .success-msg { display: none; margin-top: 12px; padding: 10px 11px; border-radius: 11px; font-size: 11px; font-weight: 700; line-height: 1.8; }
+.error-msg { color: var(--danger); background: #FFF5F5; border: 1px solid #F3D5D8; }
+.success-msg { color: var(--success); background: #F1FBF4; border: 1px solid #CFEBD7; }
+.btn { width: 100%; min-height: 50px; display: flex; align-items: center; justify-content: center; gap: 9px; background: var(--primary); color: #fff; font-weight: 900; border: 1px solid var(--primary); padding: 12px 15px; border-radius: 13px; font-size: 13px; font-family: 'Cairo',sans-serif; cursor: pointer; transition: .2s; margin-top: 8px; }
+.btn:hover { background: var(--primary-dark); }
+.btn:active { transform: scale(.985); }
+.btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+.btn i { color: #E5D3A9; }
+.btn-secondary { background: #fff; color: var(--primary); border: 1px solid var(--border); box-shadow: none; }
+.btn-secondary:hover { background: #FCFBFD; }
+.btn-secondary i { color: var(--gold); }
+.form-footer { margin-top: 15px; padding-top: 13px; border-top: 1px solid var(--border); display: flex; justify-content: center; align-items: center; gap: 7px; color: var(--muted); font-size: 10px; }
+.form-footer i { color: var(--gold); }
+.footer { padding: 18px 12px 5px; color: var(--muted); font-size: 10px; line-height: 2; text-align: center; }
+.footer strong { color: var(--primary); }
+.loading-overlay { position: fixed; inset: 0; background: rgba(48,33,61,.30); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+.loading-overlay.show { display: flex; }
+.loading-card { width: 100%; max-width: 290px; padding: 27px 22px; background: #fff; border: 1px solid var(--border); border-radius: 22px; box-shadow: 0 18px 50px rgba(40,29,47,.18); text-align: center; }
+.spinner { width: 48px; height: 48px; border: 4px solid var(--gold-pale); border-top-color: var(--primary); border-radius: 50%; margin: 0 auto 15px; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title { font-size: 14px; font-weight: 900; color: var(--primary); }
+.loading-text { font-size: 11px; color: var(--muted); margin-top: 5px; }
+@media (min-width: 600px) { body { background: #FAFAFA; } .app { border-left: 1px solid var(--border); border-right: 1px solid var(--border); } }
+@media (max-width: 360px) { .hero { margin: 13px 10px 0; padding: 21px 12px; } .content { padding: 20px 10px 10px; } .form-panel { padding: 14px 11px; } .check-list { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+</style>
 </head>
+
 <body>
-
-    <div class="card">
-        <div id="loading-overlay" class="loading-overlay">
-            <i class="fas fa-cross"></i>
-            <p id="loading-text">جاري التحميل...</p>
-            <div class="dots-loader">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-
-        <div class="app-logo-container">
-            <div class="cross-icon-box">
-                <i class="fas fa-cross"></i>
-            </div>
-            <h2>تسجيل مشرف جديد</h2>
-            <div class="church-title">كنيسة الشهيد العظيم استفانوس ومارمينا العجايبي</div>
-        </div>
-
-        <div id="section-1" class="form-section active">
-            <div class="input-group">
-                <label for="admin-username">اسم المستخدم (Username):</label>
-                <input type="text" id="admin-username" placeholder="" autocomplete="off">
-            </div>
-
-            <div class="input-group">
-                <label for="admin-password">كلمة المرور (Password):</label>
-                <input type="password" id="admin-password" placeholder="أدخل كلمة المرور">
-            </div>
-
-            <div id="error-msg" class="error-msg"></div>
-            
-            <button type="button" id="step1-btn" class="btn">التالي</button>
-        </div>
-
-        <div id="section-2" class="form-section">
-            <div class="input-group">
-                <label for="servant-name">اسم الخادم:</label>
-                <input type="text" id="servant-name" placeholder="أدخل اسمك الكامل">
-            </div>
-
-            <div class="input-group">
-                <label for="servant-number">رقم الخادم:</label>
-                <input type="text" id="servant-number" placeholder="أدخل رقمك التعريفي">
-            </div>
-
-            <div class="input-group">
-                <label for="servant-title">لقب الخادم:</label>
-                <select id="servant-title">
-                    <option value="أبونا">أبونا</option>
-                    <option value="تاسوني">تاسوني</option>
-                    <option value="أخ">أخ</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label for="servant-stage">المرحلة:</label>
-                <select id="servant-stage">
-                    <option value="ابتدائي">ابتدائي</option>
-                    <option value="إعدادي">إعدادي</option>
-                    <option value="ثانوي">ثانوي</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label for="servant-grade">الصف الدراسي الذي يخدمه:</label>
-                <select id="servant-grade">
-                </select>
-            </div>
-
-            <button type="button" id="step2-btn" class="btn">حفظ وإنشاء الحساب</button>
-        </div>
+<div class="loading-overlay" id="loading-overlay" role="status" aria-live="polite">
+    <div class="loading-card">
+        <div class="spinner"></div>
+        <div class="loading-title" id="loading-title">جاري التحميل...</div>
+        <div class="loading-text" id="loading-text">من فضلك انتظر</div>
     </div>
+</div>
 
+<main class="app">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon"><i class="fa-solid fa-house"></i></div>
+            <div>
+                <div class="brand-title">برنامج الكنيسة</div>
+                <div class="brand-subtitle">إنشاء حساب مشرف</div>
+            </div>
+        </div>
+        <a href="index.html" class="back-btn" aria-label="العودة للصفحة الرئيسية" title="رجوع">
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </header>
+
+    <section class="hero">
+        <div class="church-emblem"><i class="fa-solid fa-user-shield"></i></div>
+        <div class="hero-label"><i class="fa-solid fa-user-plus"></i> حساب مسؤول جديد</div>
+        <h1>تسجيل مشرف جديد</h1>
+        <p class="hero-description">كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</p>
+        <div class="hero-divider"></div>
+    </section>
+
+    <section class="content">
+        <div class="section-heading">
+            <div class="heading-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div>
+                <h2 class="heading-title">إنشاء حساب الأدمن</h2>
+                <p class="heading-subtitle">أكمل الخطوات التالية لإنشاء الحساب</p>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <div class="progress-wrap">
+                <div class="progress-label">
+                    <span id="step-label">الخطوة ١ من ٢</span>
+                    <span id="step-description">بيانات تسجيل الدخول</span>
+                </div>
+                <div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div>
+            </div>
+
+            <div id="section-1" class="form-section active">
+                <div class="input-group">
+                    <label for="admin-username">اسم المستخدم (Username)</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-user field-icon"></i>
+                        <input class="ltr" type="text" id="admin-username" placeholder="example_user" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="24">
+                    </div>
+                    <div class="suggest-row">
+                        <span class="field-help">من 4 إلى 24 حرفًا، حروف إنجليزية وأرقام و _ فقط.</span>
+                        <button type="button" class="suggest-btn" id="suggest-username"><i class="fa-solid fa-wand-magic-sparkles"></i>اقترح اسمًا</button>
+                    </div>
+                    <div class="field-help" id="username-status" aria-live="polite"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="admin-password">كلمة المرور (Password)</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock field-icon"></i>
+                        <input class="ltr" type="password" id="admin-password" placeholder="أنشئ كلمة مرور قوية" autocomplete="new-password" maxlength="64">
+                        <button type="button" class="input-action" id="toggle-password" aria-label="إظهار كلمة المرور"><i class="fa-solid fa-eye" id="eye-icon"></i></button>
+                    </div>
+                    <div class="suggest-row">
+                        <span class="field-help">استخدم كلمة مرور لا تستعملها في حسابات أخرى.</span>
+                        <button type="button" class="suggest-btn" id="suggest-password"><i class="fa-solid fa-wand-magic-sparkles"></i>اقترح كلمة</button>
+                    </div>
+
+                    <div class="strength-box">
+                        <div class="strength-top">
+                            <span class="strength-label">قوة كلمة المرور</span>
+                            <span class="strength-value" id="strength-value">لم تُكتب بعد</span>
+                        </div>
+                        <div class="strength-track"><div class="strength-fill" id="strength-fill"></div></div>
+                        <div class="check-list">
+                            <div class="check-item" id="rule-length"><i class="fa-solid fa-circle-check"></i><span>8 أحرف على الأقل</span></div>
+                            <div class="check-item" id="rule-upper"><i class="fa-solid fa-circle-check"></i><span>حرف إنجليزي كبير (A-Z)</span></div>
+                            <div class="check-item" id="rule-lower"><i class="fa-solid fa-circle-check"></i><span>حرف إنجليزي صغير (a-z)</span></div>
+                            <div class="check-item" id="rule-number"><i class="fa-solid fa-circle-check"></i><span>رقم واحد على الأقل</span></div>
+                            <div class="check-item" id="rule-symbol"><i class="fa-solid fa-circle-check"></i><span>رمز مثل ! @ # $</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="error-msg" class="error-msg" role="alert"></div>
+                <button type="button" id="step1-btn" class="btn"><span>التالي</span><i class="fa-solid fa-arrow-left"></i></button>
+            </div>
+
+            <div id="section-2" class="form-section">
+                <div class="input-group">
+                    <label for="servant-name">اسم الخادم بالكامل</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-id-card field-icon"></i>
+                        <input type="text" id="servant-name" placeholder="أدخل اسمك الكامل" autocomplete="name" maxlength="100">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="servant-number">رقم الخادم</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-hashtag field-icon"></i>
+                        <input type="text" id="servant-number" placeholder="أدخل رقمك التعريفي" inputmode="numeric" maxlength="30">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="servant-title">لقب الخادم</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-user-tag field-icon"></i>
+                        <select id="servant-title">
+                            <option value="أبونا">أبونا</option>
+                            <option value="تاسوني">تاسوني</option>
+                            <option value="أخ">أخ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="servant-stage">المرحلة</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-school field-icon"></i>
+                        <select id="servant-stage">
+                            <option value="ابتدائي">ابتدائي</option>
+                            <option value="إعدادي">إعدادي</option>
+                            <option value="ثانوي">ثانوي</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="servant-grade">الصف الدراسي الذي يخدمه</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-graduation-cap field-icon"></i>
+                        <select id="servant-grade"></select>
+                    </div>
+                </div>
+
+                <div id="error-msg-2" class="error-msg" role="alert"></div>
+                <button type="button" id="step2-btn" class="btn"><i class="fa-solid fa-floppy-disk"></i><span>حفظ وإنشاء الحساب</span></button>
+                <button type="button" id="back-step-btn" class="btn btn-secondary"><i class="fa-solid fa-arrow-right"></i><span>العودة للخطوة السابقة</span></button>
+            </div>
+
+            <div class="form-footer"><i class="fa-solid fa-shield-halved"></i> بيانات الحساب تُحفظ في قاعدة بيانات الكنيسة</div>
+        </div>
+
+        <footer class="footer"><strong>كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</strong></footer>
+    </section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+    getFirestore, collection, query, where, getDocs, setDoc, doc
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+    authDomain: "st-mina-c01ec.firebaseapp.com",
+    projectId: "st-mina-c01ec",
+    storageBucket: "st-mina-c01ec.firebasestorage.app",
+    messagingSenderId: "792349150559",
+    appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const stageGrades = {
+    "ابتدائي": ["الأول الابتدائي", "الثاني الابتدائي", "الثالث الابتدائي", "الرابع الابتدائي", "الخامس الابتدائي", "السادس الابتدائي"],
+    "إعدادي": ["الأول الإعدادي", "الثاني الإعدادي", "الثالث الإعدادي"],
+    "ثانوي": ["الأول الثانوي", "الثاني الثانوي", "الثالث الثانوي"]
+};
+
+const $ = id => document.getElementById(id);
+const usernameInput = $("admin-username");
+const passwordInput = $("admin-password");
+const errorMsg = $("error-msg");
+const errorMsg2 = $("error-msg-2");
+const loadingOverlay = $("loading-overlay");
+const loadingTitle = $("loading-title");
+const loadingText = $("loading-text");
+const step1Btn = $("step1-btn");
+const step2Btn = $("step2-btn");
+const usernameStatus = $("username-status");
+
+function fillGradeOptions(stage) {
+    const grades = stageGrades[stage] || [];
+    $("servant-grade").innerHTML = grades.map(grade =>
+        `<option value="${grade}">${grade}</option>`
+    ).join("");
+}
+fillGradeOptions($("servant-stage"));
+$("servant-stage").addEventListener("change", event => fillGradeOptions(event.target.value));
+
+function showLoading(title, message) {
+    loadingTitle.textContent = title;
+    loadingText.textContent = message;
+    loadingOverlay.classList.add("show");
+}
+function hideLoading() {
+    loadingOverlay.classList.remove("show");
+}
+function showError(element, message) {
+    element.textContent = message;
+    element.style.display = "block";
+}
+function clearError(element) {
+    element.textContent = "";
+    element.style.display = "none";
+}
+function switchStep(step) {
+    $("section-1").classList.toggle("active", step === 1);
+    $("section-2").classList.toggle("active", step === 2);
+    $("progress-bar").style.width = step === 1 ? "50%" : "100%";
+    $("step-label").textContent = step === 1 ? "الخطوة ١ من ٢" : "الخطوة ٢ من ٢";
+    $("step-description").textContent = step === 1 ? "بيانات تسجيل الدخول" : "بيانات الخادم";
+    clearError(errorMsg);
+    clearError(errorMsg2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function passwordRules(password) {
+    return {
+        length: password.length >= 8,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        symbol: /[^A-Za-z0-9]/.test(password)
+    };
+}
+function updatePasswordStrength() {
+    const password = passwordInput.value;
+    const rules = passwordRules(password);
+    const count = Object.values(rules).filter(Boolean).length;
+    const labels = ["لم تُكتب بعد", "ضعيفة", "مقبولة", "جيدة", "قوية", "قوية جدًا"];
+    const colors = ["#D9534F", "#D9534F", "#D99A35", "#B79A63", "#36865A", "#247747"];
+    $("strength-value").textContent = password ? labels[count] : labels[0];
+    $("strength-value").style.color = password ? colors[count] : "var(--muted)";
+    $("strength-fill").style.width = `${count * 20}%`;
+    $("strength-fill").style.background = colors[count];
+
+    for (const [key, valid] of Object.entries(rules)) {
+        const item = $(`rule-${key}`);
+        item.classList.toggle("ok", valid);
+        item.querySelector("i").className = valid ? "fa-solid fa-circle-check" : "fa-regular fa-circle";
+    }
+}
+passwordInput.addEventListener("input", updatePasswordStrength);
+
+$("toggle-password").addEventListener("click", () => {
+    const showing = passwordInput.type === "password";
+    passwordInput.type = showing ? "text" : "password";
+    $("eye-icon").className = showing ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+    $("toggle-password").setAttribute("aria-label", showing ? "إخفاء كلمة المرور" : "إظهار كلمة المرور");
+});
+
+function randomPassword() {
+    const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+    const lower = "abcdefghijkmnopqrstuvwxyz";
+    const digits = "23456789";
+    const symbols = "!@#$%&*?";
+    const all = upper + lower + digits + symbols;
+    const pick = chars => chars[secureRandomInt(chars.length)];
+    const chars = [pick(upper), pick(lower), pick(digits), pick(symbols)];
+    while (chars.length < 16) chars.push(pick(all));
+    for (let i = chars.length - 1; i > 0; i--) {
+        const j = secureRandomInt(i + 1);
+        [chars[i], chars[j]] = [chars[j], chars[i]];
+    }
+    return chars.join("");
+}
+function secureRandomInt(max) {
+    const values = new Uint32Array(1);
+    crypto.getRandomValues(values);
+    return values[0] % max;
+}
+$("suggest-password").addEventListener("click", () => {
+    passwordInput.value = randomPassword();
+    passwordInput.type = "text";
+    $("eye-icon").className = "fa-solid fa-eye-slash";
+    $("toggle-password").setAttribute("aria-label", "إخفاء كلمة المرور");
+    updatePasswordStrength();
+    clearError(errorMsg);
+});
+
+$("suggest-username").addEventListener("click", () => {
+    const suffix = String(secureRandomInt(9000) + 1000);
+    usernameInput.value = `servant_${suffix}`;
+    usernameStatus.textContent = "تم اقتراح اسم. اضغط «التالي» للتحقق من توفره.";
+    usernameStatus.style.color = "var(--muted)";
+    clearError(errorMsg);
+});
+
+usernameInput.addEventListener("input", () => {
+    usernameStatus.textContent = "";
+    clearError(errorMsg);
+});
+
+function validUsername(username) {
+    return /^[A-Za-z][A-Za-z0-9_]{3,23}$/.test(username);
+}
+
+step1Btn.addEventListener("click", async () => {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+    clearError(errorMsg);
+
+    if (!validUsername(username)) {
+        showError(errorMsg, "اسم المستخدم لازم يبدأ بحرف إنجليزي، ويكون من 4 إلى 24 حرفًا، ويحتوي على حروف أو أرقام أو _ فقط.");
+        usernameInput.focus();
+        return;
+    }
+
+    const rules = passwordRules(password);
+    if (!Object.values(rules).every(Boolean)) {
+        showError(errorMsg, "كلمة المرور غير قوية كفاية. أكمل الشروط الخمسة الظاهرة أسفل الحقل أو استخدم زر «اقترح كلمة».");
+        passwordInput.focus();
+        return;
+    }
+
+    step1Btn.disabled = true;
+    showLoading("جاري التحقق", "نتأكد من توفر اسم المستخدم...");
+    try {
+        const adminRef = collection(db, "admin");
+        const q = query(adminRef, where("username", "==", username));
+        const snapshot = await getDocs(q);
+
+        if (!snapshot.empty) {
+            usernameStatus.textContent = "اسم المستخدم مستخدم بالفعل. جرّب اسمًا آخر.";
+            usernameStatus.style.color = "var(--danger)";
+            showError(errorMsg, "اسم المستخدم موجود بالفعل، اختَر اسمًا مختلفًا.");
+            hideLoading();
+            step1Btn.disabled = false;
+            return;
+        }
+
+        usernameStatus.textContent = "يبدو أن الاسم متاح. سيتم التأكد منه مرة أخرى عند الحفظ.";
+        usernameStatus.style.color = "var(--success)";
+        hideLoading();
+        switchStep(2);
+    } catch (error) {
+        console.error("Username availability check failed:", error);
+        hideLoading();
+        showError(errorMsg, "تعذر الاتصال بقاعدة البيانات. تأكد من الاتصال بالإنترنت وإعدادات Firebase ثم حاول مرة أخرى.");
+    } finally {
+        step1Btn.disabled = false;
+    }
+});
+
+$("back-step-btn").addEventListener("click", () => switchStep(1));
+
+step2Btn.addEventListener("click", async () => {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+    const fullName = $("servant-name").value.trim();
+    const servantNum = $("servant-number").value.trim();
+    const servantTitle = $("servant-title").value;
+    const servantStage = $("servant-stage").value;
+    const servantGrade = $("servant-grade").value;
+
+    clearError(errorMsg2);
+
+    if (!fullName || !servantNum) {
+        showError(errorMsg2, "من فضلك أدخل اسم الخادم ورقم الخادم.");
+        return;
+    }
+    if (!validUsername(username) || !Object.values(passwordRules(password)).every(Boolean)) {
+        switchStep(1);
+        showError(errorMsg, "راجع اسم المستخدم وكلمة المرور قبل المتابعة.");
+        return;
+    }
+
+    step2Btn.disabled = true;
+    showLoading("جاري إنشاء الحساب", "يتم التحقق من الاسم وحفظ البيانات...");
+    try {
+        // فحص إضافي لمنع التسجيل بالاسم نفسه إذا أُنشئ حساب أثناء الانتقال بين الخطوتين.
+        const existing = await getDocs(query(collection(db, "admin"), where("username", "==", username)));
+        if (!existing.empty) {
+            hideLoading();
+            switchStep(1);
+            showError(errorMsg, "اسم المستخدم أصبح مستخدمًا بالفعل. اختر اسمًا آخر.");
+            return;
+        }
+
+        // الإبقاء على نفس بنية مجموعة admin المستخدمة في المشروع الحالي.
+        await setDoc(doc(db, "admin", username), {
+            username,
+            password,
+            fullName,
+            servantNumber: servantNum,
+            servantTitle,
+            servantStage,
+            servantGrade,
+            createdAt: new Date().toISOString()
+        });
+
+        localStorage.setItem("username", username);
+        localStorage.setItem("fullName", fullName);
+        localStorage.setItem("servantTitle", servantTitle);
+        localStorage.setItem("servantStage", servantStage);
+        localStorage.setItem("servantGrade", servantGrade);
+        localStorage.setItem("servantNumber", servantNum);
+
+        loadingTitle.textContent = "تم إنشاء الحساب بنجاح";
+        loadingText.textContent = "جاري الانتقال إلى الصفحة التالية...";
+        setTimeout(() => {
+            window.location.href = "home.html";
+        }, 900);
+    } catch (error) {
+        console.error("Account creation failed:", error);
+        hideLoading();
+        showError(errorMsg2, "حدث خطأ أثناء إنشاء الحساب. تحقق من اتصال الإنترنت وصلاحيات Firebase ثم حاول مرة أخرى.");
+        step2Btn.disabled = false;
+    }
+});
+</script>
 </body>
 </html>
