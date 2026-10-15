@@ -1,409 +1,659 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#FFFFFF">
+
     <title>دخول لوحة تحكم الأدمن</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        :root {
+            --primary: #30213D;
+            --primary-dark: #24172F;
+            --gold: #B79A63;
+            --gold-pale: #F5F0E5;
+            --white: #FFFFFF;
+            --text: #30213D;
+            --muted: #85818A;
+            --border: #ECE9E5;
+            --shadow: 0 8px 25px rgba(40, 29, 47, .055);
+            --error: #B42332;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        :root {
-            --navy-deep: #041a36;
-            --navy-mid: #062348;
-            --navy-edge: #000b18;
-
-            --maroon-dark: #5d101c;
-            --maroon: #7d1424;
-            --maroon-light: #9b1c30;
-
-            --ink: #1f1715;
-            --muted: #8a817c;
-            --field-border: #e1d8d0;
+        html {
+            background: #FFFFFF;
+            scroll-behavior: smooth;
         }
 
         body {
             min-height: 100vh;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    var(--navy-mid) 0%,
-                    var(--navy-deep) 45%,
-                    var(--navy-edge) 100%
-                );
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            padding: 20px;
-
-            font-family: 'Tajawal', sans-serif;
+            min-height: 100dvh;
+            background: #FFFFFF;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
         }
 
-        /* =========================
-           الكارت
-        ========================= */
+        button, input {
+            font: inherit;
+        }
 
-        .form-card {
+        button:focus-visible,
+        input:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        .app {
             width: 100%;
-            max-width: 400px;
-
-            background: #ffffff;
-
-            border-radius: 30px;
-
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
-
-            position: relative;
-
-            overflow: hidden;
+            max-width: 500px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            margin: auto;
+            background: #FFFFFF;
+            padding-bottom: max(24px, env(safe-area-inset-bottom));
         }
 
-        .drag-handle {
-            width: 100%;
-
+        /* الشريط العلوي */
+        .topbar {
+            min-height: 72px;
+            padding: max(10px, env(safe-area-inset-top)) 18px 10px;
             display: flex;
-            justify-content: center;
-
-            padding-top: 12px;
-            padding-bottom: 4px;
-
-            background: linear-gradient(180deg, #fbeef0 0%, #ffffff 60%);
-        }
-
-        .drag-handle span {
-            width: 44px;
-            height: 4px;
-            border-radius: 4px;
-            background: #e3c9cd;
-        }
-
-        .card-body {
-            padding: 10px 32px 34px;
-
-            text-align: center;
-        }
-
-        /* =========================
-           اللوجو
-        ========================= */
-
-        .logo-container {
-            width: 100%;
-
-            display: flex;
-            justify-content: center;
             align-items: center;
-
-            margin-top: 10px;
-            margin-bottom: 16px;
+            justify-content: space-between;
+            gap: 12px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border);
         }
 
-        .church-logo {
-            width: 74px;
-            height: 74px;
-
-            border-radius: 50%;
-
-            background: linear-gradient(150deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
-
+        .brand {
             display: flex;
-            justify-content: center;
             align-items: center;
-
-            color: #ffffff;
-
-            font-size: 34px;
-
-            box-shadow: 0 10px 22px rgba(125, 20, 36, 0.35);
+            gap: 11px;
+            min-width: 0;
         }
 
-        /* =========================
-           العنوان
-        ========================= */
-
-        h2 {
-            color: var(--ink);
-
-            font-family: 'Amiri', serif;
-
-            font-size: 25px;
-
-            font-weight: 700;
-
-            margin-bottom: 6px;
-
-            letter-spacing: 0.5px;
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            background: var(--primary);
+            color: #FFFFFF;
+            border-radius: 13px;
         }
 
-        .subtitle {
+        .brand-icon i {
+            font-size: 20px;
+        }
+
+        .brand-title {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .brand-subtitle {
+            font-size: 10px;
             color: var(--muted);
-
-            font-size: 14px;
-
-            margin-bottom: 26px;
+            margin-top: 3px;
         }
 
-        /* =========================
-           مجموعة الإدخال
-        ========================= */
+        .back-btn {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            color: var(--primary);
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .back-btn:active {
+            background: var(--gold-pale);
+            transform: scale(.96);
+        }
+
+        /* بطاقة الترحيب */
+        .hero {
+            margin: 19px 15px 0;
+            padding: 26px 18px 24px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 23px;
+            background: #FFFFFF;
+            box-shadow: var(--shadow);
+        }
+
+        .church-emblem {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 16px;
+            display: grid;
+            place-items: center;
+            border-radius: 22px;
+            background: var(--primary);
+            color: #FFFFFF;
+            border: 1px solid var(--gold);
+            box-shadow: 0 5px 15px rgba(40, 29, 47, .10);
+        }
+
+        .church-emblem i {
+            font-size: 31px;
+        }
+
+        .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 12px;
+            margin-bottom: 11px;
+            color: var(--primary);
+            background: #FFFFFF;
+            border: 1px solid #E9E0CE;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .hero-label i {
+            color: var(--gold);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-family: 'Amiri', 'Cairo', serif;
+            font-size: clamp(24px, 6vw, 30px);
+            line-height: 1.7;
+            font-weight: 700;
+        }
+
+        .hero-description {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.9;
+            margin-top: 5px;
+        }
+
+        .hero-divider {
+            width: 58px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 5px;
+            margin: 15px auto 0;
+        }
+
+        /* المحتوى */
+        .content {
+            padding: 25px 15px 10px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .heading-icon {
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            color: var(--primary);
+            background: var(--gold-pale);
+            border: 1px solid #E9E0CE;
+            border-radius: 14px;
+        }
+
+        .heading-icon i {
+            font-size: 20px;
+        }
+
+        .heading-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .heading-subtitle {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* بطاقة تسجيل الدخول */
+        .login-panel {
+            padding: 20px 17px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: #FFFFFF;
+            box-shadow: var(--shadow);
+        }
 
         .input-group {
             margin-bottom: 18px;
             text-align: right;
         }
 
-        label {
+        .input-label {
             display: block;
-
-            color: #6b625c;
-
-            font-size: 13px;
-
-            font-weight: 700;
-
-            margin-bottom: 6px;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 9px;
         }
 
         .field-wrap {
             position: relative;
         }
 
-        .field-wrap i.field-icon {
+        .field-icon {
             position: absolute;
             top: 50%;
-            right: 16px;
+            right: 15px;
             transform: translateY(-50%);
-
-            color: #b9afa8;
-            font-size: 15px;
-
+            color: var(--gold);
+            font-size: 16px;
             pointer-events: none;
         }
 
-        .field-wrap i.field-toggle {
+        .field-toggle {
             position: absolute;
             top: 50%;
-            left: 16px;
+            left: 15px;
             transform: translateY(-50%);
-
-            color: #b9afa8;
-            font-size: 15px;
-
+            color: var(--muted);
+            font-size: 16px;
             cursor: pointer;
+            padding: 5px;
+            background: transparent;
+            border: none;
         }
 
         .input-field {
             width: 100%;
-
-            padding: 13px 42px 13px 42px;
-
-            background: #faf8f7;
-
-            border: 1.5px solid var(--field-border);
-
-            border-radius: 13px;
-
-            color: var(--ink);
-
-            font-size: 15px;
-
-            font-family: 'Tajawal', sans-serif;
-
+            min-height: 51px;
+            padding: 13px 43px;
+            background: #FCFBFA;
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            color: var(--primary);
+            font-size: 14px;
+            font-family: 'Cairo', sans-serif;
             direction: ltr;
             text-align: left;
-
             outline: none;
-
-            transition: all 0.25s ease;
+            transition: border-color .2s, box-shadow .2s, background .2s;
         }
 
         .input-field::placeholder {
-            color: #b9afa8;
+            color: #AAA4AD;
         }
 
         .input-field:focus {
-            border-color: var(--maroon);
-
-            background: #ffffff;
-
-            box-shadow: 0 0 0 3px rgba(125, 20, 36, 0.10);
+            border-color: var(--gold);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(183, 154, 99, .12);
         }
 
         .input-field.error {
-            border-color: #e11d48;
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(180, 35, 50, .07);
         }
 
-        /* =========================
-           زر الدخول
-        ========================= */
+        .hint {
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.9;
+            margin-top: 8px;
+        }
 
+        /* زر الدخول */
         .btn-login {
             display: flex;
             align-items: center;
             justify-content: center;
-
+            gap: 10px;
             width: 100%;
-
-            padding: 15px;
-
-            margin-top: 6px;
-
-            border: none;
-
+            min-height: 53px;
+            padding: 13px 16px;
+            margin-top: 8px;
+            border: 1px solid var(--primary);
             border-radius: 14px;
-
-            background: linear-gradient(135deg, var(--maroon-light) 0%, var(--maroon-dark) 100%);
-
-            color: #ffffff;
-
-            font-family: 'Tajawal', sans-serif;
-
-            font-size: 16px;
-
-            font-weight: 700;
-
+            background: var(--primary);
+            color: #FFFFFF;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            font-weight: 900;
             cursor: pointer;
-
-            transition: all 0.25s ease;
-
-            box-shadow: 0 10px 22px rgba(125, 20, 36, 0.35);
+            transition: background .2s, transform .2s;
         }
 
         .btn-login:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 26px rgba(125, 20, 36, 0.45);
+            background: var(--primary-dark);
         }
 
         .btn-login:active {
-            transform: translateY(1px);
-            box-shadow: 0 5px 12px rgba(125, 20, 36, 0.25);
+            transform: scale(.985);
         }
 
-        /* =========================
-           رسالة الخطأ
-        ========================= */
+        .btn-login i {
+            color: #E5D3A9;
+        }
+
+        /* رسائل الحالة */
+        .error-msg,
+        .success-msg {
+            display: none;
+            margin-top: 14px;
+            padding: 11px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.8;
+        }
 
         .error-msg {
-            color: #9f1239;
-            font-size: 13px;
-            font-weight: 700;
-            margin-top: 14px;
-            display: none;
+            color: var(--error);
+            background: #FFF5F5;
+            border: 1px solid #F3D5D8;
         }
 
-        /* =========================
-           Responsive
-        ========================= */
+        .success-msg {
+            color: #237548;
+            background: #F1FBF4;
+            border: 1px solid #CFEBD7;
+        }
 
-        @media (max-width: 500px) {
+        .panel-footer {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: var(--muted);
+            font-size: 10px;
+        }
 
-            .card-body {
-                padding: 8px 22px 28px;
+        .panel-footer i {
+            font-size: 14px;
+            color: var(--gold);
+        }
+
+        .footer {
+            padding: 20px 12px 5px;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 2;
+            text-align: center;
+        }
+
+        .footer strong {
+            color: var(--primary);
+        }
+
+        @media (min-width: 600px) {
+            body {
+                background: #FAFAFA;
             }
 
-            h2 {
-                font-size: 23px;
+            .app {
+                border-left: 1px solid var(--border);
+                border-right: 1px solid var(--border);
+            }
+        }
+
+        @media (max-width: 360px) {
+            .hero {
+                margin: 13px 10px 0;
+                padding: 22px 12px;
             }
 
-            .church-logo {
-                width: 66px;
-                height: 66px;
-                font-size: 30px;
+            .content {
+                padding: 21px 10px 10px;
+            }
+
+            .login-panel {
+                padding: 16px 12px;
+            }
+
+            .church-emblem {
+                width: 68px;
+                height: 68px;
+            }
+
+            .church-emblem i {
+                font-size: 28px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
 </head>
+
 <body>
 
-    <div class="form-card">
+<main class="app">
 
-        <div class="drag-handle">
-            <span></span>
-        </div>
-
-        <div class="card-body">
-
-            <div class="logo-container">
-                <div class="church-logo">
-                    <i class="fas fa-user-shield"></i>
-                </div>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon" aria-hidden="true">
+                <i class="fa-solid fa-house"></i>
             </div>
 
-            <h2>لوحة تحكم الأدمن</h2>
-            <div class="subtitle">تسجيل الدخول الخاص بالمسؤولين</div>
+            <div>
+                <div class="brand-title">برنامج الكنيسة</div>
+                <div class="brand-subtitle">لوحة تحكم المسؤولين</div>
+            </div>
+        </div>
 
-            <div class="input-group">
-                <label for="adminPassword">أدخل كلمة مرور الآدمن (بالإنجليزية)</label>
+        <button class="back-btn" id="backBtn" type="button"
+                aria-label="العودة للصفحة السابقة" title="رجوع">
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </header>
 
-                <div class="field-wrap">
-                    <input type="password" id="adminPassword" class="input-field" placeholder="Enter Password" autocomplete="off">
-                    <i class="fas fa-lock field-icon"></i>
-                    <i class="fas fa-eye field-toggle" id="toggleAdminPasswordIcon" onclick="toggleAdminPassword()"></i>
-                </div>
+    <section class="hero">
+        <div class="church-emblem" aria-hidden="true">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+
+        <div class="hero-label">
+            <i class="fa-solid fa-shield-halved"></i>
+            دخول آمن
+        </div>
+
+        <h1>
+            لوحة تحكم الأدمن
+        </h1>
+
+        <p class="hero-description">
+            كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي
+        </p>
+
+        <div class="hero-divider"></div>
+    </section>
+
+    <section class="content">
+
+        <div class="section-heading">
+            <div class="heading-icon" aria-hidden="true">
+                <i class="fa-solid fa-lock"></i>
             </div>
 
-            <button type="button" class="btn-login" id="adminLoginBtn">
-                <span>دخول لوحة التحكم</span>
-            </button>
+            <div>
+                <h2 class="heading-title">تسجيل دخول المسؤول</h2>
+                <p class="heading-subtitle">أدخل كلمة المرور للمتابعة</p>
+            </div>
+        </div>
 
-            <p id="errorText" class="error-msg">كلمة المرور غير صحيحة، حاول مرة أخرى!</p>
+        <div class="login-panel">
+
+            <form id="adminLoginForm">
+
+                <div class="input-group">
+                    <label class="input-label" for="adminPassword">
+                        كلمة مرور الأدمن
+                    </label>
+
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-lock field-icon"
+                           aria-hidden="true"></i>
+
+                        <input
+                            type="password"
+                            id="adminPassword"
+                            class="input-field"
+                            placeholder="Enter Password"
+                            autocomplete="current-password"
+                            autocapitalize="none"
+                            spellcheck="false"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="field-toggle"
+                            id="togglePassword"
+                            aria-label="إظهار كلمة المرور"
+                            aria-pressed="false"
+                        >
+                            <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+
+                    <p class="hint">
+                        هذه الصفحة مخصصة لدخول المسؤولين فقط.
+                    </p>
+                </div>
+
+                <button type="submit" class="btn-login" id="adminLoginBtn">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>دخول لوحة التحكم</span>
+                </button>
+
+                <p id="errorText" class="error-msg" role="alert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    كلمة المرور غير صحيحة، حاول مرة أخرى.
+                </p>
+
+                <p id="successText" class="success-msg" role="status">
+                    <i class="fa-solid fa-circle-check"></i>
+                    تم التحقق، جاري فتح لوحة التحكم...
+                </p>
+
+            </form>
+
+            <div class="panel-footer">
+                <i class="fa-solid fa-shield-halved"></i>
+                بوابة إدارة برنامج الكنيسة
+            </div>
 
         </div>
 
-    </div>
+        <footer class="footer">
+            <strong>كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي</strong>
+            <div>جميع الحقوق محفوظة</div>
+        </footer>
 
-    <script>
-        const adminPasswordInput = document.getElementById('adminPassword');
-        const adminLoginBtn = document.getElementById('adminLoginBtn');
-        const errorText = document.getElementById('errorText');
-        const toggleAdminPasswordIcon = document.getElementById('toggleAdminPasswordIcon');
+    </section>
 
-        function toggleAdminPassword() {
-            if (adminPasswordInput.type === 'password') {
-                adminPasswordInput.type = 'text';
-                toggleAdminPasswordIcon.classList.remove('fa-eye');
-                toggleAdminPasswordIcon.classList.add('fa-eye-slash');
-            } else {
-                adminPasswordInput.type = 'password';
-                toggleAdminPasswordIcon.classList.remove('fa-eye-slash');
-                toggleAdminPasswordIcon.classList.add('fa-eye');
-            }
-        }
+</main>
 
-        adminLoginBtn.addEventListener('click', () => {
-            const enteredPassword = adminPasswordInput.value.trim();
+<script>
+"use strict";
 
-            if (enteredPassword === "stmina") {
-                errorText.style.display = "none";
-                adminPasswordInput.classList.remove('error');
-                alert("تم تسجيل الدخول بنجاح يا آدمن! 🔓");
-                // الانتقال لصفحة الآدمن الخاصة بك (يمكنك تغيير اسم الصفحة حسب رغبتك)
-                window.location.href = 'admin_dashboard.html';
-            } else {
-                errorText.style.display = "block";
-                adminPasswordInput.classList.add('error');
-            }
-        });
+const adminPasswordInput = document.getElementById("adminPassword");
+const adminLoginForm = document.getElementById("adminLoginForm");
+const adminLoginBtn = document.getElementById("adminLoginBtn");
+const errorText = document.getElementById("errorText");
+const successText = document.getElementById("successText");
+const togglePassword = document.getElementById("togglePassword");
+const eyeIcon = document.getElementById("eyeIcon");
+const backBtn = document.getElementById("backBtn");
 
-        // السماح بالدخول عبر الضغط على زر Enter من لوحة المفاتيح
-        adminPasswordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                adminLoginBtn.click();
-            }
-        });
-    </script>
+/* إظهار وإخفاء كلمة المرور */
+togglePassword.addEventListener("click", function () {
+    const showing = adminPasswordInput.type === "password";
+
+    adminPasswordInput.type = showing ? "text" : "password";
+
+    eyeIcon.classList.toggle("fa-eye", !showing);
+    eyeIcon.classList.toggle("fa-eye-slash", showing);
+
+    togglePassword.setAttribute(
+        "aria-label",
+        showing ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
+    );
+
+    togglePassword.setAttribute("aria-pressed", String(showing));
+});
+
+/* إخفاء الخطأ عند بدء الكتابة */
+adminPasswordInput.addEventListener("input", function () {
+    errorText.style.display = "none";
+    adminPasswordInput.classList.remove("error");
+});
+
+/* تسجيل الدخول */
+adminLoginForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const enteredPassword = adminPasswordInput.value.trim();
+
+    errorText.style.display = "none";
+    successText.style.display = "none";
+    adminPasswordInput.classList.remove("error");
+
+    if (enteredPassword === "stmina") {
+        successText.style.display = "block";
+        adminLoginBtn.disabled = true;
+        adminLoginBtn.style.opacity = "0.75";
+
+        window.location.href = "admin_dashboard.html";
+    } else {
+        errorText.style.display = "block";
+        adminPasswordInput.classList.add("error");
+        adminPasswordInput.focus();
+    }
+});
+
+/* الرجوع للصفحة الرئيسية */
+backBtn.addEventListener("click", function () {
+    window.location.href = "index.html";
+});
+</script>
 
 </body>
 </html>
+```
