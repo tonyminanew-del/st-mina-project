@@ -1,2727 +1,1968 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>البروفايل - لوحة الخادم</title>
-
-
-    <!-- =====================================================
-         الخطوط
-    ====================================================== -->
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Cairo:wght@400;600;700;800;900&display=swap"
-        rel="stylesheet">
-
-
-    <!-- =====================================================
-         Font Awesome
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-
-    <style>
-
-        /* =====================================================
-           الألوان
-        ====================================================== */
-
-        :root {
-
-            --wine-900: #4a0e16;
-            --wine-800: #6b1420;
-            --wine-700: #7c1b28;
-
-            --gold: #c9a04d;
-            --gold-light: #e6c878;
-
-            --paper: #f6f1e9;
-
-            --card: #ffffff;
-
-            --ink: #2a2320;
-            --ink-soft: #6b625c;
-
-            --line: #e9dfd0;
-
-            --green: #16a34a;
-            --green-dark: #15803d;
-
-            --red: #dc2626;
-
-        }
-
-
-        /* =====================================================
-           Reset
-        ====================================================== */
-
-        * {
-
-            box-sizing: border-box;
-
-            margin: 0;
-            padding: 0;
-
-        }
-
-
-        /* =====================================================
-           Body
-        ====================================================== */
-
-        body {
-
-            background: var(--paper);
-
-            display: flex;
-
-            flex-direction: column;
-
-            min-height: 100vh;
-
-            font-family: 'Cairo', sans-serif;
-
-            color: var(--ink);
-
-        }
-
-
-        /* =====================================================
-           Header
-        ====================================================== */
-
-        header.church-header {
-
-            width: 100%;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    var(--wine-800),
-                    var(--wine-900)
-                );
-
-            padding: 22px 30px 26px;
-
-            text-align: center;
-
-            position: relative;
-
-            box-shadow:
-                0 8px 20px
-                rgba(74, 14, 22, 0.25);
-
-        }
-
-
-        header.church-header::after {
-
-            content: '';
-
-            position: absolute;
-
-            bottom: 0;
-
-            right: 0;
-
-            left: 0;
-
-            height: 4px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    transparent,
-                    var(--gold),
-                    transparent
-                );
-
-        }
-
-
-        /* =====================================================
-           Logo
-        ====================================================== */
-
-        .church-logo {
-
-            width: 64px;
-
-            height: 64px;
-
-            border-radius: 50%;
-
-            background: var(--wine-700);
-
-            border:
-                2px solid
-                var(--gold);
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            margin:
-                0 auto
-                11px;
-
-            box-shadow:
-                0 7px 18px
-                rgba(0, 0, 0, 0.2);
-
-        }
-
-
-        .church-logo i {
-
-            color: var(--gold-light);
-
-            font-size: 29px;
-
-        }
-
-
-        header.church-header h2 {
-
-            font-family: 'Amiri', serif;
-
-            color: #fbeed4;
-
-            font-size: 21px;
-
-            font-weight: 700;
-
-        }
-
-
-        /* =====================================================
-           Main Content
-        ====================================================== */
-
-        .main-content {
-
-            flex: 1;
-
-            padding:
-                30px
-                30px
-                120px;
-
-            max-width: 1200px;
-
-            width: 100%;
-
-            margin: 0 auto;
-
-        }
-
-
-        /* =====================================================
-           Widget
-        ====================================================== */
-
-        .widget {
-
-            background: var(--card);
-
-            border-radius: 24px;
-
-            border:
-                1px solid
-                var(--line);
-
-            box-shadow:
-                0 14px 32px
-                rgba(74, 14, 22, 0.10);
-
-            margin-bottom: 24px;
-
-            overflow: hidden;
-
-            position: relative;
-
-        }
-
-
-        .widget::before {
-
-            content: '';
-
-            position: absolute;
-
-            top: 0;
-
-            right: 0;
-
-            left: 0;
-
-            height: 4px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--wine-700),
-                    var(--gold),
-                    var(--wine-700)
-                );
-
-        }
-
-
-        /* =====================================================
-           Profile Card
-        ====================================================== */
-
-        .avatar-widget .widget-body {
-
-            padding:
-                40px
-                25px
-                43px;
-
-            text-align: center;
-
-        }
-
-
-        .avatar-widget h1 {
-
-            font-family: 'Amiri', serif;
-
-            font-size: 30px;
-
-            color: var(--wine-800);
-
-            margin-bottom: 20px;
-
-        }
-
-
-        .profile-subtitle {
-
-            color: var(--ink-soft);
-
-            font-size: 14px;
-
-            margin-top: 12px;
-
-        }
-
-
-        /* =====================================================
-           Avatar
-        ====================================================== */
-
-        .avatar-container {
-
-            position: relative;
-
-            width: 145px;
-
-            height: 145px;
-
-            margin:
-                0 auto;
-
-        }
-
-
-        .avatar {
-
-            width: 100%;
-
-            height: 100%;
-
-            border-radius: 50%;
-
-            border:
-                4px solid
-                var(--gold);
-
-            object-fit: cover;
-
-            background: var(--paper);
-
-            box-shadow:
-                0 12px 28px
-                rgba(74, 14, 22, 0.23);
-
-        }
-
-
-        /* =====================================================
-           Upload
-        ====================================================== */
-
-        .upload-label {
-
-            position: absolute;
-
-            bottom: 3px;
-
-            left: 3px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--gold-light),
-                    var(--gold)
-                );
-
-            color: var(--wine-900);
-
-            width: 43px;
-
-            height: 43px;
-
-            border-radius: 50%;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            cursor: pointer;
-
-            box-shadow:
-                0 5px 13px
-                rgba(74, 14, 22, 0.35);
-
-            transition: .3s;
-
-            border:
-                3px solid
-                var(--card);
-
-        }
-
-
-        .upload-label:hover {
-
-            transform: scale(1.1);
-
-        }
-
-
-        #avatar-input {
-
-            display: none;
-
-        }
-
-
-        /* =====================================================
-           Info Header
-        ====================================================== */
-
-        .widget-head {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            padding:
-                20px
-                28px
-                16px;
-
-            border-bottom:
-                1px dashed
-                var(--line);
-
-        }
-
-
-        .title-row {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 11px;
-
-        }
-
-
-        .icon-badge {
-
-            width: 38px;
-
-            height: 38px;
-
-            border-radius: 11px;
-
-            background: var(--wine-700);
-
-            color: var(--gold-light);
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 15px;
-
-            flex-shrink: 0;
-
-        }
-
-
-        .widget-head h3 {
-
-            font-family: 'Amiri', serif;
-
-            font-size: 20px;
-
-            font-weight: 700;
-
-            color: var(--wine-800);
-
-        }
-
-
-        /* =====================================================
-           Edit Button
-        ====================================================== */
-
-        .edit-btn {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--wine-700),
-                    var(--wine-900)
-                );
-
-            color: #fbeed4;
-
-            border: none;
-
-            padding:
-                10px
-                22px;
-
-            border-radius: 22px;
-
-            font-family: 'Cairo', sans-serif;
-
-            font-weight: 700;
-
-            font-size: 13px;
-
-            cursor: pointer;
-
-            box-shadow:
-                0 5px 14px
-                rgba(74, 14, 22, 0.25);
-
-            transition: .3s;
-
-        }
-
-
-        .edit-btn:hover {
-
-            transform:
-                translateY(-2px);
-
-        }
-
-
-        .edit-btn.save-mode {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--green),
-                    var(--green-dark)
-                );
-
-            box-shadow:
-                0 5px 14px
-                rgba(22, 163, 74, 0.3);
-
-        }
-
-
-        .edit-btn:disabled {
-
-            opacity: .65;
-
-            cursor: not-allowed;
-
-            transform: none;
-
-        }
-
-
-        /* =====================================================
-           Info Body
-        ====================================================== */
-
-        .info-widget .widget-body {
-
-            padding:
-                12px
-                30px
-                22px;
-
-        }
-
-
-        /* =====================================================
-           Information Grid
-        ====================================================== */
-
-        .info-list {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    2,
-                    minmax(
-                        0,
-                        1fr
-                    )
-                );
-
-            gap:
-                15px
-                35px;
-
-        }
-
-
-        /* =====================================================
-           Info Item
-        ====================================================== */
-
-        .info-item {
-
-            background:
-                var(--paper);
-
-            border:
-                1px solid
-                var(--line);
-
-            border-right:
-                4px solid
-                var(--gold);
-
-            padding:
-                15px
-                17px;
-
-            border-radius: 13px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            gap: 15px;
-
-            min-height: 67px;
-
-            transition: .25s;
-
-        }
-
-
-        .info-item:hover {
-
-            transform:
-                translateY(-1px);
-
-            box-shadow:
-                0 5px 12px
-                rgba(74, 14, 22, 0.06);
-
-        }
-
-
-        /* =====================================================
-           Label
-        ====================================================== */
-
-        .info-label {
-
-            color: var(--wine-700);
-
-            font-weight: 700;
-
-            font-size: 14px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            flex-shrink: 0;
-
-        }
-
-
-        .info-label i {
-
-            width: 17px;
-
-            text-align: center;
-
-        }
-
-
-        /* =====================================================
-           Value
-        ====================================================== */
-
-        .info-value {
-
-            color: var(--ink);
-
-            font-size: 14px;
-
-            font-weight: 700;
-
-            text-align: right;
-
-            word-break: break-word;
-
-        }
-
-
-        /* =====================================================
-           Inputs
-        ====================================================== */
-
-        .edit-input,
-        .edit-select {
-
-            background:
-                #ffffff;
-
-            border:
-                1.5px solid
-                var(--gold);
-
-            color: var(--ink);
-
-            padding:
-                9px
-                11px;
-
-            border-radius: 9px;
-
-            font-family:
-                'Cairo',
-                sans-serif;
-
-            font-size: 13px;
-
-            width: 230px;
-
-            max-width: 100%;
-
-            text-align: right;
-
-            direction: rtl;
-
-            outline: none;
-
-            transition: .2s;
-
-        }
-
-
-        .edit-input:focus,
-        .edit-select:focus {
-
-            border-color:
-                var(--wine-700);
-
-            box-shadow:
-                0 0 0 3px
-                rgba(
-                    124,
-                    27,
-                    40,
-                    .08
-                );
-
-        }
-
-
-        .edit-select {
-
-            cursor: pointer;
-
-        }
-
-
-        /* =====================================================
-           Bottom Navigation
-        ====================================================== */
-
-        nav.bottom-nav {
-
-            position: fixed;
-
-            bottom: 0;
-
-            right: 0;
-
-            left: 0;
-
-            background:
-                var(--wine-900);
-
-            border-top:
-                1px solid
-                rgba(
-                    230,
-                    200,
-                    120,
-                    .25
-                );
-
-            display: flex;
-
-            justify-content:
-                space-around;
-
-            padding:
-                10px
-                4px
-                calc(
-                    10px +
-                    env(
-                        safe-area-inset-bottom
-                    )
-                );
-
-            box-shadow:
-                0 -8px 20px
-                rgba(0,0,0,.25);
-
-            overflow-x: auto;
-
-            z-index: 100;
-
-        }
-
-
-        nav.bottom-nav a,
-        nav.bottom-nav button {
-
-            background: none;
-
-            border: none;
-
-            color: #c9b7a8;
-
-            text-decoration: none;
-
-            font-size: 10px;
-
-            font-family:
-                'Cairo',
-                sans-serif;
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            gap: 4px;
-
-            transition:
-                all .25s ease;
-
-            cursor: pointer;
-
-            padding:
-                4px
-                8px;
-
-            flex-shrink: 0;
-
-        }
-
-
-        nav.bottom-nav a i,
-        nav.bottom-nav button i {
-
-            font-size: 18px;
-
-        }
-
-
-        nav.bottom-nav a:hover,
-        nav.bottom-nav a.active {
-
-            color:
-                var(--gold-light);
-
-            transform:
-                translateY(-2px);
-
-        }
-
-
-        nav.bottom-nav .logout-link {
-
-            color:
-                #e88a84;
-
-        }
-
-
-        nav.bottom-nav .logout-link:hover {
-
-            color:
-                #ff6b6b;
-
-            transform:
-                translateY(-2px);
-
-        }
-
-
-        /* =====================================================
-           Desktop
-        ====================================================== */
-
-        @media (min-width: 1000px) {
-
-            .main-content {
-
-                max-width: 1200px;
-
-                padding-left: 40px;
-
-                padding-right: 40px;
-
-            }
-
-
-            .info-list {
-
-                column-gap: 45px;
-
-            }
-
-
-            .info-item {
-
-                min-height: 72px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           Large Desktop
-        ====================================================== */
-
-        @media (min-width: 1400px) {
-
-            .main-content {
-
-                max-width: 1250px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           Tablet
-        ====================================================== */
-
-        @media (max-width: 850px) {
-
-            .main-content {
-
-                max-width: 100%;
-
-                padding:
-                    24px
-                    18px
-                    115px;
-
-            }
-
-
-            .info-list {
-
-                grid-template-columns: 1fr;
-
-            }
-
-
-            .edit-input,
-            .edit-select {
-
-                width: 260px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           Mobile
-        ====================================================== */
-
-        @media (max-width: 600px) {
-
-            header.church-header {
-
-                padding:
-                    19px
-                    15px
-                    23px;
-
-            }
-
-
-            .church-logo {
-
-                width: 56px;
-
-                height: 56px;
-
-            }
-
-
-            .church-logo i {
-
-                font-size: 25px;
-
-            }
-
-
-            header.church-header h2 {
-
-                font-size: 17px;
-
-                line-height: 1.6;
-
-            }
-
-
-            .main-content {
-
-                width: 100%;
-
-                padding:
-                    18px
-                    11px
-                    110px;
-
-            }
-
-
-            .widget {
-
-                border-radius: 20px;
-
-                margin-bottom: 18px;
-
-            }
-
-
-            .avatar-widget .widget-body {
-
-                padding:
-                    28px
-                    15px
-                    30px;
-
-            }
-
-
-            .avatar-widget h1 {
-
-                font-size: 25px;
-
-            }
-
-
-            .avatar-container {
-
-                width: 115px;
-
-                height: 115px;
-
-            }
-
-
-            .upload-label {
-
-                width: 38px;
-
-                height: 38px;
-
-            }
-
-
-            .profile-subtitle {
-
-                font-size: 12px;
-
-            }
-
-
-            .widget-head {
-
-                padding:
-                    16px
-                    15px
-                    13px;
-
-            }
-
-
-            .widget-head h3 {
-
-                font-size: 17px;
-
-            }
-
-
-            .icon-badge {
-
-                width: 33px;
-
-                height: 33px;
-
-            }
-
-
-            .edit-btn {
-
-                padding:
-                    8px
-                    13px;
-
-                font-size: 11px;
-
-            }
-
-
-            .info-widget .widget-body {
-
-                padding:
-                    10px
-                    15px
-                    18px;
-
-            }
-
-
-            .info-list {
-
-                display: flex;
-
-                flex-direction: column;
-
-                gap: 10px;
-
-            }
-
-
-            .info-item {
-
-                padding:
-                    13px
-                    14px;
-
-                min-height: 60px;
-
-                gap: 10px;
-
-            }
-
-
-            .info-label {
-
-                font-size: 12px;
-
-            }
-
-
-            .info-value {
-
-                font-size: 12px;
-
-                max-width: 58%;
-
-            }
-
-
-            .edit-input,
-            .edit-select {
-
-                width: 175px;
-
-                font-size: 11px;
-
-                padding:
-                    8px
-                    8px;
-
-            }
-
-
-            nav.bottom-nav {
-
-                padding-top: 8px;
-
-            }
-
-
-            nav.bottom-nav a,
-            nav.bottom-nav button {
-
-                font-size: 9px;
-
-                padding:
-                    4px
-                    5px;
-
-            }
-
-
-            nav.bottom-nav a i,
-            nav.bottom-nav button i {
-
-                font-size: 16px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           Small Mobile
-        ====================================================== */
-
-        @media (max-width: 400px) {
-
-            header.church-header h2 {
-
-                font-size: 15px;
-
-            }
-
-
-            .edit-btn {
-
-                padding:
-                    7px
-                    10px;
-
-                font-size: 10px;
-
-            }
-
-
-            .info-item {
-
-                flex-direction: column;
-
-                align-items: flex-start;
-
-            }
-
-
-            .info-value {
-
-                width: 100%;
-
-                max-width: 100%;
-
-                text-align: right;
-
-            }
-
-
-            .edit-input,
-            .edit-select {
-
-                width: 100%;
-
-            }
-
-
-            nav.bottom-nav a,
-            nav.bottom-nav button {
-
-                min-width: 48px;
-
-            }
-
-        }
-
-    </style>
-
-
-    <script>
-
-        /* =====================================================
-           عند تحميل الصفحة
-        ====================================================== */
-
-        document.addEventListener(
-            'DOMContentLoaded',
-            function () {
-
-
-                /* =================================================
-                   قراءة البيانات من LocalStorage
-                ================================================== */
-
-                loadProfile();
-
-
-                /* =================================================
-                   الصورة
-                ================================================== */
-
-                setupImageUpload();
-
-
-                /* =================================================
-                   تسجيل الخروج
-                ================================================== */
-
-                const logoutBtn =
-                    document.getElementById(
-                        'logoutBtn'
-                    );
-
-
-                if (logoutBtn) {
-
-                    logoutBtn.addEventListener(
-                        'click',
-                        function () {
-
-                            if (
-                                confirm(
-                                    "هل تريد تسجيل الخروج حقاً؟"
-                                )
-                            ) {
-
-                                localStorage.clear();
-
-                                window.location.href =
-                                    'index.html';
-
-                            }
-
-                        }
-                    );
-
-                }
-
-            }
-        );
-
-
-        /* =====================================================
-           تحميل بيانات الخادم
-        ====================================================== */
-
-        function loadProfile() {
-
-            const username =
-                localStorage.getItem(
-                    'username'
-                ) ||
-                'غير محدد';
-
-
-            const fullName =
-                localStorage.getItem(
-                    'fullName'
-                ) ||
-                'خادم الرب';
-
-
-            const servantTitle =
-                localStorage.getItem(
-                    'servantTitle'
-                ) ||
-                '';
-
-
-            const servantStage =
-                localStorage.getItem(
-                    'servantStage'
-                ) ||
-                'غير محددة';
-
-
-            const servantGrade =
-                localStorage.getItem(
-                    'servantGrade'
-                ) ||
-                'غير محدد';
-
-
-            const servantNumber =
-                localStorage.getItem(
-                    'servantNumber'
-                ) ||
-                'غير متوفر';
-
-
-            /* =================================================
-               عرض البيانات
-            ================================================== */
-
-            const usernameEl =
-                document.getElementById(
-                    'val-username'
-                );
-
-
-            const fullnameEl =
-                document.getElementById(
-                    'val-fullname'
-                );
-
-
-            const stageEl =
-                document.getElementById(
-                    'val-stage'
-                );
-
-
-            const gradeEl =
-                document.getElementById(
-                    'val-grade'
-                );
-
-
-            const numberEl =
-                document.getElementById(
-                    'val-number'
-                );
-
-
-            if (usernameEl) {
-
-                usernameEl.innerText =
-                    username;
-
-            }
-
-
-            if (fullnameEl) {
-
-                fullnameEl.innerText =
-                    servantTitle
-                        ? `${servantTitle} ${fullName}`
-                        : fullName;
-
-            }
-
-
-            if (stageEl) {
-
-                stageEl.innerText =
-                    servantStage;
-
-            }
-
-
-            if (gradeEl) {
-
-                gradeEl.innerText =
-                    servantGrade;
-
-            }
-
-
-            if (numberEl) {
-
-                numberEl.innerText =
-                    servantNumber;
-
-            }
-
-
-            /* =================================================
-               الصورة
-            ================================================== */
-
-            const profileImage =
-                document.getElementById(
-                    'profile-image'
-                );
-
-
-            const savedImage =
-                localStorage.getItem(
-                    'profileImage'
-                );
-
-
-            if (
-                savedImage &&
-                profileImage
-            ) {
-
-                profileImage.src =
-                    savedImage;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           رفع الصورة
-        ====================================================== */
-
-        function setupImageUpload() {
-
-            const avatarInput =
-                document.getElementById(
-                    'avatar-input'
-                );
-
-
-            const profileImage =
-                document.getElementById(
-                    'profile-image'
-                );
-
-
-            if (
-                !avatarInput ||
-                !profileImage
-            ) {
-
-                return;
-
-            }
-
-
-            avatarInput.addEventListener(
-                'change',
-                function (event) {
-
-                    const file =
-                        event.target.files[0];
-
-
-                    if (!file) {
-
-                        return;
-
-                    }
-
-
-                    const reader =
-                        new FileReader();
-
-
-                    reader.onload =
-                        function (e) {
-
-                            const base64Image =
-                                e.target.result;
-
-
-                            profileImage.src =
-                                base64Image;
-
-
-                            localStorage.setItem(
-                                'profileImage',
-                                base64Image
-                            );
-
-
-                            alert(
-                                'تم تحديث الصورة الشخصية بنجاح! 🖼️'
-                            );
-
-                        };
-
-
-                    reader.readAsDataURL(
-                        file
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =====================================================
-           مراحل وصفوف
-        ====================================================== */
-
-        const stageGrades = {
-
-            "ابتدائي": [
-
-                "الأول الابتدائي",
-                "الثاني الابتدائي",
-                "الثالث الابتدائي",
-                "الرابع الابتدائي",
-                "الخامس الابتدائي",
-                "السادس الابتدائي"
-
-            ],
-
-            "إعدادي": [
-
-                "الأول الإعدادي",
-                "الثاني الإعدادي",
-                "الثالث الإعدادي"
-
-            ],
-
-            "ثانوي": [
-
-                "الأول الثانوي",
-                "الثاني الثانوي",
-                "الثالث الثانوي"
-
-            ],
-
-            "جامعة": [
-
-                "الفرقة الأولى",
-                "الفرقة الثانية",
-                "الفرقة الثالثة",
-                "الفرقة الرابعة"
-
-            ],
-
-            "خريج": [
-
-                "خريج"
-
-            ]
-
-        };
-
-
-        /* =====================================================
-           إنشاء Select المرحلة
-        ====================================================== */
-
-        function buildStageSelect(
-            currentStage
-        ) {
-
-            let html = `
-                <select
-                    id="edit-stage"
-                    class="edit-select"
-                >
-            `;
-
-
-            Object.keys(
-                stageGrades
-            ).forEach(
-                stage => {
-
-                    html += `
-                        <option
-                            value="${stage}"
-                            ${
-                                stage === currentStage
-                                    ? 'selected'
-                                    : ''
-                            }
-                        >
-                            ${stage}
-                        </option>
-                    `;
-
-                }
-            );
-
-
-            html += `
-                </select>
-            `;
-
-
-            return html;
-
-        }
-
-
-        /* =====================================================
-           إنشاء Select الصف
-        ====================================================== */
-
-        function buildGradeSelect(
-            stage,
-            currentGrade
-        ) {
-
-            const grades =
-                stageGrades[stage] || [];
-
-
-            let html = `
-                <select
-                    id="edit-grade"
-                    class="edit-select"
-                >
-            `;
-
-
-            grades.forEach(
-                grade => {
-
-                    html += `
-                        <option
-                            value="${grade}"
-                            ${
-                                grade === currentGrade
-                                    ? 'selected'
-                                    : ''
-                            }
-                        >
-                            ${grade}
-                        </option>
-                    `;
-
-                }
-            );
-
-
-            html += `
-                </select>
-            `;
-
-
-            return html;
-
-        }
-
-
-        /* =====================================================
-           تغيير المرحلة
-        ====================================================== */
-
-        function changeStage() {
-
-            const stageSelect =
-                document.getElementById(
-                    'edit-stage'
-                );
-
-
-            const gradeContainer =
-                document.getElementById(
-                    'val-grade'
-                );
-
-
-            if (
-                !stageSelect ||
-                !gradeContainer
-            ) {
-
-                return;
-
-            }
-
-
-            const selectedStage =
-                stageSelect.value;
-
-
-            const grades =
-                stageGrades[
-                    selectedStage
-                ] || [];
-
-
-            const firstGrade =
-                grades[0] || "";
-
-
-            gradeContainer.innerHTML =
-                buildGradeSelect(
-                    selectedStage,
-                    firstGrade
-                );
-
-        }
-
-
-        /* =====================================================
-           وضع التعديل
-        ====================================================== */
-
-        let isEditing = false;
-
-
-        function toggleEditMode() {
-
-            const button =
-                document.getElementById(
-                    'edit-btn'
-                );
-
-
-            if (!isEditing) {
-
-                startEditing();
-
-                return;
-
-            }
-
-
-            saveProfile();
-
-        }
-
-
-        /* =====================================================
-           بدء التعديل
-        ====================================================== */
-
-        function startEditing() {
-
-            const username =
-                localStorage.getItem(
-                    'username'
-                ) || "";
-
-
-            const fullName =
-                localStorage.getItem(
-                    'fullName'
-                ) || "";
-
-
-            const servantTitle =
-                localStorage.getItem(
-                    'servantTitle'
-                ) || "";
-
-
-            const servantStage =
-                localStorage.getItem(
-                    'servantStage'
-                ) || "";
-
-
-            const servantGrade =
-                localStorage.getItem(
-                    'servantGrade'
-                ) || "";
-
-
-            const servantNumber =
-                localStorage.getItem(
-                    'servantNumber'
-                ) || "";
-
-
-            /* =================================================
-               اسم المستخدم
-            ================================================== */
-
-            document.getElementById(
-                'val-username'
-            ).innerHTML = `
-
-                <input
-                    id="edit-username"
-                    class="edit-input"
-                    type="text"
-                    value="${escapeHtml(username)}"
-                >
-
-            `;
-
-
-            /* =================================================
-               الاسم الكامل
-            ================================================== */
-
-            document.getElementById(
-                'val-fullname'
-            ).innerHTML = `
-
-                <div
-                    style="
-                        display:flex;
-                        flex-direction:column;
-                        gap:8px;
-                        width:100%;
-                    "
-                >
-
-                    <input
-                        id="edit-title"
-                        class="edit-input"
-                        type="text"
-                        placeholder="اللقب"
-                        value="${escapeHtml(servantTitle)}"
-                    >
-
-                    <input
-                        id="edit-fullname"
-                        class="edit-input"
-                        type="text"
-                        placeholder="الاسم الكامل"
-                        value="${escapeHtml(fullName)}"
-                    >
-
-                </div>
-
-            `;
-
-
-            /* =================================================
-               المرحلة
-            ================================================== */
-
-            const stageContainer =
-                document.getElementById(
-                    'val-stage'
-                );
-
-
-            stageContainer.innerHTML =
-                buildStageSelect(
-                    servantStage
-                );
-
-
-            const stageSelect =
-                document.getElementById(
-                    'edit-stage'
-                );
-
-
-            if (stageSelect) {
-
-                stageSelect.addEventListener(
-                    'change',
-                    changeStage
-                );
-
-            }
-
-
-            /* =================================================
-               الصف
-            ================================================== */
-
-            const gradeContainer =
-                document.getElementById(
-                    'val-grade'
-                );
-
-
-            gradeContainer.innerHTML =
-                buildGradeSelect(
-                    servantStage,
-                    servantGrade
-                );
-
-
-            /* =================================================
-               رقم الخادم
-            ================================================== */
-
-            document.getElementById(
-                'val-number'
-            ).innerHTML = `
-
-                <input
-                    id="edit-number"
-                    class="edit-input"
-                    type="text"
-                    value="${escapeHtml(servantNumber)}"
-                >
-
-            `;
-
-
-            /* =================================================
-               تغيير الزر
-            ================================================== */
-
-            const button =
-                document.getElementById(
-                    'edit-btn'
-                );
-
-
-            button.innerHTML = `
-
-                <i class="fas fa-save"></i>
-
-                حفظ التغييرات
-
-            `;
-
-
-            button.classList.add(
-                'save-mode'
-            );
-
-
-            isEditing = true;
-
-        }
-
-
-        /* =====================================================
-           حفظ البيانات
-        ====================================================== */
-
-        function saveProfile() {
-
-            const button =
-                document.getElementById(
-                    'edit-btn'
-                );
-
-
-            button.disabled = true;
-
-
-            button.innerHTML = `
-
-                <i class="fas fa-spinner fa-spin"></i>
-
-                جاري الحفظ...
-
-            `;
-
-
-            try {
-
-                const username =
-                    document.getElementById(
-                        'edit-username'
-                    ).value.trim();
-
-
-                const title =
-                    document.getElementById(
-                        'edit-title'
-                    ).value.trim();
-
-
-                const fullName =
-                    document.getElementById(
-                        'edit-fullname'
-                    ).value.trim();
-
-
-                const stage =
-                    document.getElementById(
-                        'edit-stage'
-                    ).value;
-
-
-                const grade =
-                    document.getElementById(
-                        'edit-grade'
-                    ).value;
-
-
-                const number =
-                    document.getElementById(
-                        'edit-number'
-                    ).value.trim();
-
-
-                /* =================================================
-                   التحقق
-                ================================================== */
-
-                if (!username) {
-
-                    alert(
-                        "من فضلك اكتب اسم المستخدم."
-                    );
-
-                    resetEditButton();
-
-                    return;
-
-                }
-
-
-                if (!fullName) {
-
-                    alert(
-                        "من فضلك اكتب الاسم الكامل."
-                    );
-
-                    resetEditButton();
-
-                    return;
-
-                }
-
-
-                if (!stage) {
-
-                    alert(
-                        "من فضلك اختر المرحلة."
-                    );
-
-                    resetEditButton();
-
-                    return;
-
-                }
-
-
-                if (!grade) {
-
-                    alert(
-                        "من فضلك اختر الصف."
-                    );
-
-                    resetEditButton();
-
-                    return;
-
-                }
-
-
-                /* =================================================
-                   حفظ LocalStorage
-                ================================================== */
-
-                localStorage.setItem(
-                    'username',
-                    username
-                );
-
-
-                localStorage.setItem(
-                    'fullName',
-                    fullName
-                );
-
-
-                localStorage.setItem(
-                    'servantTitle',
-                    title
-                );
-
-
-                localStorage.setItem(
-                    'servantStage',
-                    stage
-                );
-
-
-                localStorage.setItem(
-                    'servantGrade',
-                    grade
-                );
-
-
-                localStorage.setItem(
-                    'servantNumber',
-                    number
-                );
-
-
-                /* =================================================
-                   تحديث الشاشة
-                ================================================== */
-
-                document.getElementById(
-                    'val-username'
-                ).innerText =
-                    username;
-
-
-                document.getElementById(
-                    'val-fullname'
-                ).innerText =
-                    title
-                        ? `${title} ${fullName}`
-                        : fullName;
-
-
-                document.getElementById(
-                    'val-stage'
-                ).innerText =
-                    stage;
-
-
-                document.getElementById(
-                    'val-grade'
-                ).innerText =
-                    grade;
-
-
-                document.getElementById(
-                    'val-number'
-                ).innerText =
-                    number ||
-                    'غير متوفر';
-
-
-                /* =================================================
-                   إنهاء التعديل
-                ================================================== */
-
-                isEditing = false;
-
-
-                button.disabled = false;
-
-
-                button.innerHTML = `
-
-                    <i class="fas fa-pen"></i>
-
-                    تعديل البيانات
-
-                `;
-
-
-                button.classList.remove(
-                    'save-mode'
-                );
-
-
-                alert(
-                    "تم حفظ بيانات الخادم بنجاح! ✅"
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "خطأ أثناء حفظ البيانات:",
-                    error
-                );
-
-
-                alert(
-                    "حدث خطأ أثناء حفظ البيانات."
-                );
-
-
-                resetEditButton();
-
-            }
-
-        }
-
-
-        /* =====================================================
-           إعادة زر التعديل
-        ====================================================== */
-
-        function resetEditButton() {
-
-            const button =
-                document.getElementById(
-                    'edit-btn'
-                );
-
-
-            button.disabled = false;
-
-
-            button.innerHTML = `
-
-                <i class="fas fa-save"></i>
-
-                حفظ التغييرات
-
-            `;
-
-        }
-
-
-        /* =====================================================
-           حماية النصوص
-        ====================================================== */
-
-        function escapeHtml(value) {
-
-            return String(value || "")
-
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
-        }
-
-    </script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#30213d">
+  <title>الملف الشخصي - لوحة الخادم</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --purple: #30213d;
+      --purple-dark: #21162c;
+      --purple-soft: #f5f1f8;
+      --gold: #b79a63;
+      --gold-soft: #f5eedf;
+      --ink: #28232d;
+      --muted: #817b86;
+      --line: #ece7ef;
+      --surface: #ffffff;
+      --page: #faf9fb;
+      --success: #287a55;
+      --danger: #b84242;
+      --shadow: 0 8px 28px rgba(48, 33, 61, .055);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Tajawal", sans-serif;
+      background: var(--page);
+      color: var(--ink);
+      min-height: 100vh;
+      padding-bottom: 105px;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .page {
+      width: min(100% - 32px, 1080px);
+      margin: 0 auto;
+    }
+
+    /* الشريط العلوي */
+
+    .topbar {
+      background: rgba(255, 255, 255, .96);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      width: min(100% - 32px, 1080px);
+      min-height: 76px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 47px;
+      height: 47px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: var(--purple);
+      color: var(--gold);
+      border-radius: 16px;
+      box-shadow: 0 5px 14px rgba(48, 33, 61, .15);
+    }
+
+    .brand-logo svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-text strong {
+      display: block;
+      color: var(--purple);
+      font-family: "Amiri", serif;
+      font-size: 21px;
+      line-height: 1.4;
+    }
+
+    .brand-text span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .topbar-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 13px;
+      background: var(--purple-soft);
+      color: var(--purple);
+      border: 1px solid #eae2f0;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .topbar-badge svg {
+      width: 17px;
+      height: 17px;
+      color: var(--gold);
+    }
+
+    /* المحتوى */
+
+    main {
+      padding-top: 28px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 23px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--purple);
+    }
+
+    .breadcrumb .current {
+      color: var(--purple);
+      font-weight: 800;
+    }
+
+    .profile-hero {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      padding: 30px;
+      margin-bottom: 25px;
+      background: linear-gradient(125deg, #30213d 0%, #3e2b4e 58%, #51405b 100%);
+      border-radius: 28px;
+      color: white;
+      box-shadow: 0 15px 35px rgba(48, 33, 61, .14);
+    }
+
+    .profile-hero::before {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border: 1px solid rgba(255, 255, 255, .09);
+      border-radius: 50%;
+      left: -100px;
+      top: -145px;
+    }
+
+    .profile-hero::after {
+      content: "";
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      border: 1px solid rgba(183, 154, 99, .18);
+      border-radius: 50%;
+      left: 15px;
+      bottom: -155px;
+    }
+
+    .hero-photo-wrap {
+      position: relative;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .hero-photo {
+      width: 112px;
+      height: 112px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid rgba(255, 255, 255, .85);
+      background: #f5f1f8;
+      display: block;
+    }
+
+    .photo-edit {
+      position: absolute;
+      left: -3px;
+      bottom: 3px;
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      color: var(--purple);
+      background: var(--gold);
+      border: 3px solid #392747;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .photo-edit svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .hero-info {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .hero-kicker {
+      color: #e1d2b0;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .hero-info h1 {
+      font-family: "Amiri", serif;
+      font-size: clamp(25px, 4vw, 36px);
+      line-height: 1.4;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-info p {
+      color: #e3dce9;
+      font-size: 14px;
+      margin-top: 7px;
+      line-height: 1.8;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 13px;
+      padding: 7px 12px;
+      color: #f5e7c7;
+      background: rgba(255, 255, 255, .09);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .hero-tag svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .hero-action {
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      min-height: 45px;
+      border: 0;
+      border-radius: 13px;
+      padding: 11px 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: .2s ease;
+    }
+
+    .btn svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-gold {
+      color: var(--purple-dark);
+      background: var(--gold);
+    }
+
+    .btn-gold:hover {
+      background: #c5aa77;
+    }
+
+    .btn-light {
+      background: white;
+      color: var(--purple);
+      border: 1px solid var(--line);
+    }
+
+    .btn-primary {
+      background: var(--purple);
+      color: white;
+      box-shadow: 0 5px 14px rgba(48, 33, 61, .13);
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-dark);
+    }
+
+    .btn-cancel {
+      color: var(--muted);
+      background: #f5f3f6;
+      border: 1px solid var(--line);
+    }
+
+    .btn:disabled {
+      opacity: .6;
+      cursor: wait;
+      transform: none;
+    }
+
+    /* عناوين الأقسام */
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 27px 0 15px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .section-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--gold);
+      background: var(--purple);
+      border-radius: 14px;
+    }
+
+    .section-icon svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .section-title h2 {
+      font-size: 19px;
+      color: var(--purple);
+      font-weight: 800;
+    }
+
+    .section-title p {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* الكروت */
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .info-card:hover {
+      border-color: #d9cce4;
+      box-shadow: 0 12px 30px rgba(48, 33, 61, .075);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 19px;
+    }
+
+    .card-icon {
+      width: 45px;
+      height: 45px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--purple);
+      background: var(--purple-soft);
+      border-radius: 15px;
+    }
+
+    .card-icon.gold {
+      color: #93743c;
+      background: var(--gold-soft);
+    }
+
+    .card-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .card-head h3 {
+      font-size: 16px;
+      color: var(--purple);
+      font-weight: 800;
+    }
+
+    .card-head p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .field-value {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 12px 14px;
+      background: #fbfafc;
+      border: 1px solid #f0ecf2;
+      border-radius: 13px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .field-value .value-icon {
+      color: var(--gold);
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+    }
+
+    .field input,
+    .field select {
+      display: block;
+      width: 100%;
+      min-height: 48px;
+      padding: 11px 13px;
+      border: 1px solid #e6dfea;
+      border-radius: 13px;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+      font-size: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(183, 154, 99, .13);
+    }
+
+    .field input[readonly] {
+      background: #f4f1f6;
+      color: #79717f;
+      cursor: not-allowed;
+    }
+
+    .field-help {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    .edit-only {
+      display: none;
+    }
+
+    body.editing .view-only {
+      display: none !important;
+    }
+
+    body.editing .edit-only {
+      display: block;
+    }
+
+    .stage-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--gold-soft);
+      color: #725b31;
+      padding: 7px 11px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .stage-pill svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* ملاحظة الصورة */
+
+    .photo-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 17px 19px;
+      margin-top: 20px;
+      background: #fffdf8;
+      border: 1px solid #eee4ce;
+      border-radius: 17px;
+      color: #6f5c38;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .photo-note svg {
+      flex-shrink: 0;
+      width: 21px;
+      height: 21px;
+      margin-top: 2px;
+      color: var(--gold);
+    }
+
+    /* أزرار الحفظ */
+
+    .edit-actions {
+      display: none;
+      gap: 11px;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      margin-top: 23px;
+      padding: 19px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      box-shadow: var(--shadow);
+    }
+
+    body.editing .edit-actions {
+      display: flex;
+    }
+
+    .status-message {
+      display: none;
+      padding: 13px 16px;
+      border-radius: 13px;
+      font-size: 13px;
+      line-height: 1.8;
+      margin-top: 16px;
+    }
+
+    .status-message.show {
+      display: block;
+    }
+
+    .status-message.success {
+      background: #eaf6ef;
+      border: 1px solid #cfe8d8;
+      color: #246b45;
+    }
+
+    .status-message.error {
+      background: #fff0f0;
+      border: 1px solid #f0d1d1;
+      color: #a43232;
+    }
+
+    .status-message.info {
+      background: var(--purple-soft);
+      border: 1px solid #e6dced;
+      color: var(--purple);
+    }
+
+    .loading-line {
+      height: 3px;
+      overflow: hidden;
+      background: #e9e2ee;
+      border-radius: 4px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .loading-line.active {
+      display: block;
+    }
+
+    .loading-line::after {
+      content: "";
+      display: block;
+      height: 100%;
+      width: 35%;
+      background: var(--gold);
+      animation: loading 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes loading {
+      from { transform: translateX(0); }
+      to { transform: translateX(190%); }
+    }
+
+    /* القائمة السفلية */
+
+    .bottom-nav {
+      position: fixed;
+      z-index: 30;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      background: rgba(255, 255, 255, .97);
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
+    }
+
+    .bottom-nav-inner {
+      width: min(100%, 800px);
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+      min-height: 58px;
+      padding: 7px 3px;
+      color: #938b98;
+      background: transparent;
+      border: 0;
+      border-radius: 13px;
+      font-size: 10px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active {
+      color: var(--purple);
+      background: var(--purple-soft);
+    }
+
+    .nav-item.active svg {
+      color: var(--gold);
+    }
+
+    .nav-item.logout {
+      color: #b45b5b;
+    }
+
+    .nav-item:hover {
+      background: #f7f4f8;
+    }
+
+    /* نافذة تأكيد تسجيل الخروج */
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(25, 17, 31, .55);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: min(100%, 390px);
+      padding: 26px;
+      text-align: center;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, .2);
+      animation: modalIn .2s ease-out;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(8px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-icon {
+      width: 65px;
+      height: 65px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 15px;
+      border-radius: 21px;
+      color: var(--purple);
+      background: var(--purple-soft);
+    }
+
+    .modal-icon svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    .modal h3 {
+      color: var(--purple);
+      font-size: 20px;
+      margin-bottom: 9px;
+    }
+
+    .modal p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+      margin-bottom: 21px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+    }
+
+    .footer-text {
+      text-align: center;
+      color: #aaa2ad;
+      font-size: 11px;
+      margin: 27px 0 15px;
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        width: min(100% - 22px, 1080px);
+      }
+
+      .topbar-inner {
+        width: min(100% - 22px, 1080px);
+        min-height: 68px;
+      }
+
+      .brand-logo {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+      }
+
+      .brand-text strong {
+        font-size: 18px;
+      }
+
+      .brand-text span {
+        font-size: 10px;
+      }
+
+      .topbar-badge {
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+
+      main {
+        padding-top: 20px;
+      }
+
+      .profile-hero {
+        padding: 23px 19px;
+        gap: 16px;
+        border-radius: 23px;
+        flex-wrap: wrap;
+      }
+
+      .hero-photo {
+        width: 88px;
+        height: 88px;
+      }
+
+      .hero-info h1 {
+        font-size: 25px;
+      }
+
+      .hero-info p {
+        font-size: 12px;
+      }
+
+      .hero-action {
+        width: 100%;
+      }
+
+      .hero-action .btn {
+        width: 100%;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+      }
+
+      .info-card {
+        padding: 19px;
+        border-radius: 19px;
+      }
+
+      .section-heading {
+        margin-top: 23px;
+      }
+
+      .section-title h2 {
+        font-size: 17px;
+      }
+
+      .section-note {
+        display: none;
+      }
+
+      .edit-actions .btn {
+        flex: 1;
+      }
+
+      .bottom-nav {
+        padding-right: 6px;
+        padding-left: 6px;
+      }
+
+      .bottom-nav-inner {
+        gap: 2px;
+      }
+
+      .nav-item {
+        font-size: 9px;
+        min-height: 55px;
+      }
+
+      .nav-item svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .topbar-badge span {
+        display: none;
+      }
+
+      .profile-hero {
+        gap: 13px;
+      }
+
+      .hero-photo {
+        width: 76px;
+        height: 76px;
+      }
+
+      .hero-info h1 {
+        font-size: 22px;
+      }
+
+      .nav-item {
+        font-size: 8px;
+      }
+    }
+  </style>
 </head>
-
 
 <body>
 
+  <!-- الشريط العلوي -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="home.html">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v18M7 8h10M9 5h6"/>
+            <path d="M4 21h16M6 21V11l6-4 6 4v10"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <strong>لوحة الخادم</strong>
+          <span>كنيسة الشهيد العظيم مارمينا</span>
+        </div>
+      </a>
 
-    <!-- =====================================================
-         Header
-    ====================================================== -->
+      <div class="topbar-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+        </svg>
+        <span>الملف الشخصي</span>
+      </div>
+    </div>
+  </header>
 
-    <header class="church-header">
+  <main class="page">
 
+    <div class="breadcrumb">
+      <a href="home.html">الرئيسية</a>
+      <span>‹</span>
+      <span class="current">الملف الشخصي</span>
+    </div>
 
-        <div class="church-logo">
+    <!-- بطاقة بيانات الخادم الرئيسية -->
+    <section class="profile-hero">
 
-            <i class="fas fa-cross"></i>
+      <div class="hero-photo-wrap">
+        <img
+          id="heroPhoto"
+          class="hero-photo"
+          alt="صورة الخادم"
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23f5f1f8'/%3E%3Ccircle cx='50' cy='37' r='18' fill='%23b79a63'/%3E%3Cpath d='M17 92c2-21 15-33 33-33s31 12 33 33' fill='%2330213d'/%3E%3C/svg%3E"
+        >
 
+        <label class="photo-edit" for="photoInput" title="تغيير الصورة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+          </svg>
+        </label>
+
+        <input
+          type="file"
+          id="photoInput"
+          accept="image/*"
+          hidden
+        >
+      </div>
+
+      <div class="hero-info">
+        <div class="hero-kicker">أهلاً بيك في ملفك الشخصي</div>
+        <h1 id="heroName">الخادم</h1>
+        <p id="heroDescription">بياناتك الشخصية والخدمية في مكان واحد.</p>
+
+        <div class="hero-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9Z"/>
+          </svg>
+          <span id="heroStage">المرحلة غير محددة</span>
+        </div>
+      </div>
+
+      <div class="hero-action">
+        <button class="btn btn-gold" id="editBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+          </svg>
+          تعديل البيانات
+        </button>
+      </div>
+
+    </section>
+
+    <!-- البيانات الشخصية -->
+    <div class="section-heading">
+      <div class="section-title">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+          </svg>
+        </div>
+        <div>
+          <h2>البيانات الشخصية</h2>
+          <p>بيانات حسابك واسمك</p>
+        </div>
+      </div>
+      <span class="section-note">المعلومات الأساسية</span>
+    </div>
+
+    <div class="info-grid">
+
+      <!-- الاسم واللقب -->
+      <section class="info-card">
+        <div class="card-head">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+            </svg>
+          </div>
+          <div>
+            <h3>الاسم واللقب</h3>
+            <p>الاسم الظاهر في البرنامج</p>
+          </div>
         </div>
 
-
-        <h2>
-
-            كنيسه الشهيد العظيم استيفانوس ومارمينا العجايبي
-
-        </h2>
-
-
-    </header>
-
-
-
-    <!-- =====================================================
-         Main
-    ====================================================== -->
-
-    <div class="main-content">
-
-
-        <!-- =================================================
-             Profile
-        ================================================== -->
-
-        <div class="widget avatar-widget">
-
-
-            <div class="widget-body">
-
-
-                <h1>
-
-                    الملف الشخصي للخادم
-
-                </h1>
-
-
-                <div class="avatar-container">
-
-
-                    <img
-                        id="profile-image"
-                        class="avatar"
-                        src="https://via.placeholder.com/150/f6f1e9/7c1b28?text=صورة+الخادم"
-                        alt="صورة الخادم"
-                    >
-
-
-                    <label
-                        for="avatar-input"
-                        class="upload-label"
-                        title="تغيير الصورة"
-                    >
-
-                        <i class="fas fa-camera"></i>
-
-                    </label>
-
-
-                    <input
-                        type="file"
-                        id="avatar-input"
-                        accept="image/*"
-                    >
-
-
-                </div>
-
-
-                <div class="profile-subtitle">
-
-                    يمكنك تعديل بياناتك الشخصية من هنا
-
-                </div>
-
-
-            </div>
-
+        <div class="field">
+          <label>اللقب</label>
+          <div class="field-value view-only" id="viewTitle">غير محدد</div>
+          <div class="edit-only">
+            <select id="editTitle">
+              <option value="">اختر اللقب</option>
+              <option value="أخ">أخ</option>
+              <option value="أخت">أخت</option>
+              <option value="أبونا">أبونا</option>
+              <option value="تاسوني">تاسوني</option>
+              <option value="دياكون">دياكون</option>
+              <option value="مرنم">مرنم</option>
+            </select>
+          </div>
         </div>
 
-
-
-        <!-- =================================================
-             Server Information
-        ================================================== -->
-
-        <div class="widget info-widget">
-
-
-            <!-- Header -->
-
-            <div class="widget-head">
-
-
-                <div class="title-row">
-
-
-                    <div class="icon-badge">
-
-                        <i class="fas fa-id-card"></i>
-
-                    </div>
-
-
-                    <h3>
-
-                        بيانات الخادم
-
-                    </h3>
-
-
-                </div>
-
-
-                <button
-                    id="edit-btn"
-                    class="edit-btn"
-                    onclick="toggleEditMode()"
-                >
-
-                    <i class="fas fa-pen"></i>
-
-                    تعديل البيانات
-
-                </button>
-
-
-            </div>
-
-
-
-            <!-- =================================================
-                 Information
-            ================================================== -->
-
-            <div class="widget-body">
-
-
-                <div class="info-list">
-
-
-                    <!-- اسم المستخدم -->
-
-                    <div class="info-item">
-
-
-                        <span class="info-label">
-
-                            <i class="fas fa-user"></i>
-
-                            اسم المستخدم:
-
-                        </span>
-
-
-                        <span
-                            id="val-username"
-                            class="info-value"
-                        >
-
-                            جاري التحميل...
-
-                        </span>
-
-
-                    </div>
-
-
-
-                    <!-- الاسم الكامل -->
-
-                    <div class="info-item">
-
-
-                        <span class="info-label">
-
-                            <i class="fas fa-id-badge"></i>
-
-                            الاسم الكامل:
-
-                        </span>
-
-
-                        <span
-                            id="val-fullname"
-                            class="info-value"
-                        >
-
-                            جاري التحميل...
-
-                        </span>
-
-
-                    </div>
-
-
-
-                    <!-- المرحلة -->
-
-                    <div class="info-item">
-
-
-                        <span class="info-label">
-
-                            <i class="fas fa-graduation-cap"></i>
-
-                            المرحلة الخدمية:
-
-                        </span>
-
-
-                        <span
-                            id="val-stage"
-                            class="info-value"
-                        >
-
-                            جاري التحميل...
-
-                        </span>
-
-
-                    </div>
-
-
-
-                    <!-- الصف -->
-
-                    <div class="info-item">
-
-
-                        <span class="info-label">
-
-                            <i class="fas fa-book-open"></i>
-
-                            الصف الدراسي:
-
-                        </span>
-
-
-                        <span
-                            id="val-grade"
-                            class="info-value"
-                        >
-
-                            جاري التحميل...
-
-                        </span>
-
-
-                    </div>
-
-
-
-                    <!-- رقم الخادم -->
-
-                    <div class="info-item">
-
-
-                        <span class="info-label">
-
-                            <i class="fas fa-hashtag"></i>
-
-                            رقم الخادم:
-
-                        </span>
-
-
-                        <span
-                            id="val-number"
-                            class="info-value"
-                        >
-
-                            جاري التحميل...
-
-                        </span>
-
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
+        <div class="field">
+          <label>الاسم الكامل</label>
+          <div class="field-value view-only" id="viewFullName">غير محدد</div>
+          <div class="edit-only">
+            <input id="editFullName" type="text" maxlength="100"
+                   placeholder="اكتب الاسم الكامل">
+          </div>
         </div>
 
+        <div class="field">
+          <label>الاسم المعروض</label>
+          <div class="field-value" id="viewDisplayName">غير محدد</div>
+        </div>
+      </section>
+
+      <!-- بيانات الحساب -->
+      <section class="info-card">
+        <div class="card-head">
+          <div class="card-icon gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="3"/>
+              <circle cx="9" cy="12" r="2"/>
+              <path d="M14 10h4M14 14h4"/>
+            </svg>
+          </div>
+          <div>
+            <h3>بيانات الحساب</h3>
+            <p>معلومات تسجيل الدخول</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>اسم المستخدم</label>
+          <div class="field-value" id="viewUsername">غير محدد</div>
+          <p class="field-help">اسم المستخدم ثابت من هنا حتى يظل مرتبطًا بحسابك في قاعدة البيانات.</p>
+        </div>
+
+        <div class="field">
+          <label>رقم الخادم</label>
+          <div class="field-value view-only" id="viewServantNumber">غير محدد</div>
+          <div class="edit-only">
+            <input id="editServantNumber" type="text" maxlength="40"
+                   placeholder="اكتب رقم الخادم">
+          </div>
+        </div>
+      </section>
 
     </div>
 
+    <!-- البيانات الخدمية -->
+    <div class="section-heading">
+      <div class="section-title">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+            <path d="M9 7h7M9 11h7"/>
+          </svg>
+        </div>
+        <div>
+          <h2>البيانات الخدمية</h2>
+          <p>المرحلة والصف الحالي</p>
+        </div>
+      </div>
+      <span class="section-note">بيانات الخدمة</span>
+    </div>
 
+    <div class="info-grid">
 
-    <!-- =====================================================
-         Bottom Navigation
-    ====================================================== -->
+      <section class="info-card">
+        <div class="card-head">
+          <div class="card-icon gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3 3 8l9 5 9-5-9-5Z"/>
+              <path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>
+            </svg>
+          </div>
+          <div>
+            <h3>المرحلة الخدمية</h3>
+            <p>المرحلة المسجل فيها الخادم</p>
+          </div>
+        </div>
 
-    <nav class="bottom-nav">
+        <div class="field">
+          <label>المرحلة</label>
+          <div class="field-value view-only" id="viewStage">غير محدد</div>
+          <div class="edit-only">
+            <select id="editStage">
+              <option value="">اختر المرحلة</option>
+              <option value="ابتدائي">ابتدائي</option>
+              <option value="إعدادي">إعدادي</option>
+              <option value="ثانوي">ثانوي</option>
+              <option value="جامعة">جامعة</option>
+              <option value="خريج">خريج</option>
+            </select>
+          </div>
+        </div>
+      </section>
 
+      <section class="info-card">
+        <div class="card-head">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+            </svg>
+          </div>
+          <div>
+            <h3>الصف أو الفرقة</h3>
+            <p>يتغير حسب المرحلة المختارة</p>
+          </div>
+        </div>
 
-        <a href="home.html">
+        <div class="field">
+          <label>الصف الحالي</label>
+          <div class="field-value view-only" id="viewGrade">غير محدد</div>
+          <div class="edit-only">
+            <select id="editGrade">
+              <option value="">اختر الصف</option>
+            </select>
+          </div>
+        </div>
 
-            <i class="fas fa-home"></i>
+        <div class="field">
+          <label>ملخص المرحلة</label>
+          <div class="field-value" id="viewStageSummary">
+            <span class="stage-pill">لم يتم تحديد المرحلة</span>
+          </div>
+        </div>
+      </section>
 
-            <span>
-                الرئيسية
-            </span>
+    </div>
 
-        </a>
+    <!-- ملاحظة الصورة -->
+    <div class="photo-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 11v5M12 7h.01"/>
+      </svg>
+      <p>
+        تقدر تغيّر صورتك بالضغط على علامة القلم الموجودة فوق الصورة.
+        الصورة في النسخة دي بتتحفظ على نفس الجهاز باستخدام التخزين المحلي،
+        أما بيانات الحساب فتُحدَّث في Firebase عند نجاح الاتصال.
+      </p>
+    </div>
 
+    <!-- أزرار التعديل والحفظ -->
+    <div class="edit-actions" id="editActions">
+      <button class="btn btn-primary" id="saveBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/>
+          <path d="M17 21v-8H7v8M7 3v5h8"/>
+        </svg>
+        حفظ التعديلات
+      </button>
 
-        <a
-            class="active"
-            href="profile.html"
-        >
+      <button class="btn btn-cancel" id="cancelBtn" type="button">
+        إلغاء التعديل
+      </button>
+    </div>
 
-            <i class="fas fa-user-circle"></i>
+    <div class="loading-line" id="loadingLine"></div>
+    <div class="status-message" id="statusMessage" role="status" aria-live="polite"></div>
 
-            <span>
-                البروفايل
-            </span>
+    <div class="footer-text">
+      كنيسة الشهيد العظيم مارمينا • الملف الشخصي للخادم
+    </div>
 
-        </a>
+  </main>
 
+  <!-- القائمة السفلية -->
+  <nav class="bottom-nav" aria-label="القائمة الرئيسية">
+    <div class="bottom-nav-inner">
 
-        <a href="gifts.html">
+      <a class="nav-item" href="home.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 10 9-7 9 7"/>
+          <path d="M5 9v12h14V9M9 21v-7h6v7"/>
+        </svg>
+        <span>الرئيسية</span>
+      </a>
 
-            <i class="fas fa-gift"></i>
+      <a class="nav-item active" href="profile.html" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+        </svg>
+        <span>حسابي</span>
+      </a>
 
-            <span>
-                الهدايا
-            </span>
+      <a class="nav-item" href="gifts.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="8" width="18" height="13" rx="2"/>
+          <path d="M12 8v13M3 12h18M12 8H7.5a2.5 2.5 0 1 1 2.5-2.5V8Zm0 0h4.5A2.5 2.5 0 1 0 14 5.5V8Z"/>
+        </svg>
+        <span>الهدايا</span>
+      </a>
 
-        </a>
+      <a class="nav-item" href="control.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="m19.4 15 .1.1 1.4 1.1-1.5 2.6-1.7-.6a8 8 0 0 1-1.6.9l-.3 1.8h-3l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.6-1.5-2.6 1.4-1.1a7 7 0 0 1 0-1.9l-1.4-1.1 1.5-2.6 1.7.6a8 8 0 0 1 1.6-.9l.3-1.8h3l.3 1.8a8 8 0 0 1 1.6.9l1.7-.6 1.5 2.6-1.4 1.1a7 7 0 0 1 0 1.8Z" transform="translate(-1 -1) scale(.96)"/>
+        </svg>
+        <span>الإدارة</span>
+      </a>
 
+      <a class="nav-item" href="cart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3h2l2.5 12h11L21 7H6"/>
+          <circle cx="9" cy="20" r="1.5"/>
+          <circle cx="18" cy="20" r="1.5"/>
+        </svg>
+        <span>السلة</span>
+      </a>
 
-        <a href="control.html">
+      <button class="nav-item logout" id="logoutBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 17l5-5-5-5M15 12H3"/>
+          <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/>
+        </svg>
+        <span>خروج</span>
+      </button>
 
-            <i class="fas fa-cogs"></i>
+    </div>
+  </nav>
 
-            <span>
-                الإدارة
-            </span>
-
-        </a>
-
-
-        <a href="cart.html">
-
-            <i class="fas fa-shopping-cart"></i>
-
-            <span>
-                السلة
-            </span>
-
-        </a>
-
-
-        <a href="../notifications/index.html">
-
-            <i class="fas fa-bell"></i>
-
-            <span>
-                الإشعارات
-            </span>
-
-        </a>
-
-
-        <button
-            id="logoutBtn"
-            class="logout-link"
-        >
-
-            <i class="fas fa-sign-out-alt"></i>
-
-            <span>
-                خروج
-            </span>
-
+  <!-- تأكيد تسجيل الخروج -->
+  <div class="modal-backdrop" id="logoutModal" role="dialog"
+       aria-modal="true" aria-labelledby="logoutTitle">
+    <div class="modal">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 17l5-5-5-5M15 12H3"/>
+          <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/>
+        </svg>
+      </div>
+      <h3 id="logoutTitle">تسجيل الخروج</h3>
+      <p>هل أنت متأكد إنك عاوز تسجل الخروج من حسابك؟</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="confirmLogout" type="button">
+          أيوه، خروج
         </button>
+        <button class="btn btn-cancel" id="cancelLogout" type="button">
+          إلغاء
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
-    </nav>
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcUuUmMe8Lok8Ap7IspdQP5Zp8VHykUWE",
+      authDomain: "st-mina-c01ec.firebaseapp.com",
+      projectId: "st-mina-c01ec",
+      storageBucket: "st-mina-c01ec.firebasestorage.app",
+      messagingSenderId: "792349150559",
+      appId: "1:792349150559:web:8a86bbf57c2c7e351f3aea"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const $ = (id) => document.getElementById(id);
+
+    const stageGrades = {
+      "ابتدائي": [
+        "الأول الابتدائي",
+        "الثاني الابتدائي",
+        "الثالث الابتدائي",
+        "الرابع الابتدائي",
+        "الخامس الابتدائي",
+        "السادس الابتدائي"
+      ],
+      "إعدادي": [
+        "الأول الإعدادي",
+        "الثاني الإعدادي",
+        "الثالث الإعدادي"
+      ],
+      "ثانوي": [
+        "الأول الثانوي",
+        "الثاني الثانوي",
+        "الثالث الثانوي"
+      ],
+      "جامعة": [
+        "الفرقة الأولى",
+        "الفرقة الثانية",
+        "الفرقة الثالثة",
+        "الفرقة الرابعة"
+      ],
+      "خريج": [
+        "خريج"
+      ]
+    };
+
+    const defaultProfile = {
+      username: "",
+      servantTitle: "",
+      fullName: "",
+      servantStage: "",
+      servantGrade: "",
+      servantNumber: "",
+      profileImage: ""
+    };
+
+    let profile = { ...defaultProfile };
+    let originalUsername = "";
+    let originalProfile = null;
+    let firebaseDocumentExists = false;
+    let isSaving = false;
+
+    function safeGet(key) {
+      try {
+        return localStorage.getItem(key) || "";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function safeSet(key, value) {
+      try {
+        localStorage.setItem(key, value ?? "");
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function clean(value) {
+      if (value === null || value === undefined) return "";
+      return String(value).trim();
+    }
+
+    function display(value, fallback = "غير محدد") {
+      const result = clean(value);
+      return result || fallback;
+    }
+
+    function normalizeImage(value) {
+      const image = clean(value);
+
+      if (!image || image === "null" || image === "undefined") {
+        return "";
+      }
+
+      return image;
+    }
+
+    function setImage(image) {
+      const img = $("heroPhoto");
+      const fallback = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23f5f1f8'/%3E%3Ccircle cx='50' cy='37' r='18' fill='%23b79a63'/%3E%3Cpath d='M17 92c2-21 15-33 33-33s31 12 33 33' fill='%2330213d'/%3E%3C/svg%3E";
+
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = fallback;
+      };
+
+      img.src = normalizeImage(image) || fallback;
+    }
+
+    function showStatus(message, type = "info") {
+      const box = $("statusMessage");
+      box.textContent = message;
+      box.className = "status-message show " + type;
+    }
+
+    function hideStatus() {
+      const box = $("statusMessage");
+      box.textContent = "";
+      box.className = "status-message";
+    }
+
+    function setLoading(isLoading) {
+      $("loadingLine").classList.toggle("active", isLoading);
+      $("saveBtn").disabled = isLoading;
+      $("cancelBtn").disabled = isLoading;
+      $("editBtn").disabled = isLoading;
+      isSaving = isLoading;
+    }
+
+    function getLocalProfile() {
+      return {
+        username: safeGet("username"),
+        fullName: safeGet("fullName"),
+        servantTitle: safeGet("servantTitle"),
+        servantStage: safeGet("servantStage"),
+        servantGrade: safeGet("servantGrade"),
+        servantNumber: safeGet("servantNumber"),
+        profileImage: safeGet("profileImage")
+      };
+    }
+
+    function saveLocalProfile(data) {
+      const entries = [
+        ["username", data.username],
+        ["fullName", data.fullName],
+        ["servantTitle", data.servantTitle],
+        ["servantStage", data.servantStage],
+        ["servantGrade", data.servantGrade],
+        ["servantNumber", data.servantNumber],
+        ["profileImage", data.profileImage]
+      ];
+
+      let success = true;
+
+      for (const [key, value] of entries) {
+        if (!safeSet(key, value)) {
+          success = false;
+        }
+      }
+
+      return success;
+    }
+
+    function populateGradeOptions(stage, selectedGrade = "") {
+      const select = $("editGrade");
+      const grades = stageGrades[stage] || [];
+
+      select.replaceChildren();
+
+      const firstOption = document.createElement("option");
+      firstOption.value = "";
+      firstOption.textContent = grades.length
+        ? "اختر الصف"
+        : "اختر المرحلة أولاً";
+
+      select.appendChild(firstOption);
+
+      grades.forEach((grade) => {
+        const option = document.createElement("option");
+        option.value = grade;
+        option.textContent = grade;
+        select.appendChild(option);
+      });
+
+      if (grades.includes(selectedGrade)) {
+        select.value = selectedGrade;
+      } else if (grades.length === 1) {
+        select.value = grades[0];
+      } else {
+        select.value = "";
+      }
+    }
+
+    function renderProfile() {
+      const title = clean(profile.servantTitle);
+      const fullName = clean(profile.fullName);
+      const username = clean(profile.username);
+      const stage = clean(profile.servantStage);
+      const grade = clean(profile.servantGrade);
+      const number = clean(profile.servantNumber);
+
+      const displayName = [title, fullName].filter(Boolean).join(" / ");
+
+      $("heroName").textContent = displayName || "الخادم";
+      $("heroDescription").textContent = username
+        ? "أهلاً بيك، تقدر تراجع بياناتك وتحدّثها من هنا."
+        : "بياناتك الشخصية والخدمية في مكان واحد.";
+
+      $("heroStage").textContent = stage
+        ? "المرحلة: " + stage
+        : "المرحلة غير محددة";
+
+      $("viewTitle").textContent = display(title);
+      $("viewFullName").textContent = display(fullName);
+      $("viewDisplayName").textContent = display(displayName);
+      $("viewUsername").textContent = display(username);
+      $("viewServantNumber").textContent = display(number);
+      $("viewStage").textContent = display(stage);
+      $("viewGrade").textContent = display(grade);
+
+      const summary = $("viewStageSummary");
+      summary.replaceChildren();
+
+      const pill = document.createElement("span");
+      pill.className = "stage-pill";
+      pill.textContent = stage
+        ? stage + (grade ? " • " + grade : "")
+        : "لم يتم تحديد المرحلة";
+
+      summary.appendChild(pill);
+
+      $("editTitle").value = title;
+      $("editFullName").value = fullName;
+      $("editServantNumber").value = number;
+      $("editStage").value = stage;
+
+      populateGradeOptions(stage, grade);
+      setImage(profile.profileImage);
+    }
+
+    function enterEditMode() {
+      if (isSaving) return;
+
+      originalProfile = { ...profile };
+      hideStatus();
+      renderProfile();
+
+      document.body.classList.add("editing");
+      $("editBtn").innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/>
+        </svg>
+        وضع التعديل
+      `;
+
+      $("editFullName").focus();
+    }
+
+    function exitEditMode() {
+      document.body.classList.remove("editing");
+
+      $("editBtn").innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"/>
+          <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+        </svg>
+        تعديل البيانات
+      `;
+
+      renderProfile();
+    }
+
+    async function loadFirebaseProfile() {
+      const username = clean(profile.username);
+
+      if (!username) {
+        showStatus(
+          "مش لاقي اسم المستخدم في التخزين المحلي. سجّل الدخول من جديد أو تأكد من مفتاح username في localStorage.",
+          "error"
+        );
+        return;
+      }
+
+      try {
+        const adminRef = doc(db, "admin", username);
+        const snapshot = await getDoc(adminRef);
+
+        if (!snapshot.exists()) {
+          firebaseDocumentExists = false;
+
+          showStatus(
+            "تم عرض البيانات المحفوظة على الجهاز، لكن لم يتم العثور على مستند بهذا الاسم في مجموعة admin داخل Firebase.",
+            "info"
+          );
+          return;
+        }
+
+        firebaseDocumentExists = true;
+
+        const data = snapshot.data();
+
+        profile = {
+          ...profile,
+          username: clean(data.username) || username,
+          fullName: clean(data.fullName) || profile.fullName,
+          servantTitle: clean(data.servantTitle) || profile.servantTitle,
+          servantStage: clean(data.servantStage) || profile.servantStage,
+          servantGrade: clean(data.servantGrade) || profile.servantGrade,
+          servantNumber: clean(data.servantNumber) || profile.servantNumber,
+          // الصورة الحالية محلية؛ لا نستبدلها بحقل غير موجود في Firebase.
+          profileImage: profile.profileImage
+        };
+
+        saveLocalProfile(profile);
+        renderProfile();
+
+        showStatus("تم تحميل بيانات الخادم من Firebase بنجاح.", "success");
+
+      } catch (error) {
+        console.error("Firebase profile load error:", error);
+
+        showStatus(
+          "تعذر تحميل البيانات من Firebase. تم الاحتفاظ بالبيانات المحلية الموجودة على الجهاز.",
+          "error"
+        );
+      }
+    }
+
+    async function saveProfile() {
+      if (isSaving) return;
+
+      const fullName = clean($("editFullName").value);
+      const servantTitle = clean($("editTitle").value);
+      const servantStage = clean($("editStage").value);
+      const servantGrade = clean($("editGrade").value);
+      const servantNumber = clean($("editServantNumber").value);
+
+      if (!fullName) {
+        showStatus("من فضلك اكتب الاسم الكامل قبل الحفظ.", "error");
+        $("editFullName").focus();
+        return;
+      }
+
+      if (!servantStage) {
+        showStatus("من فضلك اختار المرحلة الخدمية.", "error");
+        $("editStage").focus();
+        return;
+      }
+
+      if (!servantGrade) {
+        showStatus("من فضلك اختار الصف أو الفرقة.", "error");
+        $("editGrade").focus();
+        return;
+      }
+
+      if (!originalUsername) {
+        showStatus(
+          "اسم المستخدم غير موجود. لا يمكن حفظ البيانات في Firebase بدون حساب محدد.",
+          "error"
+        );
+        return;
+      }
+
+      const updatedProfile = {
+        ...profile,
+        username: originalUsername,
+        fullName,
+        servantTitle,
+        servantStage,
+        servantGrade,
+        servantNumber
+      };
+
+      setLoading(true);
+      hideStatus();
+
+      // نحفظ نسخة محلية أولاً حتى لا تضيع التعديلات لو تعذر الاتصال.
+      const localSaved = saveLocalProfile(updatedProfile);
+      profile = updatedProfile;
+      renderProfile();
+
+      try {
+        const adminRef = doc(db, "admin", originalUsername);
+        const snapshot = await getDoc(adminRef);
+
+        if (!snapshot.exists()) {
+          firebaseDocumentExists = false;
+
+          showStatus(
+            localSaved
+              ? "تم حفظ التعديلات على الجهاز فقط. لم يتم العثور على مستند الخادم في مجموعة admin داخل Firebase، لذلك لم يتم إنشاء مستند جديد تلقائيًا."
+              : "تعذر الحفظ المحلي، ولم يتم العثور على مستند الخادم في Firebase.",
+            "error"
+          );
+
+          return;
+        }
+
+        firebaseDocumentExists = true;
+
+        await updateDoc(adminRef, {
+          fullName: updatedProfile.fullName,
+          servantTitle: updatedProfile.servantTitle,
+          servantStage: updatedProfile.servantStage,
+          servantGrade: updatedProfile.servantGrade,
+          servantNumber: updatedProfile.servantNumber
+        });
+
+        document.body.classList.remove("editing");
+        originalProfile = null;
+        renderProfile();
+
+        showStatus(
+          localSaved
+            ? "تم حفظ التعديلات بنجاح في Firebase وعلى الجهاز."
+            : "تم تحديث Firebase، لكن تعذر حفظ نسخة محلية من البيانات.",
+          "success"
+        );
+
+      } catch (error) {
+        console.error("Firebase profile save error:", error);
+
+        showStatus(
+          localSaved
+            ? "تم حفظ البيانات على الجهاز، لكن تعذر تحديث Firebase. راجع الاتصال بالإنترنت وصلاحيات Firestore."
+            : "فشل الحفظ المحلي وتحديث Firebase. راجع الاتصال وحاول مرة أخرى.",
+          "error"
+        );
+
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // تغيير الصف تلقائيًا حسب المرحلة
+    $("editStage").addEventListener("change", () => {
+      const newStage = $("editStage").value;
+      populateGradeOptions(newStage, "");
+    });
+
+    // بدء التعديل
+    $("editBtn").addEventListener("click", () => {
+      if (document.body.classList.contains("editing")) {
+        showStatus(
+          "أنت في وضع التعديل بالفعل. احفظ التغييرات أو اضغط إلغاء.",
+          "info"
+        );
+        return;
+      }
+
+      enterEditMode();
+    });
+
+    // إلغاء التعديل
+    $("cancelBtn").addEventListener("click", () => {
+      if (originalProfile) {
+        profile = { ...originalProfile };
+      }
+
+      originalProfile = null;
+      exitEditMode();
+      hideStatus();
+    });
+
+    // حفظ التعديلات
+    $("saveBtn").addEventListener("click", saveProfile);
+
+    // اختيار صورة جديدة
+    $("photoInput").addEventListener("change", (event) => {
+      const file = event.target.files?.[0];
+
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        showStatus("اختار ملف صورة صالح من فضلك.", "error");
+        event.target.value = "";
+        return;
+      }
+
+      // حد أقصى 5 ميجابايت قبل ضغط الصورة.
+      if (file.size > 5 * 1024 * 1024) {
+        showStatus("الصورة كبيرة جدًا. اختار صورة حجمها أقل من 5 ميجابايت.", "error");
+        event.target.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const image = new Image();
+
+        image.onload = () => {
+          const canvas = document.createElement("canvas");
+          const maxSide = 600;
+
+          let width = image.width;
+          let height = image.height;
+
+          if (width > height && width > maxSide) {
+            height = Math.round(height * maxSide / width);
+            width = maxSide;
+          } else if (height >= width && height > maxSide) {
+            width = Math.round(width * maxSide / height);
+            height = maxSide;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const context = canvas.getContext("2d");
+
+          if (!context) {
+            showStatus("تعذر تجهيز الصورة. جرب صورة أخرى.", "error");
+            return;
+          }
+
+          context.drawImage(image, 0, 0, width, height);
+
+          // ضغط الصورة لتقليل المساحة المستخدمة في localStorage.
+          const compressedImage = canvas.toDataURL("image/jpeg", 0.82);
+
+          profile.profileImage = compressedImage;
+
+          const saved = safeSet("profileImage", compressedImage);
+          setImage(compressedImage);
+
+          if (saved) {
+            showStatus(
+              "تم تغيير الصورة وحفظها على هذا الجهاز. رفع الصورة إلى Firebase يحتاج إعداد Firebase Storage.",
+              "success"
+            );
+          } else {
+            showStatus(
+              "تم عرض الصورة، لكن مساحة التخزين المحلي غير كافية لحفظها.",
+              "error"
+            );
+          }
+        };
+
+        image.onerror = () => {
+          showStatus("تعذر قراءة الصورة المختارة.", "error");
+        };
+
+        image.src = reader.result;
+      };
+
+      reader.onerror = () => {
+        showStatus("حصل خطأ أثناء قراءة الصورة.", "error");
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    // تسجيل الخروج
+    $("logoutBtn").addEventListener("click", () => {
+      $("logoutModal").classList.add("show");
+    });
+
+    $("cancelLogout").addEventListener("click", () => {
+      $("logoutModal").classList.remove("show");
+    });
+
+    $("logoutModal").addEventListener("click", (event) => {
+      if (event.target === $("logoutModal")) {
+        $("logoutModal").classList.remove("show");
+      }
+    });
+
+    $("confirmLogout").addEventListener("click", () => {
+      // نحتفظ بالصورة والبيانات المحفوظة، ونمسح حالة تسجيل الدخول فقط.
+      [
+        "currentUser",
+        "adminData",
+        "isLoggedIn"
+      ].forEach((key) => {
+        try {
+          localStorage.removeItem(key);
+        } catch (error) {
+          console.warn("تعذر مسح المفتاح:", key);
+        }
+      });
+
+      window.location.href = "../index.html";
+    });
+
+    // بدء تشغيل الصفحة
+    async function initProfile() {
+      profile = getLocalProfile();
+      originalUsername = clean(profile.username);
+
+      renderProfile();
+
+      if (!originalUsername) {
+        showStatus(
+          "لم يتم العثور على اسم المستخدم في localStorage. تأكد أن صفحة تسجيل الدخول تحفظ المفتاح username قبل الانتقال إلى الملف الشخصي.",
+          "error"
+        );
+        return;
+      }
+
+      await loadFirebaseProfile();
+    }
+
+    initProfile();
+  </script>
 
 </body>
-
 </html>
