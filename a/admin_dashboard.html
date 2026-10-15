@@ -1,273 +1,434 @@
-
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#FFFFFF">
 
-    <title>حساب الأدمن</title>
+    <title>حساب الأدمن | برنامج الكنيسة</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Amiri:wght@700&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        :root {
+            --primary: #30213D;
+            --primary-dark: #24172F;
+            --gold: #B79A63;
+            --gold-pale: #F5F0E5;
+            --white: #FFFFFF;
+            --text: #30213D;
+            --muted: #85818A;
+            --border: #ECE9E5;
+            --shadow: 0 8px 25px rgba(40, 29, 47, .055);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        :root {
-            --navy-deep: #041a36;
-            --navy-mid: #062348;
-            --navy-edge: #000b18;
-
-            --maroon-dark: #5d101c;
-            --maroon: #7d1424;
-            --maroon-light: #9b1c30;
-
-            --ink: #1f1715;
-            --muted: #8a817c;
+        html {
+            background: #FFFFFF;
+            scroll-behavior: smooth;
         }
 
         body {
             min-height: 100vh;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    var(--navy-mid) 0%,
-                    var(--navy-deep) 45%,
-                    var(--navy-edge) 100%
-                );
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            padding: 20px;
-
-            font-family: 'Tajawal', sans-serif;
+            min-height: 100dvh;
+            background: #FFFFFF;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
         }
 
-        /* الكارت */
+        button {
+            font: inherit;
+        }
 
-        .form-card {
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        .app {
             width: 100%;
-            max-width: 400px;
-
-            background: #ffffff;
-
-            border-radius: 30px;
-
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
-
-            overflow: hidden;
+            max-width: 500px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            margin: auto;
+            background: #FFFFFF;
+            padding-bottom: max(24px, env(safe-area-inset-bottom));
         }
 
-        .drag-handle {
-            width: 100%;
+        /* الشريط العلوي */
 
+        .topbar {
+            min-height: 72px;
+            padding: max(10px, env(safe-area-inset-top)) 18px 10px;
             display: flex;
-            justify-content: center;
-
-            padding-top: 12px;
-            padding-bottom: 4px;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    #fbeef0 0%,
-                    #ffffff 60%
-                );
-        }
-
-        .drag-handle span {
-            width: 44px;
-            height: 4px;
-
-            border-radius: 4px;
-
-            background: #e3c9cd;
-        }
-
-        .card-body {
-            padding: 10px 32px 34px;
-
-            text-align: center;
-        }
-
-        /* اللوجو */
-
-        .logo-container {
-            width: 100%;
-
-            display: flex;
-            justify-content: center;
             align-items: center;
-
-            margin-top: 10px;
-            margin-bottom: 16px;
+            justify-content: space-between;
+            gap: 12px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border);
         }
 
-        .church-logo {
-            width: 74px;
-            height: 74px;
-
-            border-radius: 50%;
-
-            background:
-                linear-gradient(
-                    150deg,
-                    var(--maroon-light) 0%,
-                    var(--maroon-dark) 100%
-                );
-
+        .brand {
             display: flex;
-            justify-content: center;
             align-items: center;
-
-            color: #ffffff;
-
-            font-size: 34px;
-
-            box-shadow:
-                0 10px 22px rgba(125, 20, 36, 0.35);
+            gap: 11px;
+            min-width: 0;
         }
 
-        /* العنوان */
-
-        h2 {
-            color: var(--ink);
-
-            font-family: 'Amiri', serif;
-
-            font-size: 25px;
-
-            font-weight: 700;
-
-            margin-bottom: 6px;
-
-            letter-spacing: 0.5px;
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            background: var(--primary);
+            color: #FFFFFF;
+            border-radius: 13px;
         }
 
-        .subtitle {
+        .brand-icon i {
+            font-size: 20px;
+        }
+
+        .brand-title {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .brand-subtitle {
+            font-size: 10px;
             color: var(--muted);
-
-            font-size: 14px;
-
-            margin-bottom: 28px;
+            margin-top: 3px;
         }
 
-        /* الأزرار */
+        .back-btn {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            transition: background .2s, transform .2s;
+        }
+
+        .back-btn:active {
+            background: var(--gold-pale);
+            transform: scale(.96);
+        }
+
+        /* بطاقة الترحيب */
+
+        .hero {
+            margin: 19px 15px 0;
+            padding: 27px 19px 25px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 23px;
+            background: #FFFFFF;
+            box-shadow: var(--shadow);
+        }
+
+        .church-emblem {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 17px;
+            display: grid;
+            place-items: center;
+            border-radius: 22px;
+            background: var(--primary);
+            color: #FFFFFF;
+            border: 1px solid var(--gold);
+            box-shadow: 0 5px 15px rgba(40, 29, 47, .10);
+        }
+
+        .church-emblem i {
+            font-size: 31px;
+        }
+
+        .hero-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 5px 12px;
+            margin-bottom: 12px;
+            color: var(--primary);
+            background: #FFFFFF;
+            border: 1px solid #E9E0CE;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .hero-label i {
+            color: var(--gold);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-family: 'Amiri', 'Cairo', serif;
+            font-size: clamp(25px, 6.5vw, 31px);
+            line-height: 1.7;
+            font-weight: 700;
+        }
+
+        .hero-description {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 2;
+        }
+
+        .hero-divider {
+            width: 58px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 5px;
+            margin: 15px auto 0;
+        }
+
+        /* عنوان الاختيارات */
+
+        .content {
+            padding: 25px 15px 10px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .heading-icon {
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            color: var(--primary);
+            background: var(--gold-pale);
+            border: 1px solid #E9E0CE;
+            border-radius: 14px;
+        }
+
+        .heading-icon i {
+            font-size: 20px;
+        }
+
+        .heading-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .heading-subtitle {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* كارت الاختيارات */
+
+        .options-panel {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: #FFFFFF;
+            box-shadow: var(--shadow);
+        }
 
         .buttons {
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 14px;
+            display: grid;
+            gap: 11px;
         }
 
         .btn-action {
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            gap: 10px;
-
+            min-height: 78px;
             width: 100%;
-
-            padding: 15px;
-
-            border-radius: 14px;
-
-            font-family: 'Tajawal', sans-serif;
-
-            font-size: 16px;
-
-            font-weight: 700;
-
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #FFFFFF;
+            color: var(--text);
+            text-align: right;
             text-decoration: none;
-
             cursor: pointer;
-
-            transition: all 0.25s ease;
+            transition: background .2s, transform .2s, border-color .2s;
         }
 
-        /* إنشاء حساب */
-
-        .btn-create {
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--maroon-light) 0%,
-                    var(--maroon-dark) 100%
-                );
-
-            color: #ffffff;
-
-            box-shadow:
-                0 10px 22px rgba(125, 20, 36, 0.35);
-        }
-
-        .btn-create:hover {
-            transform: translateY(-1px);
-
-            box-shadow:
-                0 12px 26px rgba(125, 20, 36, 0.45);
-        }
-
-        /* لدي حساب */
-
-        .btn-login {
-            background: #ffffff;
-
-            color: var(--maroon);
-
-            border: 1.5px solid #e1d8d0;
-
-            box-shadow:
-                0 6px 15px rgba(0, 0, 0, 0.06);
-        }
-
-        .btn-login:hover {
-            border-color: var(--maroon);
-
-            background: #fff8f9;
-
-            transform: translateY(-1px);
-
-            box-shadow:
-                0 8px 18px rgba(125, 20, 36, 0.12);
+        .btn-action:hover {
+            background: #FCFBFD;
+            border-color: #DCD3E2;
         }
 
         .btn-action:active {
-            transform: translateY(1px);
+            transform: scale(.985);
         }
 
-        /* Responsive */
+        .button-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 15px;
+            background: var(--primary);
+            color: #FFFFFF;
+        }
 
-        @media (max-width: 500px) {
+        .button-icon i {
+            font-size: 22px;
+        }
 
-            .card-body {
-                padding: 8px 22px 28px;
+        .btn-create .button-icon {
+            background: var(--primary);
+            color: #FFFFFF;
+        }
+
+        .btn-login .button-icon {
+            background: var(--gold-pale);
+            color: var(--primary);
+            border: 1px solid #E9E0CE;
+        }
+
+        .button-copy {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .button-title {
+            display: block;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .button-description {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .arrow-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+            color: var(--gold);
+            margin-right: auto;
+        }
+
+        /* أسفل الكارت */
+
+        .panel-footer {
+            margin-top: 15px;
+            padding-top: 13px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .panel-footer i {
+            font-size: 14px;
+            color: var(--gold);
+        }
+
+        .footer {
+            padding: 20px 12px 5px;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 2;
+            text-align: center;
+        }
+
+        .footer strong {
+            color: var(--primary);
+        }
+
+        @media (min-width: 600px) {
+            body {
+                background: #FAFAFA;
             }
 
-            h2 {
-                font-size: 23px;
+            .app {
+                border-left: 1px solid var(--border);
+                border-right: 1px solid var(--border);
+            }
+        }
+
+        @media (max-width: 360px) {
+            .hero {
+                margin: 13px 10px 0;
+                padding: 23px 13px;
             }
 
-            .church-logo {
-                width: 66px;
-                height: 66px;
+            .content {
+                padding: 21px 10px 10px;
+            }
 
-                font-size: 30px;
+            .church-emblem {
+                width: 68px;
+                height: 68px;
+            }
+
+            .church-emblem i {
+                font-size: 28px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .options-panel {
+                padding: 9px;
+            }
+
+            .btn-action {
+                gap: 9px;
+                padding: 10px;
+            }
+
+            .button-icon {
+                width: 43px;
+                height: 43px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
@@ -275,69 +436,138 @@
 
 <body>
 
-    <div class="form-card">
+<main class="app">
 
-        <div class="drag-handle">
-            <span></span>
+    <!-- الشريط العلوي -->
+
+    <header class="topbar">
+
+        <div class="brand">
+            <div class="brand-icon" aria-hidden="true">
+                <i class="fa-solid fa-house"></i>
+            </div>
+
+            <div>
+                <div class="brand-title">برنامج الكنيسة</div>
+                <div class="brand-subtitle">حساب المسؤول</div>
+            </div>
         </div>
 
-        <div class="card-body">
+        <a href="sign.html"
+           class="back-btn"
+           aria-label="العودة للصفحة الرئيسية"
+           title="الصفحة الرئيسية">
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
 
-            <!-- اللوجو -->
-            <div class="logo-container">
+    </header>
 
-                <div class="church-logo">
+    <!-- الترحيب -->
 
-                    <i class="fas fa-user-shield"></i>
+    <section class="hero">
 
-                </div>
+        <div class="church-emblem" aria-hidden="true">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
 
+        <div class="hero-label">
+            <i class="fa-solid fa-shield-halved"></i>
+            منطقة المسؤولين
+        </div>
+
+        <h1>حساب الأدمن</h1>
+
+        <p class="hero-description">
+            كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي
+        </p>
+
+        <div class="hero-divider"></div>
+
+    </section>
+
+    <!-- الاختيارات -->
+
+    <section class="content">
+
+        <div class="section-heading">
+
+            <div class="heading-icon" aria-hidden="true">
+                <i class="fa-solid fa-right-to-bracket"></i>
             </div>
 
-
-            <h2>حساب الأدمن</h2>
-
-            <div class="subtitle">
-                اختر الطريقة المناسبة للمتابعة
+            <div>
+                <h2 class="heading-title">متابعة حسابك</h2>
+                <p class="heading-subtitle">
+                    اختر الطريقة المناسبة للمتابعة
+                </p>
             </div>
 
+        </div>
 
-            <!-- الأزرار -->
+        <div class="options-panel">
 
             <div class="buttons">
 
                 <!-- إنشاء حساب -->
-                <a href="sign-cc.html"
-                    class="btn-action btn-create">
 
-                    <i class="fas fa-user-plus"></i>
+                <a href="sign-cc.html" class="btn-action btn-create">
 
-                    <span>
-                        إنشاء حساب
+                    <span class="button-icon" aria-hidden="true">
+                        <i class="fa-solid fa-user-plus"></i>
                     </span>
+
+                    <span class="button-copy">
+                        <span class="button-title">إنشاء حساب جديد</span>
+                        <span class="button-description">
+                            إنشاء حساب مسؤول جديد
+                        </span>
+                    </span>
+
+                    <i class="fa-solid fa-chevron-left arrow-icon"
+                       aria-hidden="true"></i>
 
                 </a>
 
+                <!-- تسجيل الدخول -->
 
-                <!-- لدي حساب بالفعل -->
-                <a href="sign_c.html"
-                    class="btn-action btn-login">
+                <a href="sign_c.html" class="btn-action btn-login">
 
-                    <i class="fas fa-right-to-bracket"></i>
-
-                    <span>
-                        لدي حساب بالفعل
+                    <span class="button-icon" aria-hidden="true">
+                        <i class="fa-solid fa-right-to-bracket"></i>
                     </span>
+
+                    <span class="button-copy">
+                        <span class="button-title">لدي حساب بالفعل</span>
+                        <span class="button-description">
+                            تسجيل الدخول إلى حسابك الحالي
+                        </span>
+                    </span>
+
+                    <i class="fa-solid fa-chevron-left arrow-icon"
+                       aria-hidden="true"></i>
 
                 </a>
 
             </div>
 
+            <div class="panel-footer">
+                <i class="fa-solid fa-shield-halved"
+                   aria-hidden="true"></i>
+                بوابة حسابات المسؤولين
+            </div>
+
         </div>
 
-    </div>
+        <footer class="footer">
+            <strong>
+                كنيسة الشهيد العظيم استيفانوس ومارمينا العجايبي
+            </strong>
+        </footer>
+
+    </section>
+
+</main>
 
 </body>
-
 </html>
 ```
